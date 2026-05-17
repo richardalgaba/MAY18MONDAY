@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Premium Login</title>
+        <!-- Google Fonts & Icons -->
+        <link
+            href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <script src="https://unpkg.com/@phosphor-icons/web"></script>
+        <!-- Link to CSS -->
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <video autoplay muted loop id="bg-video">
+            <source src="ai.mp4" type="video/mp4" />
+        </video>
+        <div class="overlay"></div>
+
+        <div class="container">
+            <!-- Login Form -->
+            <div class="form-container" id="login-form">
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <i class="ph-fill ph-user-circle" style="font-size: 3.5rem; color: #818cf8; filter: drop-shadow(0 0 15px rgba(129, 140, 248, 0.5));"></i>
+                </div>
+                <h2>Welcome Back</h2>
+                <p>Login to your account</p>
+                <div id="login-error" class="error-msg hidden">
+                    Invalid email or password!
+                </div>
+                <form onsubmit="return false;">
+                    <div class="input-group">
+                        <input type="text" id="login-email" placeholder="Username / Email" required />
+                        <i class="ph ph-envelope-simple"></i>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="login-password" placeholder="Password" required />
+                        <i class="ph ph-lock-key"></i>
+                    </div>
+                    <div class="options">
+                        <label><input type="checkbox" /> Remember me</label>
+                        <a href="#" class="switch-btn" data-target="forgot-form"
+                            >Forgot Password?</a
+                        >
+                    </div>
+                    <button type="submit" class="btn primary-btn">Login</button>
+                    <p class="bottom-text">
+                        Don't have an account?
+                        <a
+                            href="#"
+                            class="switch-btn"
+                            data-target="register-form"
+                            >Register</a
+                        >
+                    </p>
+                    <p class="bottom-text" style="margin-top: 10px">
+                        <a
+                            href="#"
+                            class="switch-btn"
+                            data-target="admin-login-form"
+                            style="color: #ff9f43; text-decoration: underline"
+                            >Login as Admin</a
+                        >
+                    </p>
+                </form>
+            </div>
+
+            <!-- Register Form -->
+            <div class="form-container hidden" id="register-form">
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <i class="ph-fill ph-user-plus" style="font-size: 3.5rem; color: #a855f7; filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.5));"></i>
+                </div>
+                <h2>Create Account</h2>
+                <p>Join us today!</p>
+                <div id="reg-success" class="success-msg hidden">
+                    Registration Successful! Please login.
+                </div>
+                <div id="reg-error" class="error-msg hidden"></div>
+                <form onsubmit="return false;">
+                    <div class="input-group">
+                        <input type="text" id="reg-email" placeholder="Username / Email" required />
+                        <i class="ph ph-user"></i>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="reg-password" placeholder="Password" required />
+                        <i class="ph ph-lock-key"></i>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="reg-confirm-password" placeholder="Confirm Password" required />
+                        <i class="ph ph-lock-key-fill"></i>
+                    </div>
+                    <div style="display: flex; gap: 15px">
+                        <div class="input-group" style="flex: 1">
+                            <input type="number" id="reg-age" placeholder="Age" required min="1" />
+                            <i class="ph ph-calendar-blank"></i>
+                        </div>
+                        <div class="input-group" style="flex: 2">
+                            <input type="text" id="reg-dob" placeholder="Birth Date" required />
+                            <i class="ph ph-cake"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn primary-btn">
+                        Register
+                    </button>
+                    <p class="bottom-text">
+                        Already have an account?
+                        <a href="#" class="switch-btn" data-target="login-form"
+                            >Login</a
+                        >
+                    </p>
+                </form>
+            </div>
+
+            <!-- Forgot Password Form -->
+            <div class="form-container hidden" id="forgot-form">
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <i class="ph-fill ph-key" style="font-size: 3.5rem; color: #4facfe; filter: drop-shadow(0 0 15px rgba(79, 172, 254, 0.5));"></i>
+                </div>
+                <h2>Reset Password</h2>
+                <p>Enter your email to receive a reset link.</p>
+                <form>
+                    <div class="input-group">
+                        <input type="email" placeholder="Email Address" required />
+                        <i class="ph ph-envelope-simple"></i>
+                    </div>
+                    <button type="submit" class="btn primary-btn">
+                        Send Link
+                    </button>
+                    <p class="bottom-text">
+                        Remember your password?
+                        <a href="#" class="switch-btn" data-target="login-form"
+                            >Login</a
+                        >
+                    </p>
+                </form>
+            </div>
+
+            <!-- Admin Login Form -->
+            <div class="form-container hidden" id="admin-login-form">
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <i class="ph-fill ph-shield-check" style="font-size: 3.5rem; color: #ff9f43; filter: drop-shadow(0 0 15px rgba(255, 159, 67, 0.5));"></i>
+                </div>
+                <h2 style="background: linear-gradient(135deg, #ff9f43 0%, #ff6b6b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Admin Portal</h2>
+                <p>Access the master dashboard</p>
+                <div id="admin-login-error" class="error-msg hidden">
+                    Invalid admin credentials!
+                </div>
+                <form onsubmit="return false;">
+                    <div class="input-group">
+                        <input type="text" id="admin-login-user" placeholder="Admin Username" required />
+                        <i class="ph ph-shield-star"></i>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="admin-login-password" placeholder="Password" required />
+                        <i class="ph ph-lock-key"></i>
+                    </div>
+                    <button
+                        type="submit"
+                        class="btn primary-btn"
+                        style="
+                            background: linear-gradient(
+                                135deg,
+                                #ff9f43,
+                                #ff6b6b
+                            );
+                        "
+                    >
+                        Admin Login
+                    </button>
+                    <p class="bottom-text">
+                        Are you a user?
+                        <a href="#" class="switch-btn" data-target="login-form"
+                            >User Login</a
+                        >
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <!-- Link to JS -->
+        <script src="script.js"></script>
+    </body>
+</html>
