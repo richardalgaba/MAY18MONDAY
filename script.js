@@ -2459,28 +2459,40 @@ document.addEventListener("DOMContentLoaded", () => {
     const logoutDate = formatSessionDate(lastLogout);
     const logoutTime = formatSessionTimeOnly(lastLogout);
 
-    // Build Connection History table logs
+    // Build Connection History logs (Glow Capsules)
     const sessionLogs = JSON.parse(localStorage.getItem(`session_history_${currentUser}`)) || [];
     let sessionRows = "";
     if (sessionLogs.length === 0) {
-      sessionRows = `<tr><td colspan="3" style="text-align:center; padding: 20px; color: rgba(255,255,255,0.4)">No session history logs recorded yet.</td></tr>`;
+      sessionRows = `
+        <div style="text-align:center; padding: 30px; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.01); border: 1px dashed rgba(255,255,255,0.08); border-radius: 12px;">
+          No session history logs recorded yet.
+        </div>`;
     } else {
       sessionLogs.forEach((log, index) => {
         const date = new Date(log.time);
         const formattedDate = date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
         const formattedTime = date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-        const badge = log.type === "Login"
-          ? `<span style="background:rgba(46,204,113,0.12); color:#2ecc71; padding:2px 8px; border-radius:4px; font-weight:700; font-size:0.75rem; border:1px solid rgba(46,204,113,0.25)">🟢 Login</span>`
-          : `<span style="background:rgba(231,76,60,0.12); color:#e74c3c; padding:2px 8px; border-radius:4px; font-weight:700; font-size:0.75rem; border:1px solid rgba(231,76,60,0.25)">🔴 Logout</span>`;
+        
+        const isLogin = log.type === "Login";
+        const accentColor = isLogin ? "#2ecc71" : "#e74c3c";
+        const logIcon = isLogin ? "🟢" : "🔴";
+        const badgeLabel = isLogin ? "Login Event" : "Logout Event";
 
-        // Limit cascading delay to top 15 records to prevent performance lag
         const rowDelay = Math.min(0.4 + index * 0.05, 1.2);
         sessionRows += `
-          <tr class="profile-row-anim" style="animation-delay: ${rowDelay}s;">
-            <td style="font-weight:600; color:white;">${badge}</td>
-            <td style="color:rgba(255,255,255,0.85);">${formattedDate}</td>
-            <td style="color:rgba(255,255,255,0.85);">${formattedTime}</td>
-          </tr>
+          <div class="profile-pill-capsule profile-row-anim" style="animation-delay: ${rowDelay}s; display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; margin-bottom: 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-left: 3px solid ${accentColor}; border-radius: 12px; transition: all 0.3s ease; box-shadow: inset 0 1px 0 rgba(255,255,255,0.01);" onmouseover="this.style.background='rgba(255,255,255,0.05)'; this.style.transform='translateX(4px)'" onmouseout="this.style.background='rgba(255,255,255,0.02)'; this.style.transform='translateX(0)'">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-size: 1.1rem; filter: drop-shadow(0 0 4px ${accentColor});">${logIcon}</span>
+              <div>
+                <div style="font-weight: 700; color: white; font-size: 0.9rem;">${badgeLabel}</div>
+                <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 2px;">Session Status Synced</div>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-weight: 600; color: white; font-size: 0.85rem;">${formattedDate}</div>
+              <div style="font-size: 0.72rem; color: ${accentColor}; font-family: monospace; margin-top: 2px; font-weight: bold;">${formattedTime}</div>
+            </div>
+          </div>
         `;
       });
     }
@@ -2611,7 +2623,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!isAdmin) {
       salesHistoryHtml = `
       <!-- My Sales History -->
-      <div class="profile-history-card" style="max-width:680px;margin-top:28px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; animation-delay: 0.35s;">
+      <div class="profile-history-card" style="grid-column: 1 / -1; width: 100%; margin-top:28px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; animation-delay: 0.35s; box-sizing: border-box;">
         <h2 style="font-size:1.2rem;margin-bottom:14px;font-family:'Outfit',sans-serif;font-weight:800;color:white;display:flex;align-items:center;gap:8px;">📊 My Sales History</h2>
         <div class="table-container" style="max-height: 300px; overflow-y: auto;">
           <table>
@@ -2889,33 +2901,22 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
 
       <!-- How to search tip -->
-      <div style="max-width:680px;margin-top:24px;background:linear-gradient(135deg, rgba(0, 242, 254, 0.05), rgba(168, 85, 247, 0.05));border:1px solid rgba(0, 242, 254, 0.15);border-radius:16px;padding:16px 20px;box-shadow:0 8px 30px rgba(0,0,0,0.2);">
+      <div style="grid-column: 1 / -1; width: 100%; margin-top: 24px; background:linear-gradient(135deg, rgba(0, 242, 254, 0.05), rgba(168, 85, 247, 0.05)); border:1px solid rgba(0, 242, 254, 0.15); border-radius:16px; padding:16px 20px; box-shadow:0 8px 30px rgba(0,0,0,0.2); box-sizing: border-box;">
         <div style="color:#00f2fe;font-weight:700;font-size:.88rem;margin-bottom:6px;display:flex;align-items:center;gap:6px;font-family:'Outfit',sans-serif;">🔍 Quick Seller Search Guide</div>
         <div style="color:rgba(255,255,255,.55);font-size:.82rem;line-height:1.7;">
           In the <strong style="color:white;">Global Market</strong>, use the Seller search input to filter your listings.<br>
           Type your name: <code style="background:rgba(255,255,255,0.08);color:#00f2fe;padding:2px 8px;border-radius:6px;font-family:monospace;font-size:0.78rem;border:1px solid rgba(255,255,255,0.05);">${currentUser}</code>&nbsp;&nbsp;
-          or your public ID: <code style="background:rgba(255,255,255,0.08);color:#ff9f43;padding:2px 8px;border-radius:6px;font-family:monospace;font-size:0.78rem;border:1px solid rgba(255,255,255,0.05);">#${sellerId}</code>
+          or your public ID: <code style="background:rgba(255,255,255,0.08);color:#ff9f43;padding:2px 8px;border-radius:6px;font-family:monospace;font-size:0.78rem;border:1px solid rgba(255,255,255,0.05);">${sellerId}</code>
         </div>
       </div>
 
       ${salesHistoryHtml}
 
-      <!-- Login & Logout Connection Session History Table -->
-      <div class="profile-history-card" style="max-width:680px;margin-top:28px;margin-bottom:20px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; animation-delay: 0.4s;">
-        <h2 style="font-size:1.2rem;margin-bottom:14px;font-family:'Outfit',sans-serif;font-weight:800;color:white;display:flex;align-items:center;gap:8px;">🕒 Login & Logout Session History</h2>
-        <div class="table-container" style="max-height: 300px; overflow-y: auto;">
-          <table>
-            <thead>
-              <tr>
-                <th>Event Type</th>
-                <th>Date</th>
-                <th>Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${sessionRows}
-            </tbody>
-          </table>
+      <!-- Login & Logout Connection Session History Feed -->
+      <div class="profile-history-card" style="grid-column: 1 / -1; width: 100%; margin-top: 28px; margin-bottom: 20px; background: rgba(255, 255, 255, 0.01); border: 1px solid rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 20px; animation-delay: 0.4s; box-sizing: border-box;">
+        <h2 style="font-size:1.2rem;margin-bottom:16px;font-family:'Outfit',sans-serif;font-weight:800;color:white;display:flex;align-items:center;gap:8px;">🕒 Login & Logout Session History</h2>
+        <div style="max-height: 320px; overflow-y: auto; padding-right: 4px; display: flex; flex-direction: column; gap: 8px;">
+          ${sessionRows}
         </div>
       </div>
     `;
