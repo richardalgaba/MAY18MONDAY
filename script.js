@@ -2697,8 +2697,16 @@ document.addEventListener("DOMContentLoaded", () => {
           from {
             opacity: 0;
             transform: translateY(35px) scale(0.96);
-              <!-- Identity card (full width) -->
-        <div class="dashboard-card profile-identity-card" style="grid-column:1/-1;display:flex;align-items:center;gap:24px;padding:26px;background:linear-gradient(135deg, rgba(13,10,31,0.6), rgba(15,23,42,0.45));border:1px solid rgba(255,255,255,0.08);box-shadow:0 20px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);border-radius:20px;backdrop-filter:blur(10px);">
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+      </style>
+
+      <!-- Identity card (full width) -->
+      <div class="dashboard-card profile-identity-card" style="grid-column:1/-1;display:flex;align-items:center;gap:24px;padding:26px;background:linear-gradient(135deg, rgba(13,10,31,0.6), rgba(15,23,42,0.45));border:1px solid rgba(255,255,255,0.08);box-shadow:0 20px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);border-radius:20px;backdrop-filter:blur(10px);">
           <div style="position:relative;width:80px;height:80px;display:flex;justify-content:center;align-items:center;flex-shrink:0;">
             <!-- Rotating Dashed Cyber Ring -->
             <div style="position:absolute;width:80px;height:80px;border:1.5px dashed rgba(79, 172, 254, 0.6);border-radius:50%;animation:avatarLockBreathing 6s ease-in-out infinite;box-shadow:0 0 15px rgba(79,172,254,0.15);"></div>
