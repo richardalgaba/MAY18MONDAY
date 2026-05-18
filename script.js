@@ -252,9 +252,12 @@ document.addEventListener("DOMContentLoaded", () => {
             if (adminLogsNavBtn) adminLogsNavBtn.click();
         }, 50);
 
-        // Admin has no need for the "Add Product" button — users submit requests
+        // Relabel Add Product to Add to Admin Store for Admin Store management
         const addProdBtn = document.getElementById("add-product-btn");
-        if (addProdBtn) addProdBtn.style.display = "none";
+        if (addProdBtn) {
+          addProdBtn.style.display = "inline-flex";
+          addProdBtn.innerHTML = "➕ Add to Admin Store";
+        }
         const addMktBtn = document.getElementById("add-market-product-btn");
         if (addMktBtn) addMktBtn.innerHTML = "✏️ Edit Product";
         // Relabel the Clear button so its purpose is obvious
@@ -3808,7 +3811,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("user-prod-id").value = ""; // Clear the ID!
       const titleEl = document.getElementById("user-product-modal-title");
       if (titleEl) {
-        titleEl.textContent = isAdmin ? "✏️ Add Product (Admin)" : "📦 Add to My Inventory";
+        titleEl.textContent = isAdmin ? "🏪 Add to Admin Store" : "📦 Add to My Inventory";
       }
       
       const preview = document.getElementById("user-prod-preview");
@@ -4044,11 +4047,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
           saveInventory();
           if (typeof renderMarket === "function") renderMarket();
+          if (typeof renderAdminStore === "function") renderAdminStore();
           document.getElementById("user-product-modal").classList.add("hidden");
           alert(`✅ Product "${existingProduct.name}" successfully updated!`);
         }
       } else {
         // We are ADDING a new product!
+        const isAdmin = localStorage.getItem("isAdminSession") === "true";
         const newProduct = {
           id: Date.now(),
           name: catalogItem.name,
@@ -4058,8 +4063,8 @@ document.addEventListener("DOMContentLoaded", () => {
           price: price,
           quantity: qty,
           supplier: catalogItem.supplier || "N/A",
-          owner: currentUser,
-          purpose: purpose,
+          owner: isAdmin ? "System" : currentUser,
+          purpose: isAdmin ? "For Sale" : purpose,
           approved: true, // Automatically approved instantly!
           condition: condition,
           listedDate: new Date().toISOString(),
@@ -4068,6 +4073,7 @@ document.addEventListener("DOMContentLoaded", () => {
         inventory.push(newProduct);
         saveInventory();
         if (typeof renderMarket === "function") renderMarket();
+        if (typeof renderAdminStore === "function") renderAdminStore();
         
         logActivity("Added New Product", {
           name: newProduct.name,
@@ -4076,9 +4082,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         document.getElementById("user-product-modal").classList.add("hidden");
-        alert(
-          `✅ "${newProduct.name}" successfully purchased and added directly to your inventory! [${condition}]\nSelling at $${price.toFixed(2)} (System: $${catalogSysPrice.toFixed(2)}) — Margin: ${signedProfit}/item.`,
-        );
+        const alertMsg = isAdmin 
+          ? `✅ "${newProduct.name}" successfully added to the Admin Store!`
+          : `✅ "${newProduct.name}" successfully purchased and added directly to your inventory! [${condition}]\nSelling at $${price.toFixed(2)} (System: $${catalogSysPrice.toFixed(2)}) — Margin: ${signedProfit}/item.`;
+        alert(alertMsg);
       }
     });
 
