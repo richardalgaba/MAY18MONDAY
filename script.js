@@ -259,6 +259,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Admin has no need for the "Add Product" button — users submit requests
         const addProdBtn = document.getElementById("add-product-btn");
         if (addProdBtn) addProdBtn.style.display = "none";
+        const addMktBtn = document.getElementById("add-market-product-btn");
+        if (addMktBtn) addMktBtn.innerHTML = "✏️ Edit Product";
         // Relabel the Clear button so its purpose is obvious
         const clearBtn = document.getElementById("clear-inventory-btn");
         if (clearBtn) clearBtn.textContent = "Clear Requests";
