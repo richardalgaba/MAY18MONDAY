@@ -1877,8 +1877,7 @@ document.addEventListener("DOMContentLoaded", () => {
     inventory.forEach((product) => {
       if (product.isSeed) return; // never show market seeds in inventory view
       if (currentUser === "Admin Richard") {
-        // Admin sees ONLY user-submitted requests, never their own catalog items
-        if (product.isCatalog) return;
+        // Admin sees user-submitted requests, and also their own official stock parts (where owner is System or isCatalog)
       } else {
         // Regular users see only their own listings that are listed for sale
         if (product.owner !== currentUser) return;
@@ -1912,11 +1911,6 @@ document.addEventListener("DOMContentLoaded", () => {
         stockClass = "text-warning";
       }
 
-      // Hide specific numbers for Admin Richard
-      if (currentUser === "Admin Richard") {
-        stockText = product.quantity > 0 ? "Available" : "Out of Stock";
-      }
-
       let actionButtons = "";
       if (currentUser === "Admin Richard") {
         if (product.purpose === "To Keep") {
@@ -1927,6 +1921,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
           actionButtons = `
                         <button class="action-btn" style="background: ${product.approved ? "#96c93d" : "#f39c12"}; color: white;" onclick="approveProduct(${product.id})">${product.approved ? "Approved" : "Approve"}</button>
+                        <button class="action-btn btn-edit" onclick="editProduct(${product.id})">Edit</button>
                         <button class="action-btn btn-delete" onclick="deleteProduct(${product.id})">Del</button>
                     `;
         }
