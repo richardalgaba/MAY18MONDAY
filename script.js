@@ -230,18 +230,10 @@ document.addEventListener("DOMContentLoaded", () => {
             dashboardNavItem.parentElement.style.display = 'none';
         }
 
-        // Show and Relabel PC Parts nav item for admin session to Requests & Catalog
+        // Hide PC Parts nav item for admin session
         const pcPartsNavItem = document.querySelector('a[data-view="inventory-view"]');
-        if (pcPartsNavItem) {
-            pcPartsNavItem.innerHTML = `
-                <div class="cyber-vault-pulse" style="width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; margin-right: 4px;">
-                    <div class="vault-box" style="border-color: #a855f7;"></div>
-                </div>
-                Requests & Catalog
-            `;
-            if (pcPartsNavItem.parentElement) {
-                pcPartsNavItem.parentElement.style.display = 'block';
-            }
+        if (pcPartsNavItem && pcPartsNavItem.parentElement) {
+            pcPartsNavItem.parentElement.style.display = 'none';
         }
 
         // Hide My Inventory nav item for admin session
@@ -258,23 +250,14 @@ document.addEventListener("DOMContentLoaded", () => {
             bgVideo.load();
         }
 
-        // Show admin requests/catalog toggle
-        const adminToggle = document.getElementById("admin-toggle-container");
-        if (adminToggle) {
-            adminToggle.classList.remove("hidden");
-        }
-
         // Switch to Admin Logs View by default
         setTimeout(() => {
             const adminLogsNavBtn = document.querySelector('a[data-view="admin-logs-view"]');
             if (adminLogsNavBtn) adminLogsNavBtn.click();
-            if (typeof window.setAdminInventoryTab === "function") {
-                window.setAdminInventoryTab("requests");
-            }
         }, 50);
 
-        // Admin has no need for the "Add Product" button initially
-        const addProdBtn = document.getElementById("add-product-btn") || document.getElementById("add-market-product-btn");
+        // Admin has no need for the "Add Product" button — users submit requests
+        const addProdBtn = document.getElementById("add-product-btn");
         if (addProdBtn) addProdBtn.style.display = "none";
         // Relabel the Clear button so its purpose is obvious
         const clearBtn = document.getElementById("clear-inventory-btn");
@@ -297,15 +280,6 @@ document.addEventListener("DOMContentLoaded", () => {
             bgVideoSource.src = 'ai.mp4';
             bgVideo.load();
         }
-        
-        // Update wallet balance display on startup
-        if (typeof window.updateWalletDisplay === "function") window.updateWalletDisplay();
-
-        // Switch to Global Market View by default for normal users
-        setTimeout(() => {
-            const marketNavBtn = document.querySelector('a[data-view="market-view"]');
-            if (marketNavBtn) marketNavBtn.click();
-        }, 50);
       }
     }
   }
@@ -388,28 +362,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const randNames = ["Alex", "JohnDoe", "TechLover99", "GamingPC_God", "PCBuilder101", "Mike", "Sarah", "David", "Chris", "Jessica"];
 
-  // Migration: Change 'Admin Richard' to random names & Force approve/activate all default catalog/seed items
+  // Migration: Change 'Admin Richard' to random names
   let migratedAdmin = false;
   inventory.forEach(p => {
     if (p.id < 2000) p.isCatalog = true;
-    if (p.id >= 9000000 && p.id < 9900000) p.isSeed = true;
-    
-    // Force set all catalog/seed items to be active, approved, and listed for sale!
-    if (p.isCatalog || p.isSeed) {
-      if (p.approved !== true) {
-        p.approved = true;
-        migratedAdmin = true;
-      }
-      if (p.purpose !== "For Sale") {
-        p.purpose = "For Sale";
-        migratedAdmin = true;
-      }
-      if (typeof p.quantity !== "number" || p.quantity <= 0) {
-        p.quantity = p.isSeed ? 5 : 20; // Default positive stock
-        migratedAdmin = true;
-      }
-    }
-    
     if (p.owner === "Admin Richard" && p.id < 2000) {
       p.owner = randNames[p.id % randNames.length];
       migratedAdmin = true;
@@ -418,260 +374,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (migratedAdmin) {
     localStorage.setItem("inventory", JSON.stringify(inventory));
   }
-
-  // ── Market seed sellers (random demo listings) ──────────────────────
-  const MARKET_SEEDS_DATA = [
-    {
-      name: "Intel Core i5-13600K",
-      category: "CPU",
-      price: 285,
-      qty: 8,
-      cond: "New",
-      owner: "TechDealerPH",
-      sid: "1847",
-      desc: "Mid-range desktop CPU, 14 cores LGA1700, sealed box",
-    },
-    {
-      name: "AMD Ryzen 7 5800X",
-      category: "CPU",
-      price: 278,
-      qty: 5,
-      cond: "Like New",
-      owner: "TechDealerPH",
-      sid: "1847",
-      desc: "High-end AM4 CPU, lightly used, excellent condition",
-    },
-    {
-      name: "NVIDIA GeForce RTX 3070",
-      category: "GPU",
-      price: 435,
-      qty: 3,
-      cond: "New",
-      owner: "TechDealerPH",
-      sid: "1847",
-      desc: "High-end 8GB GDDR6 GPU, sealed box",
-    },
-    {
-      name: "AMD Radeon RX 6600",
-      category: "GPU",
-      price: 248,
-      qty: 6,
-      cond: "Good",
-      owner: "TechDealerPH",
-      sid: "1847",
-      desc: "Mid-range 8GB GPU, tested and fully working",
-    },
-    {
-      name: "Corsair Vengeance 16GB DDR4",
-      category: "RAM",
-      price: 48,
-      qty: 15,
-      cond: "New",
-      owner: "GadgetHubPH",
-      sid: "2391",
-      desc: "DDR4-3600MHz gaming RAM, brand new sealed",
-    },
-    {
-      name: "G.Skill Trident Z5 16GB DDR5",
-      category: "RAM",
-      price: 99,
-      qty: 10,
-      cond: "New",
-      owner: "GadgetHubPH",
-      sid: "2391",
-      desc: "DDR5-6000MHz ultra-fast gaming RAM, RGB",
-    },
-    {
-      name: "Samsung 980 Pro 1TB NVMe",
-      category: "M.2 NVMe SSD",
-      price: 109,
-      qty: 12,
-      cond: "New",
-      owner: "GadgetHubPH",
-      sid: "2391",
-      desc: "PCIe 4.0 NVMe SSD, 7000MB/s read, sealed",
-    },
-    {
-      name: "WD Blue SN570 500GB NVMe",
-      category: "M.2 NVMe SSD",
-      price: 53,
-      qty: 18,
-      cond: "New",
-      owner: "GadgetHubPH",
-      sid: "2391",
-      desc: "PCIe 3.0 NVMe, 3500MB/s, great budget upgrade",
-    },
-    {
-      name: 'ASUS 27" FHD IPS Monitor',
-      category: "Monitor",
-      price: 148,
-      qty: 4,
-      cond: "New",
-      owner: "PCWorldMNL",
-      sid: "3052",
-      desc: "27-inch 1080p IPS, 75Hz, EyeCare, HDMI+DP",
-    },
-    {
-      name: 'BenQ 27" QHD 165Hz Gaming',
-      category: "Monitor",
-      price: 332,
-      qty: 3,
-      cond: "New",
-      owner: "PCWorldMNL",
-      sid: "3052",
-      desc: "27-inch 1440p IPS gaming monitor, HDR400",
-    },
-    {
-      name: "Logitech G502 HERO Gaming",
-      category: "Mouse",
-      price: 65,
-      qty: 9,
-      cond: "New",
-      owner: "PCWorldMNL",
-      sid: "3052",
-      desc: "25600 DPI wired gaming mouse, 11 buttons",
-    },
-    {
-      name: "Redragon K552 Mechanical RGB",
-      category: "Keyboard",
-      price: 45,
-      qty: 11,
-      cond: "New",
-      owner: "PCWorldMNL",
-      sid: "3052",
-      desc: "Wired mech keyboard, red switches, RGB backlit",
-    },
-    {
-      name: "HyperX Cloud Stinger 2",
-      category: "Headset",
-      price: 43,
-      qty: 7,
-      cond: "New",
-      owner: "PCWorldMNL",
-      sid: "3052",
-      desc: "Wired gaming headset, 50mm drivers, mute button",
-    },
-    {
-      name: "Seagate Barracuda 2TB HDD",
-      category: "HDD",
-      price: 61,
-      qty: 14,
-      cond: "New",
-      owner: "ByteStorePH",
-      sid: "4178",
-      desc: "3.5-inch 7200RPM HDD, ideal for bulk storage",
-    },
-    {
-      name: "WD My Passport 4TB External HDD",
-      category: "External Storage",
-      price: 113,
-      qty: 6,
-      cond: "Like New",
-      owner: "ByteStorePH",
-      sid: "4178",
-      desc: "USB 3.0 portable HDD, AES-256 encryption",
-    },
-    {
-      name: "Samsung T7 500GB External SSD",
-      category: "External Storage",
-      price: 79,
-      qty: 8,
-      cond: "New",
-      owner: "ByteStorePH",
-      sid: "4178",
-      desc: "USB 3.2 Gen 2 SSD, 1050MB/s, compact metal",
-    },
-    {
-      name: "Crucial MX500 1TB",
-      category: "SATA SSD",
-      price: 88,
-      qty: 10,
-      cond: "Good",
-      owner: "ByteStorePH",
-      sid: "4178",
-      desc: "2.5-inch SATA SSD, 560MB/s, lightly used",
-    },
-    {
-      name: "NVIDIA GeForce RTX 4070",
-      category: "GPU",
-      price: 575,
-      qty: 2,
-      cond: "New",
-      owner: "GameSetupPH",
-      sid: "5634",
-      desc: "Latest-gen GPU, 12GB GDDR6X, DLSS 3, sealed",
-    },
-    {
-      name: "SteelSeries Arctis 7 Wireless",
-      category: "Headset",
-      price: 143,
-      qty: 4,
-      cond: "Good",
-      owner: "GameSetupPH",
-      sid: "5634",
-      desc: "Wireless gaming headset, 30hr battery, used",
-    },
-    {
-      name: "Logitech MX Master 3 Wireless",
-      category: "Mouse",
-      price: 102,
-      qty: 5,
-      cond: "Like New",
-      owner: "GameSetupPH",
-      sid: "5634",
-      desc: "Premium wireless mouse, MagSpeed scroll",
-    },
-    {
-      name: "Keychron K2 Wireless Mechanical",
-      category: "Keyboard",
-      price: 87,
-      qty: 6,
-      cond: "New",
-      owner: "GameSetupPH",
-      sid: "5634",
-      desc: "Wireless/BT mech keyboard, hot-swap, RGB",
-    },
-    {
-      name: "Corsair 5000D Airflow",
-      category: "Computer Case",
-      price: 153,
-      qty: 3,
-      cond: "New",
-      owner: "PCBuilderPro",
-      sid: "6829",
-      desc: "Mid-tower ATX, mesh front, high airflow",
-    },
-    {
-      name: "Seasonic Focus GX-750 Gold",
-      category: "PSU",
-      price: 119,
-      qty: 5,
-      cond: "New",
-      owner: "PCBuilderPro",
-      sid: "6829",
-      desc: "750W 80+ Gold fully modular PSU, 10-yr warranty",
-    },
-    {
-      name: "NZXT Kraken X63 280mm AIO",
-      category: "CPU Cooler",
-      price: 158,
-      qty: 4,
-      cond: "New",
-      owner: "PCBuilderPro",
-      sid: "6829",
-      desc: "280mm AIO liquid cooler, dual 140mm RGB fans",
-    },
-    {
-      name: "be quiet! Pure Rock 2",
-      category: "CPU Cooler",
-      price: 37,
-      qty: 8,
-      cond: "Good",
-      owner: "PCBuilderPro",
-      sid: "6829",
-      desc: "Silent air cooler, 120mm fan, LGA1700/AM5/AM4",
-    },
-  ];
 
   // ── Default Product Catalog ──────────────────────────────────────────────
   const DEFAULT_PRODUCTS = [
@@ -1773,14 +1475,9 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   ];
 
-  // Initialize inventory with default products & seeds, and self-heal if catalog or seeds are missing
-  const catalogCount = inventory.filter((p) => p.isCatalog).length;
-  const seedCount = inventory.filter((p) => p.isSeed).length;
-  if (catalogCount < 80 || seedCount < 15) {
-    // Preserve custom user-created products (NOT from catalog or seed templates)
-    const userCustomItems = inventory.filter((p) => !p.isCatalog && !p.isSeed);
-
-    let restoredInv = DEFAULT_PRODUCTS.map((p, i) => ({
+  // Initialize inventory with default products if empty
+  if (inventory.length === 0) {
+    inventory = DEFAULT_PRODUCTS.map((p, i) => ({
       id: 1000 + i,
       name: p.name,
       description: p.description,
@@ -1798,35 +1495,262 @@ document.addEventListener("DOMContentLoaded", () => {
         Date.now() - Math.random() * 15 * 86400000,
       ).toISOString(),
     }));
-
-    const seeds = MARKET_SEEDS_DATA.map((s, i) => ({
-      id: 9000000 + i,
-      name: s.name,
-      description: s.desc,
-      category: s.category,
-      price: s.price,
-      costPrice: parseFloat((s.price * 0.8).toFixed(2)),
-      quantity: s.qty,
-      supplier: s.owner,
-      owner: s.owner,
-      sellerId: s.sid,
-      purpose: "For Sale",
-      approved: true,
-      isSeed: true,
-      condition: s.cond,
-      listedDate: new Date(
-        Date.now() - Math.random() * 25 * 86400000,
-      ).toISOString(),
-    }));
-
-    localStorage.setItem("marketSeedItems", JSON.stringify(seeds));
-    localStorage.setItem("marketSeeded", "true");
-
-    inventory = [...restoredInv, ...seeds, ...userCustomItems];
     localStorage.setItem("inventory", JSON.stringify(inventory));
   }
 
-  // MARKET_SEEDS_DATA moved to top of script.js
+  // ── Market seed sellers (random demo listings) ──────────────────────
+  const MARKET_SEEDS_DATA = [
+    {
+      name: "Intel Core i5-13600K",
+      category: "CPU",
+      price: 285,
+      qty: 8,
+      cond: "New",
+      owner: "TechDealerPH",
+      sid: "1847",
+      desc: "Mid-range desktop CPU, 14 cores LGA1700, sealed box",
+    },
+    {
+      name: "AMD Ryzen 7 5800X",
+      category: "CPU",
+      price: 278,
+      qty: 5,
+      cond: "Like New",
+      owner: "TechDealerPH",
+      sid: "1847",
+      desc: "High-end AM4 CPU, lightly used, excellent condition",
+    },
+    {
+      name: "NVIDIA GeForce RTX 3070",
+      category: "GPU",
+      price: 435,
+      qty: 3,
+      cond: "New",
+      owner: "TechDealerPH",
+      sid: "1847",
+      desc: "High-end 8GB GDDR6 GPU, sealed box",
+    },
+    {
+      name: "AMD Radeon RX 6600",
+      category: "GPU",
+      price: 248,
+      qty: 6,
+      cond: "Good",
+      owner: "TechDealerPH",
+      sid: "1847",
+      desc: "Mid-range 8GB GPU, tested and fully working",
+    },
+    {
+      name: "Corsair Vengeance 16GB DDR4",
+      category: "RAM",
+      price: 48,
+      qty: 15,
+      cond: "New",
+      owner: "GadgetHubPH",
+      sid: "2391",
+      desc: "DDR4-3600MHz gaming RAM, brand new sealed",
+    },
+    {
+      name: "G.Skill Trident Z5 16GB DDR5",
+      category: "RAM",
+      price: 99,
+      qty: 10,
+      cond: "New",
+      owner: "GadgetHubPH",
+      sid: "2391",
+      desc: "DDR5-6000MHz ultra-fast gaming RAM, RGB",
+    },
+    {
+      name: "Samsung 980 Pro 1TB NVMe",
+      category: "M.2 NVMe SSD",
+      price: 109,
+      qty: 12,
+      cond: "New",
+      owner: "GadgetHubPH",
+      sid: "2391",
+      desc: "PCIe 4.0 NVMe SSD, 7000MB/s read, sealed",
+    },
+    {
+      name: "WD Blue SN570 500GB NVMe",
+      category: "M.2 NVMe SSD",
+      price: 53,
+      qty: 18,
+      cond: "New",
+      owner: "GadgetHubPH",
+      sid: "2391",
+      desc: "PCIe 3.0 NVMe, 3500MB/s, great budget upgrade",
+    },
+    {
+      name: 'ASUS 27" FHD IPS Monitor',
+      category: "Monitor",
+      price: 148,
+      qty: 4,
+      cond: "New",
+      owner: "PCWorldMNL",
+      sid: "3052",
+      desc: "27-inch 1080p IPS, 75Hz, EyeCare, HDMI+DP",
+    },
+    {
+      name: 'BenQ 27" QHD 165Hz Gaming',
+      category: "Monitor",
+      price: 332,
+      qty: 3,
+      cond: "New",
+      owner: "PCWorldMNL",
+      sid: "3052",
+      desc: "27-inch 1440p IPS gaming monitor, HDR400",
+    },
+    {
+      name: "Logitech G502 HERO Gaming",
+      category: "Mouse",
+      price: 65,
+      qty: 9,
+      cond: "New",
+      owner: "PCWorldMNL",
+      sid: "3052",
+      desc: "25600 DPI wired gaming mouse, 11 buttons",
+    },
+    {
+      name: "Redragon K552 Mechanical RGB",
+      category: "Keyboard",
+      price: 45,
+      qty: 11,
+      cond: "New",
+      owner: "PCWorldMNL",
+      sid: "3052",
+      desc: "Wired mech keyboard, red switches, RGB backlit",
+    },
+    {
+      name: "HyperX Cloud Stinger 2",
+      category: "Headset",
+      price: 43,
+      qty: 7,
+      cond: "New",
+      owner: "PCWorldMNL",
+      sid: "3052",
+      desc: "Wired gaming headset, 50mm drivers, mute button",
+    },
+    {
+      name: "Seagate Barracuda 2TB HDD",
+      category: "HDD",
+      price: 61,
+      qty: 14,
+      cond: "New",
+      owner: "ByteStorePH",
+      sid: "4178",
+      desc: "3.5-inch 7200RPM HDD, ideal for bulk storage",
+    },
+    {
+      name: "WD My Passport 4TB External HDD",
+      category: "External Storage",
+      price: 113,
+      qty: 6,
+      cond: "Like New",
+      owner: "ByteStorePH",
+      sid: "4178",
+      desc: "USB 3.0 portable HDD, AES-256 encryption",
+    },
+    {
+      name: "Samsung T7 500GB External SSD",
+      category: "External Storage",
+      price: 79,
+      qty: 8,
+      cond: "New",
+      owner: "ByteStorePH",
+      sid: "4178",
+      desc: "USB 3.2 Gen 2 SSD, 1050MB/s, compact metal",
+    },
+    {
+      name: "Crucial MX500 1TB",
+      category: "SATA SSD",
+      price: 88,
+      qty: 10,
+      cond: "Good",
+      owner: "ByteStorePH",
+      sid: "4178",
+      desc: "2.5-inch SATA SSD, 560MB/s, lightly used",
+    },
+    {
+      name: "NVIDIA GeForce RTX 4070",
+      category: "GPU",
+      price: 575,
+      qty: 2,
+      cond: "New",
+      owner: "GameSetupPH",
+      sid: "5634",
+      desc: "Latest-gen GPU, 12GB GDDR6X, DLSS 3, sealed",
+    },
+    {
+      name: "SteelSeries Arctis 7 Wireless",
+      category: "Headset",
+      price: 143,
+      qty: 4,
+      cond: "Good",
+      owner: "GameSetupPH",
+      sid: "5634",
+      desc: "Wireless gaming headset, 30hr battery, used",
+    },
+    {
+      name: "Logitech MX Master 3 Wireless",
+      category: "Mouse",
+      price: 102,
+      qty: 5,
+      cond: "Like New",
+      owner: "GameSetupPH",
+      sid: "5634",
+      desc: "Premium wireless mouse, MagSpeed scroll",
+    },
+    {
+      name: "Keychron K2 Wireless Mechanical",
+      category: "Keyboard",
+      price: 87,
+      qty: 6,
+      cond: "New",
+      owner: "GameSetupPH",
+      sid: "5634",
+      desc: "Wireless/BT mech keyboard, hot-swap, RGB",
+    },
+    {
+      name: "Corsair 5000D Airflow",
+      category: "Computer Case",
+      price: 153,
+      qty: 3,
+      cond: "New",
+      owner: "PCBuilderPro",
+      sid: "6829",
+      desc: "Mid-tower ATX, mesh front, high airflow",
+    },
+    {
+      name: "Seasonic Focus GX-750 Gold",
+      category: "PSU",
+      price: 119,
+      qty: 5,
+      cond: "New",
+      owner: "PCBuilderPro",
+      sid: "6829",
+      desc: "750W 80+ Gold fully modular PSU, 10-yr warranty",
+    },
+    {
+      name: "NZXT Kraken X63 280mm AIO",
+      category: "CPU Cooler",
+      price: 158,
+      qty: 4,
+      cond: "New",
+      owner: "PCBuilderPro",
+      sid: "6829",
+      desc: "280mm AIO liquid cooler, dual 140mm RGB fans",
+    },
+    {
+      name: "be quiet! Pure Rock 2",
+      category: "CPU Cooler",
+      price: 37,
+      qty: 8,
+      cond: "Good",
+      owner: "PCBuilderPro",
+      sid: "6829",
+      desc: "Silent air cooler, 120mm fan, LGA1700/AM5/AM4",
+    },
+  ];
 
   // Seed market items into localStorage once (separate from main inventory)
   if (!localStorage.getItem("marketSeeded")) {
@@ -1865,49 +1789,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const inventoryTbody = document.getElementById("inventory-tbody");
   const productModal = document.getElementById("product-modal");
   const stockModal = document.getElementById("stock-modal");
-  const addProductBtn = document.getElementById("add-product-btn") || document.getElementById("add-market-product-btn");
-
-// Floating Add Product button that follows mouse clicks in Market view
-document.addEventListener('click', function(e) {
-  // Only act when Market view is active and not clicking existing buttons
-  const marketView = document.querySelector('#market-view');
-  if (!marketView || marketView.classList.contains('hidden')) return;
-  if (e.target.closest('#add-product-btn') || e.target.closest('#add-market-product-btn') || e.target.closest('#floating-add-btn')) return;
-
-  // Create or get the floating button element
-  let floatBtn = document.getElementById('floating-add-btn');
-  if (!floatBtn) {
-    floatBtn = document.createElement('button');
-    floatBtn.id = 'floating-add-btn';
-    floatBtn.textContent = 'Add Product';
-    // Glass‑morphism styling
-    Object.assign(floatBtn.style, {
-      position: 'absolute',
-      zIndex: 10000,
-      padding: '8px 12px',
-      border: 'none',
-      borderRadius: '8px',
-      background: 'rgba(255,255,255,0.15)',
-      backdropFilter: 'blur(8px)',
-      color: '#fff',
-      cursor: 'pointer',
-      boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-      transition: 'transform 0.2s',
-    });
-    floatBtn.onmouseover = () => floatBtn.style.transform = 'scale(1.08)';
-    floatBtn.onmouseout = () => floatBtn.style.transform = 'scale(1)';
-    // Clicking the floating button triggers the normal Add Product flow
-    floatBtn.onclick = function() {
-      if (addProductBtn) addProductBtn.click();
-      // Remove after use
-      if (floatBtn) floatBtn.remove();
-    };
-    document.body.appendChild(floatBtn);
-  }
-  // Position the button near the cursor
-  floatBtn.style.left = e.pageX + 'px';
-  floatBtn.style.top = e.pageY + 'px';
-});
+  const addProductBtn = document.getElementById("add-product-btn");
   const clearInventoryBtn = document.getElementById("clear-inventory-btn");
   const buyModal = document.getElementById("buy-modal");
   const marketTbody = document.getElementById("market-tbody");
@@ -1956,19 +1838,11 @@ document.addEventListener('click', function(e) {
   const elTotalSale = document.getElementById("inv-total-sale");
   const elOutStock = document.getElementById("inv-out-stock");
 
-  function saveInventory(preventMarketRender = false) {
+  function saveInventory() {
     // Never persist seed items — they live only in memory
     const toSave = inventory.filter((p) => !p.isSeed);
     localStorage.setItem("inventory", JSON.stringify(toSave));
     renderInventory();
-
-    // Keep the market view updated in real-time if not prevented
-    if (!preventMarketRender) {
-      const marketView = document.getElementById("market-view");
-      if (marketView && !marketView.classList.contains("hidden")) {
-        if (typeof renderMarket === "function") renderMarket();
-      }
-    }
   }
 
   function renderInventory() {
@@ -1994,14 +1868,8 @@ document.addEventListener('click', function(e) {
     inventory.forEach((product) => {
       if (product.isSeed) return; // never show market seeds in inventory view
       if (currentUser === "Admin Richard") {
-        const activeTab = window.adminInventoryTab || "requests";
-        if (activeTab === "requests") {
-          // User Sourcing Requests mode: hide catalog items
-          if (product.isCatalog) return;
-        } else {
-          // Catalog Editor mode: hide non-catalog items
-          if (!product.isCatalog) return;
-        }
+        // Admin sees ONLY user-submitted requests, never their own catalog items
+        if (product.isCatalog) return;
       } else {
         // Regular users see only their own listings that are listed for sale
         if (product.owner !== currentUser) return;
@@ -2037,35 +1905,21 @@ document.addEventListener('click', function(e) {
 
       // Hide specific numbers for Admin Richard
       if (currentUser === "Admin Richard") {
-        const activeTab = window.adminInventoryTab || "requests";
-        if (activeTab === "requests") {
-          stockText = product.quantity > 0 ? "Available" : "Out of Stock";
-        } else {
-          stockText = `${product.quantity} units`;
-        }
+        stockText = product.quantity > 0 ? "Available" : "Out of Stock";
       }
 
       let actionButtons = "";
       if (currentUser === "Admin Richard") {
-        const activeTab = window.adminInventoryTab || "requests";
-        if (activeTab === "requests") {
-          if (product.purpose === "To Keep") {
-            actionButtons = `
-                          <span style="color: #f39c12; font-size: 0.9em; margin-right: 10px; font-weight: bold;">To Keep</span>
-                          <button class="action-btn btn-delete" onclick="deleteProduct(${product.id})">Del</button>
-                      `;
-          } else {
-            actionButtons = `
-                          <button class="action-btn" style="background: ${product.approved ? "#96c93d" : "#f39c12"}; color: white;" onclick="approveProduct(${product.id})">${product.approved ? "Approved" : "Approve"}</button>
-                          <button class="action-btn btn-delete" onclick="deleteProduct(${product.id})">Del</button>
-                      `;
-          }
-        } else {
-          // Catalog Editor: Show Edit and Delete buttons for catalog items
+        if (product.purpose === "To Keep") {
           actionButtons = `
-              <button class="action-btn btn-edit" style="background: linear-gradient(135deg, #00f2fe, #4facfe); color: white;" onclick="editProduct(${product.id})">✏️ Edit Catalog</button>
-              <button class="action-btn btn-delete" onclick="deleteProduct(${product.id})">Del</button>
-          `;
+                        <span style="color: #f39c12; font-size: 0.9em; margin-right: 10px; font-weight: bold;">To Keep</span>
+                        <button class="action-btn btn-delete" onclick="deleteProduct(${product.id})">Del</button>
+                    `;
+        } else {
+          actionButtons = `
+                        <button class="action-btn" style="background: ${product.approved ? "#96c93d" : "#f39c12"}; color: white;" onclick="approveProduct(${product.id})">${product.approved ? "Approved" : "Approve"}</button>
+                        <button class="action-btn btn-delete" onclick="deleteProduct(${product.id})">Del</button>
+                    `;
         }
       } else {
         const statusBadge = `<div style="margin-bottom:6px;"><span style="background:${product.approved ? "rgba(150,201,61,0.15)" : "rgba(255,159,67,0.12)"};color:${product.approved ? "#96c93d" : "#ff9f43"};padding:3px 10px;border-radius:20px;font-size:0.73rem;font-weight:700;border:1px solid ${product.approved ? "rgba(150,201,61,0.35)" : "rgba(255,159,67,0.3)"};transition:all .3s;">${product.approved ? "✅ Approved" : "⏳ Pending"}</span></div>`;
@@ -2357,7 +2211,7 @@ document.addEventListener('click', function(e) {
       if (!log.action.includes("Sold")) return;
       const key = log.itemName;
       // Parse qty from amountQty string e.g. "Qty Sold: 3 | ..."
-      const match = (log.amountQty || "").match(/Qty(?:\s*Sold)?:\s*(\d+)/i);
+      const match = log.amountQty.match(/Qty(?:\s*Sold)?:\s*(\d+)/i);
       const qty = match ? parseInt(match[1]) : 1;
       map[key] = (map[key] || 0) + qty;
     });
@@ -2461,69 +2315,6 @@ document.addEventListener('click', function(e) {
     const marketGrid = document.getElementById("market-grid");
     if (!marketGrid) return;
 
-    // Self-Healing: If catalog items or seed items are deleted, restore all default catalog & seeds while preserving user products!
-    const catalogCount = inventory.filter((p) => p.isCatalog).length;
-    const seedCount = inventory.filter((p) => p.isSeed).length;
-    if (catalogCount < 80 || seedCount < 15) {
-      console.log("Self-healing: Restoring default catalog and market seed items...");
-      
-      // Preserve any custom user-created products (NOT from catalog or seed templates)
-      const userCustomItems = inventory.filter((p) => !p.isCatalog && !p.isSeed);
-      
-      let restoredInv = DEFAULT_PRODUCTS.map((p, i) => ({
-        id: 1000 + i,
-        name: p.name,
-        description: p.description,
-        category: p.category,
-        costPrice: p.costPrice,
-        price: p.price,
-        quantity: p.quantity,
-        supplier: p.supplier,
-        owner: randNames[(1000 + i) % randNames.length],
-        isCatalog: true,
-        purpose: "For Sale",
-        approved: true,
-        condition: "New",
-        listedDate: new Date(Date.now() - Math.random() * 15 * 86400000).toISOString(),
-      }));
-
-      const seeds = MARKET_SEEDS_DATA.map((s, i) => ({
-        id: 9000000 + i,
-        name: s.name,
-        description: s.desc,
-        category: s.category,
-        price: s.price,
-        costPrice: parseFloat((s.price * 0.8).toFixed(2)),
-        quantity: s.qty,
-        supplier: s.owner,
-        owner: s.owner,
-        sellerId: s.sid,
-        purpose: "For Sale",
-        approved: true,
-        isSeed: true,
-        condition: s.cond,
-        listedDate: new Date(Date.now() - Math.random() * 25 * 86400000).toISOString(),
-      }));
-
-      localStorage.setItem("marketSeedItems", JSON.stringify(seeds));
-      localStorage.setItem("marketSeeded", "true");
-
-      inventory = [...restoredInv, ...seeds, ...userCustomItems];
-      localStorage.setItem("inventory", JSON.stringify(inventory));
-      if (typeof renderInventory === "function") renderInventory();
-    }
-
-    // Show and relabel the Add Product button for the current active session in the Global Market
-    const addProdBtn = document.getElementById("add-market-product-btn");
-    if (addProdBtn) {
-      addProdBtn.style.display = "inline-flex";
-      if (currentUser === "Admin Richard") {
-        addProdBtn.textContent = "✏️ EDIT PRODUCT";
-      } else {
-        addProdBtn.textContent = "+ Add Product";
-      }
-    }
-
     const searchTerm =
       document.getElementById("market-search")?.value.toLowerCase() || "";
     const filterCat =
@@ -2594,7 +2385,7 @@ document.addEventListener('click', function(e) {
     let totalRevenue = 0;
     allLogs.forEach((l) => {
       if (!l.action.includes("Bought from Market")) return;
-      const m = (l.amountQty || "").match(/Total:\s*\$([0-9.]+)/i);
+      const m = l.amountQty.match(/Total:\s*\$([0-9.]+)/i);
       if (m) totalRevenue += parseFloat(m[1]);
     });
 
@@ -2687,41 +2478,28 @@ document.addEventListener('click', function(e) {
           </div>
         </div>
         
-        ${
-          currentUser === "Admin Richard"
-            ? `
-              <div class="mkt-card-actions" style="margin-top: 15px;">
-                <div class="mkt-card-row-1" style="display: flex; gap: 8px;">
-                  <button class="mkt-card-btn btn-view" style="flex: 1;" onclick="openMarketDetail(${p.id})">🔍 VIEW</button>
-                  <button class="mkt-card-btn btn-buy-now" style="flex: 1; background: linear-gradient(135deg, #4fecfe, #4facfe) !important; color: white !important; font-weight: 700; box-shadow: 0 4px 15px rgba(79, 172, 254, 0.2);" onclick="editProduct(${p.id})">✏️ EDIT</button>
-                </div>
-              </div>
-            `
-            : `
-              <div class="mkt-card-actions">
-                <div class="mkt-card-row-1">
-                  <button class="mkt-card-btn btn-view" onclick="openMarketDetail(${p.id})">🔍 VIEW</button>
-                  ${
-                    isOwn || p.isSeed
-                      ? ""
-                      : `<button class="mkt-card-btn btn-cart" onclick="addToCart(${p.id})">＋ CART</button>`
-                  }
-                </div>
-                ${
-                  isOwn
-                    ? `<div class="mkt-card-own-badge">Your Listing</div>`
-                    : p.isSeed
-                      ? `<div class="mkt-card-own-badge" style="background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.08);">System Stock</div>`
-                      : `<button class="mkt-card-btn btn-buy-now" onclick="openBuyModal(${p.id})">⚡ BUY NOW</button>`
-                }
-              </div>
-            `
-        }
+        <div class="mkt-card-actions">
+          <div class="mkt-card-row-1">
+            <button class="mkt-card-btn btn-view" onclick="openMarketDetail(${p.id})">🔍 VIEW</button>
+            ${
+              isOwn || p.isSeed
+                ? ""
+                : `<button class="mkt-card-btn btn-cart" onclick="addToCart(${p.id})">＋ CART</button>`
+            }
+          </div>
+          ${
+            isOwn
+              ? `<div class="mkt-card-own-badge">Your Listing</div>`
+              : p.isSeed
+                ? `<div class="mkt-card-own-badge" style="background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.08);">System Stock</div>`
+                : `<button class="mkt-card-btn btn-buy-now" onclick="openBuyModal(${p.id})">⚡ BUY NOW</button>`
+          }
+        </div>
       `;
       marketGrid.appendChild(card);
     });
 
-    saveInventory(true);
+    saveInventory();
     updateCartBadge();
   };
 
@@ -3710,15 +3488,6 @@ document.addEventListener('click', function(e) {
     const product = inventory.find((p) => p.id == id);
     if (!product) return;
 
-    const qTempContainer = document.getElementById("quick-template-container");
-    if (qTempContainer) qTempContainer.style.display = "none";
-    const quickQtyContainer = document.getElementById("admin-quick-qty-container");
-    if (quickQtyContainer) quickQtyContainer.style.display = "none";
-    const tempSelect = document.getElementById("admin-prod-template");
-    if (tempSelect) tempSelect.required = false;
-    const priceStockContainer = document.getElementById("admin-price-stock-container");
-    if (priceStockContainer) priceStockContainer.style.display = "block";
-
     document.getElementById("prod-id").value = product.id;
 
     // Find main category based on product.category
@@ -3801,7 +3570,7 @@ document.addEventListener('click', function(e) {
 
     // If admin catalog is missing or wiped, silently restore from DEFAULT_PRODUCTS
     const hasAdminItems = freshInv.some(
-      (p) => p.isCatalog,
+      (p) => p.isCatalog && p.quantity > 0,
     );
     if (!hasAdminItems) {
       const adminDefaults = DEFAULT_PRODUCTS.map((p, i) => ({
@@ -3856,7 +3625,7 @@ document.addEventListener('click', function(e) {
       items.forEach((p) => {
         const opt = document.createElement("option");
         opt.value = p.id;
-        opt.textContent = `${p.name}  —  $${parseFloat(p.price).toFixed(2)} (${p.quantity} units available)`;
+        opt.textContent = `${p.name}  —  $${parseFloat(p.price).toFixed(2)}`;
         opt.style.background = "#1e2840";
         grp.appendChild(opt);
       });
@@ -3872,29 +3641,6 @@ document.addEventListener('click', function(e) {
         // Admin: open full product form
         document.getElementById("product-form").reset();
         document.getElementById("prod-id").value = "";
-
-        // Reset and show quick templates
-        const qTempContainer = document.getElementById("quick-template-container");
-        if (qTempContainer) qTempContainer.style.display = "block";
-        const quickQtyContainer = document.getElementById("admin-quick-qty-container");
-        if (quickQtyContainer) quickQtyContainer.style.display = "block";
-        const tempSelect = document.getElementById("admin-prod-template");
-        if (tempSelect) {
-          tempSelect.value = "";
-          tempSelect.required = true;
-        }
-        
-        // Reset default active quantity button style (select '10' which is index 2)
-        const defaultQtyBtn = document.querySelectorAll('.qty-btn')[2];
-        if (defaultQtyBtn) {
-          window.setAdminQuickQty(defaultQtyBtn, 10);
-        } else {
-          const qtyInput = document.getElementById("prod-quantity");
-          if (qtyInput) qtyInput.value = 10;
-        }
-
-        const priceStockContainer = document.getElementById("admin-price-stock-container");
-        if (priceStockContainer) priceStockContainer.style.display = "none";
         const defaultPurpose = document.querySelector(
           'input[name="prod-purpose"][value="For Sale"]',
         );
@@ -3905,7 +3651,7 @@ document.addEventListener('click', function(e) {
             '<option value="" disabled selected>Select Specific Part</option>';
           subCatSelect.disabled = true;
         }
-        document.getElementById("modal-title").textContent = "Edit Product";
+        document.getElementById("modal-title").textContent = "Add Product";
         productModal.classList.remove("hidden");
       } else {
         // Regular user: open catalog-picker modal
@@ -4016,15 +3762,12 @@ document.addEventListener('click', function(e) {
       const catEl = document.getElementById("upv-category");
       const descEl = document.getElementById("upv-desc");
       const suppEl = document.getElementById("upv-supplier");
-      const stockEl = document.getElementById("upv-stock-container");
       const preview = document.getElementById("user-prod-preview");
       if (nameEl) nameEl.textContent = product.name;
       if (catEl) catEl.textContent = "📁 " + product.category;
       if (descEl) descEl.textContent = product.description || "";
       if (suppEl)
         suppEl.textContent = product.supplier ? "📦 " + product.supplier : "";
-      if (stockEl)
-        stockEl.textContent = `⚡ Available Catalog Stock: ${product.quantity} units`;
       if (preview) preview.style.display = "block";
 
       // Apply currently-selected condition
@@ -4108,54 +3851,43 @@ document.addEventListener('click', function(e) {
         return;
       }
 
-      // Compute Supplier Sourcing Cost
-      const totalCost = parseFloat((catalogSysPrice * qty).toFixed(2));
-      const balance = window.getWalletBalance();
-
-      if (qty > catalogItem.quantity) {
-        alert(`❌ Kakulangan sa supply ng Catalog!\n\nMayroon na lamang ${catalogItem.quantity} unit ng "${catalogItem.name}" na magagamit sa supplier catalog, ngunit sinusubukan mong mag-source ng ${qty} unit.\n\nMangyaring bawasan ang iyong quantity.`);
-        return;
-      }
-
-      if (balance < totalCost) {
-        alert(`❌ Hindi sapat ang iyong Wallet Balance!\n\nKailangan mo ng $${totalCost.toLocaleString("en-US", { minimumFractionDigits: 2 })} upang bilhin ang ${qty}x "${catalogItem.name}" mula sa supplier catalog, ngunit ang iyong balance ay $${balance.toLocaleString("en-US", { minimumFractionDigits: 2 })} lamang.\n\nMangyaring mag-top up muna gamit ang "⚡ Top Up" button sa sidebar.`);
-        return;
-      }
-
-      // Save pending purchase details to window
-      window._pendingCatalogPurchase = {
-        catalogItem,
-        qty,
-        condition,
-        purpose,
-        price,
-        catalogSysPrice,
-        totalCost,
-        currentUser
+      const newProduct = {
+        id: Date.now(),
+        name: catalogItem.name,
+        description: catalogItem.description || "",
+        category: catalogItem.category,
+        costPrice: catalogSysPrice,
+        price: price,
+        quantity: qty,
+        supplier: catalogItem.supplier || "N/A",
+        owner: currentUser,
+        purpose: purpose,
+        approved: true, // Automatically approved instantly!
+        condition: condition,
+        listedDate: new Date().toISOString(),
       };
 
-      // Populate Sourcing Payment (Supplier Invoice) Modal
-      const cpItemName = document.getElementById("cp-item-name");
-      const cpCategory = document.getElementById("cp-category");
-      const cpSupplier = document.getElementById("cp-supplier");
-      const cpUnitPrice = document.getElementById("cp-unit-price");
-      const cpQty = document.getElementById("cp-qty");
-      const cpTotalCost = document.getElementById("cp-total-cost");
-      const cpWalletBal = document.getElementById("cp-wallet-balance");
-      const cpNewBal = document.getElementById("cp-new-balance");
+      // Save directly to localStorage so admin sees it immediately
+      const savedInv = JSON.parse(localStorage.getItem("inventory")) || [];
+      savedInv.push(newProduct);
+      inventory = savedInv; // keep module-level in sync
+      localStorage.setItem("inventory", JSON.stringify(inventory));
 
-      if (cpItemName) cpItemName.textContent = catalogItem.name;
-      if (cpCategory) cpCategory.textContent = catalogItem.category;
-      if (cpSupplier) cpSupplier.textContent = catalogItem.supplier || "Catalog Sourcing";
-      if (cpUnitPrice) cpUnitPrice.textContent = `$${catalogSysPrice.toFixed(2)}`;
-      if (cpQty) cpQty.textContent = qty;
-      if (cpTotalCost) cpTotalCost.textContent = `$${totalCost.toFixed(2)}`;
-      if (cpWalletBal) cpWalletBal.textContent = `$${balance.toFixed(2)}`;
-      if (cpNewBal) cpNewBal.textContent = `$${(balance - totalCost).toFixed(2)}`;
+      const signedProfit =
+        profitPer >= 0
+          ? `+$${profitPer.toFixed(2)}`
+          : `-$${Math.abs(profitPer).toFixed(2)}`;
+      logActivity("Added New Product", {
+        name: newProduct.name,
+        supplier: newProduct.supplier,
+        amountQty: `Condition: ${condition} | Sell: $${price.toFixed(2)} | Cost: $${catalogSysPrice.toFixed(2)} | Margin: ${signedProfit}/item | Qty: ${qty} | ${purpose}`,
+      });
 
-      // Show Payment invoice modal
-      const payModal = document.getElementById("catalog-payment-modal");
-      if (payModal) payModal.classList.remove("hidden");
+      renderInventory(); // refresh the table so badge is visible right away
+      document.getElementById("user-product-modal").classList.add("hidden");
+      alert(
+        `✅ "${newProduct.name}" successfully purchased and added directly to your inventory! [${condition}]\nSelling at $${price.toFixed(2)} (System: $${catalogSysPrice.toFixed(2)}) — Margin: ${signedProfit}/item.`,
+      );
     });
 
   if (clearInventoryBtn) {
@@ -4204,8 +3936,6 @@ document.addEventListener('click', function(e) {
     const selectedPurpose =
       document.querySelector('input[name="prod-purpose"]:checked')?.value ||
       "For Sale";
-    const currentUser = localStorage.getItem("currentUser") || "Unknown";
-    
     const product = {
       id: id ? parseInt(id) : Date.now(),
       name:
@@ -4218,7 +3948,7 @@ document.addEventListener('click', function(e) {
       price: parseFloat(document.getElementById("prod-price").value),
       quantity: parseInt(document.getElementById("prod-quantity").value),
       supplier: document.getElementById("prod-supplier").value,
-      owner: currentUser,
+      owner: localStorage.getItem("currentUser") || "Unknown",
       purpose: selectedPurpose,
       approved: true, // Automatically approved instantly!
     };
@@ -4228,8 +3958,6 @@ document.addEventListener('click', function(e) {
       const index = inventory.findIndex((p) => p.id == id);
       if (index !== -1) {
         product.approved = inventory[index].approved; // Preserve approval status
-        product.isCatalog = inventory[index].isCatalog || false; // Preserve isCatalog status
-        product.owner = inventory[index].owner || product.owner; // Preserve owner
         inventory[index] = product;
         logActivity("Edited Product", {
           name: product.name,
@@ -4239,10 +3967,6 @@ document.addEventListener('click', function(e) {
       }
     } else {
       // Add
-      if (currentUser === "Admin Richard") {
-        product.isCatalog = true;
-        product.owner = randNames[Math.floor(Math.random() * randNames.length)];
-      }
       inventory.push(product);
       logActivity("Added New Product", {
         name: product.name,
@@ -4253,9 +3977,6 @@ document.addEventListener('click', function(e) {
 
     productModal.classList.add("hidden");
     saveInventory();
-    
-    // Refresh user select dropdown if needed
-    populateUserProductSelect();
   });
 
   document.getElementById("stock-form")?.addEventListener("submit", (e) => {
@@ -4308,26 +4029,7 @@ document.addEventListener('click', function(e) {
         return;
       }
 
-      const total = parseFloat((amount * marketItem.price).toFixed(2));
-      const balance = window.getWalletBalance();
-
-      if (balance < total) {
-        alert(`❌ Hindi sapat ang iyong Wallet Balance!\n\nKailangan mo ng $${total.toLocaleString("en-US", { minimumFractionDigits: 2 })} upang bilhin ang ${amount}x "${marketItem.name}", ngunit ang iyong balance ay $${balance.toLocaleString("en-US", { minimumFractionDigits: 2 })} lamang.\n\nMangyaring mag-top up muna gamit ang "⚡ Top Up" button sa sidebar.`);
-        return;
-      }
-
-      // Deduct from buyer
-      const newBal = balance - total;
-      window.setWalletBalance(newBal);
-
-      // Add to seller (if the seller is a real user in the system, not a default seeded supplier/system item)
-      if (marketItem.owner && marketItem.owner !== "System" && marketItem.owner !== "Admin Richard" && !marketItem.isSeed) {
-        const sellerKey = `walletBalance_${marketItem.owner}`;
-        const sellerCurrentBal = parseFloat(localStorage.getItem(sellerKey) || "5000.00");
-        localStorage.setItem(sellerKey, (sellerCurrentBal + total).toFixed(2));
-      }
-
-      // Deduct from seller stock
+      // Deduct from seller
       marketItem.quantity -= amount;
 
       // Find if current user already has this identical item (same category, price, supplier, and purpose === "To Keep")
@@ -4356,6 +4058,7 @@ document.addEventListener('click', function(e) {
         });
       }
 
+      const total = (amount * marketItem.price).toFixed(2);
       const receiptNo = "RCP-" + Date.now().toString().slice(-8);
       const now = new Date();
 
@@ -4363,14 +4066,14 @@ document.addEventListener('click', function(e) {
       logActivity("🛒 Bought from Market", {
         name: marketItem.name,
         supplier: marketItem.supplier,
-        amountQty: `Qty: ${amount} | Unit: $${parseFloat(marketItem.price).toFixed(2)} | Total: $${total.toFixed(2)} | Seller: ${marketItem.owner || "System"} | Ref: ${receiptNo}`,
+        amountQty: `Qty: ${amount} | Unit: $${parseFloat(marketItem.price).toFixed(2)} | Total: $${total} | Seller: ${marketItem.owner || "System"} | Ref: ${receiptNo}`,
       });
 
       // Log sale transaction (seller side) — separate entry
       logActivity("💰 Item Sold (Market)", {
         name: marketItem.name,
         supplier: marketItem.supplier,
-        amountQty: `Qty Sold: ${amount} | Unit: $${parseFloat(marketItem.price).toFixed(2)} | Total: $${total.toFixed(2)} | Buyer: ${currentUser} | Ref: ${receiptNo}`,
+        amountQty: `Qty Sold: ${amount} | Unit: $${parseFloat(marketItem.price).toFixed(2)} | Total: $${total} | Buyer: ${currentUser} | Ref: ${receiptNo}`,
       });
 
       saveInventory();
@@ -4388,7 +4091,7 @@ document.addEventListener('click', function(e) {
         category: marketItem.category,
         unitPrice: parseFloat(marketItem.price).toFixed(2),
         qty: amount,
-        total: total.toFixed(2),
+        total,
       });
     }
   });
@@ -5623,394 +5326,6 @@ document.addEventListener('click', function(e) {
     } else {
       alert("❌ Account not found! Pakisigurado na tama ang Username, Email, o Seller ID.");
     }
-  };
-
-  // =============================================
-  //  WALLET & TOP UP MANAGEMENT SYSTEM
-  // =============================================
-
-  window.getWalletBalance = function() {
-    const currentUser = localStorage.getItem("currentUser") || "Unknown";
-    if (currentUser === "Admin Richard") return 0;
-    const key = `walletBalance_${currentUser}`;
-    let bal = localStorage.getItem(key);
-    if (bal === null) {
-      bal = "5000.00"; // Default $5,000.00
-      localStorage.setItem(key, bal);
-    }
-    return parseFloat(bal);
-  };
-
-  window.setWalletBalance = function(amount) {
-    const currentUser = localStorage.getItem("currentUser") || "Unknown";
-    if (currentUser === "Admin Richard") return;
-    const key = `walletBalance_${currentUser}`;
-    localStorage.setItem(key, parseFloat(amount).toFixed(2));
-    window.updateWalletDisplay();
-  };
-
-  window.updateWalletDisplay = function() {
-    const balance = window.getWalletBalance();
-    const display = document.getElementById("wallet-balance-display");
-    if (display) {
-      display.textContent = `$${balance.toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
-    }
-  };
-
-  window.openTopUpModal = function() {
-    const modal = document.getElementById("top-up-modal");
-    if (modal) modal.classList.remove("hidden");
-    const input = document.getElementById("top-up-amount-input");
-    if (input) input.value = "";
-  };
-
-  window.closeTopUpModal = function() {
-    const modal = document.getElementById("top-up-modal");
-    if (modal) modal.classList.add("hidden");
-  };
-
-  window.setTopUpAmount = function(amount) {
-    const input = document.getElementById("top-up-amount-input");
-    if (input) input.value = amount;
-  };
-
-  window.handleTopUp = function(event) {
-    if (event) event.preventDefault();
-    const input = document.getElementById("top-up-amount-input");
-    const method = document.getElementById("top-up-method")?.value || "card";
-    const amount = parseFloat(input?.value);
-    
-    if (isNaN(amount) || amount <= 0) {
-      alert("Mangyaring maglagay ng tamang halaga.");
-      return;
-    }
-
-    const currentBal = window.getWalletBalance();
-    const newBal = currentBal + amount;
-    window.setWalletBalance(newBal);
-
-    logActivity("⚡ Wallet Top Up", {
-      name: `Top Up ($${amount.toFixed(2)})`,
-      supplier: method.toUpperCase(),
-      amountQty: `Added: $${amount.toFixed(2)} | Method: ${method.toUpperCase()} | New Bal: $${newBal.toFixed(2)}`,
-    });
-
-    window.closeTopUpModal();
-    alert(`💰 Successfully added $${amount.toFixed(2)} to your wallet via ${method.toUpperCase()}!\nNew Balance: $${newBal.toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
-  };
-
-  // ── Catalog Sourcing Modal Actions ──
-  window.executeCatalogPurchase = function() {
-    const data = window._pendingCatalogPurchase;
-    if (!data) return;
-
-    const balance = window.getWalletBalance();
-    if (balance < data.totalCost) {
-      alert("❌ Hindi sapat ang pondo. Mangyaring mag-top up.");
-      window.closeCatalogPaymentModal();
-      return;
-    }
-
-    // Deduct
-    const newBal = balance - data.totalCost;
-    window.setWalletBalance(newBal);
-
-    // Save product to inventory database
-    const newProduct = {
-      id: Date.now(),
-      name: data.catalogItem.name,
-      description: data.catalogItem.description || "",
-      category: data.catalogItem.category,
-      costPrice: data.catalogSysPrice,
-      price: data.price,
-      quantity: data.qty,
-      supplier: data.catalogItem.supplier || "N/A",
-      owner: data.currentUser,
-      purpose: data.purpose,
-      approved: false, // Wait for admin approval before showing on Global Market
-      condition: data.condition,
-      listedDate: new Date().toISOString(),
-    };
-
-    const savedInv = JSON.parse(localStorage.getItem("inventory")) || [];
-
-    // Deduct catalog stock from the source catalog item in localStorage!
-    const catalogItemIndex = savedInv.findIndex((p) => p.id == data.catalogItem.id);
-    if (catalogItemIndex !== -1) {
-      savedInv[catalogItemIndex].quantity = Math.max(0, savedInv[catalogItemIndex].quantity - data.qty);
-    }
-
-    savedInv.push(newProduct);
-    inventory = savedInv;
-    localStorage.setItem("inventory", JSON.stringify(inventory));
-
-    const profitPer = parseFloat((data.price - data.catalogSysPrice).toFixed(2));
-    const signedProfit = profitPer >= 0
-      ? `+$${profitPer.toFixed(2)}`
-      : `-$${Math.abs(profitPer).toFixed(2)}`;
-
-    logActivity("Sourced from Catalog", {
-      name: newProduct.name,
-      supplier: newProduct.supplier,
-      amountQty: `Condition: ${data.condition} | Cost: $${data.catalogSysPrice.toFixed(2)} | Qty: ${data.qty} | Paid: $${data.totalCost.toFixed(2)} | Listed: $${data.price.toFixed(2)} | ${data.purpose}`,
-    });
-
-    renderInventory();
-    window.closeCatalogPaymentModal();
-    document.getElementById("user-product-modal").classList.add("hidden");
-
-    alert(`✅ Catalog sourcing successful!\n\nBinayaran ang $${data.totalCost.toLocaleString("en-US", { minimumFractionDigits: 2 })} mula sa iyong wallet para sa ${data.qty}x "${newProduct.name}" [${data.condition}].\n\nIto ay naidagdag na sa iyong inventory at kasalukuyang naghihintay ng Admin Approval upang ma-list sa Global Market!`);
-  };
-
-  window.closeCatalogPaymentModal = function() {
-    document.getElementById("catalog-payment-modal").classList.add("hidden");
-    window._pendingCatalogPurchase = null;
-  };
-
-  // =============================================
-  //  ADMIN CATALOG TAB MANAGEMENT
-  // =============================================
-  window.adminInventoryTab = "requests";
-
-  window.setAdminInventoryTab = function(tab) {
-    window.adminInventoryTab = tab;
-    
-    const btnReq = document.getElementById("admin-btn-requests");
-    const btnCat = document.getElementById("admin-btn-catalog");
-    const titleH1 = document.querySelector("#inventory-view header h1");
-    const currentUser = localStorage.getItem("currentUser") || "Unknown";
-    
-    if (btnReq && btnCat) {
-      if (tab === "requests") {
-        btnReq.style.background = "linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2))";
-        btnReq.style.borderColor = "rgba(168, 85, 247, 0.3)";
-        btnReq.style.color = "white";
-        btnReq.style.boxShadow = "0 0 10px rgba(168, 85, 247, 0.25)";
-        
-        btnCat.style.background = "rgba(255,255,255,0.03)";
-        btnCat.style.borderColor = "rgba(255,255,255,0.1)";
-        btnCat.style.color = "rgba(255,255,255,0.6)";
-        btnCat.style.boxShadow = "none";
-        
-        if (titleH1) titleH1.innerHTML = "📋 User Product Requests";
-      } else {
-        btnCat.style.background = "linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(79, 172, 254, 0.2))";
-        btnCat.style.borderColor = "rgba(0, 242, 254, 0.3)";
-        btnCat.style.color = "white";
-        btnCat.style.boxShadow = "0 0 10px rgba(0, 242, 254, 0.25)";
-        
-        btnReq.style.background = "rgba(255,255,255,0.03)";
-        btnReq.style.borderColor = "rgba(255,255,255,0.1)";
-        btnReq.style.color = "rgba(255,255,255,0.6)";
-        btnReq.style.boxShadow = "none";
-        
-        if (titleH1) titleH1.innerHTML = "⚙️ Catalog Sourcing Editor";
-      }
-    }
-
-    // Toggle Add Catalog Product button for admin
-    const addProdBtn = document.getElementById("add-product-btn") || document.getElementById("add-market-product-btn");
-    if (addProdBtn) {
-      if (currentUser === "Admin Richard" && tab === "catalog") {
-        addProdBtn.style.display = "inline-flex";
-        addProdBtn.textContent = "✏️ EDIT PRODUCT";
-      } else if (currentUser === "Admin Richard") {
-        addProdBtn.style.display = "none";
-      }
-    }
-    
-    renderInventory();
-  };
-
-  // ── Admin Predefined Templates Quick Fill Logic ──
-  window.adjustAdminField = function (fieldId, amount) {
-    const input = document.getElementById(fieldId);
-    if (!input) return;
-    let currentVal = parseFloat(input.value) || 0;
-    currentVal = Math.max(0, currentVal + amount);
-    if (fieldId === "prod-quantity") {
-      input.value = Math.round(currentVal);
-    } else {
-      input.value = parseFloat(currentVal.toFixed(2));
-    }
-  };
-
-  window.populateAdminTemplateDropdown = function () {
-    const select = document.getElementById("admin-prod-template");
-    if (!select) return;
-
-    select.innerHTML = '<option value="" selected>📋 Select Predefined Item (Quick Click Fill)</option>';
-
-    const byCategory = {};
-    DEFAULT_PRODUCTS.forEach((item, index) => {
-      if (!byCategory[item.category]) byCategory[item.category] = [];
-      byCategory[item.category].push({ item, index });
-    });
-
-    Object.entries(byCategory).forEach(([cat, list]) => {
-      const group = document.createElement("optgroup");
-      group.label = cat;
-      list.forEach(({ item, index }) => {
-        const option = document.createElement("option");
-        option.value = index;
-        option.textContent = `${item.name} ($${item.price})`;
-        option.style.background = "#1e2840";
-        option.style.color = "white";
-        group.appendChild(option);
-      });
-      select.appendChild(group);
-    });
-  };
-
-  // Initialize dropdown on startup
-  populateAdminTemplateDropdown();
-
-  // Template select change listener to quick fill fields
-  const templateSelect = document.getElementById("admin-prod-template");
-  if (templateSelect) {
-    templateSelect.addEventListener("change", function () {
-      const idx = this.value;
-      if (idx === "") return;
-      const item = DEFAULT_PRODUCTS[idx];
-      if (!item) return;
-
-      document.getElementById("prod-name").value = item.name;
-      document.getElementById("prod-description").value = item.description || "";
-      
-      // Auto-set category dropdowns
-      let mainCat = "";
-      for (const [key, values] of Object.entries(subCategories)) {
-        if (values.includes(item.category)) mainCat = key;
-      }
-      
-      const mainCatSelect = document.getElementById("prod-main-category");
-      const subCatSelect = document.getElementById("prod-category");
-      
-      if (mainCatSelect && subCatSelect) {
-        mainCatSelect.value = mainCat;
-        
-        subCatSelect.innerHTML = '<option value="" disabled>Select Specific Part</option>';
-        subCatSelect.disabled = false;
-        if (subCategories[mainCat]) {
-          subCategories[mainCat].forEach((sc) => {
-            subCatSelect.innerHTML += `<option value="${sc}" style="background:#2c3e50;">${sc}</option>`;
-          });
-        }
-        subCatSelect.value = item.category;
-      }
-
-      document.getElementById("prod-cost-price").value = item.costPrice || 0;
-      document.getElementById("prod-price").value = item.price || 0;
-      document.getElementById("prod-quantity").value = item.quantity || 10;
-      document.getElementById("prod-supplier").value = item.supplier || "System Catalog";
-    });
-  }
-
-  // ── Admin Quick Qty Selector Helper ──
-  window.setAdminQuickQty = function (btn, qty) {
-    const input = document.getElementById("prod-quantity");
-    if (input) input.value = qty;
-
-    const buttons = document.querySelectorAll(".qty-btn");
-    buttons.forEach((b) => {
-      b.style.background = "rgba(255,255,255,0.05)";
-      b.style.borderColor = "rgba(255,255,255,0.1)";
-      b.style.boxShadow = "none";
-    });
-
-    btn.style.background = "linear-gradient(135deg, #00f2fe, #4facfe)";
-    btn.style.borderColor = "#4facfe";
-    btn.style.boxShadow = "0 0 10px rgba(0,242,254,0.4)";
-  };
-
-  // ── System Diagnostics & Recovery Logic ──
-  window.openDiagModal = function() {
-    const modal = document.getElementById("diag-modal");
-    if (!modal) return;
-    
-    // Update total items count
-    const totalItems = inventory.length;
-    document.getElementById("diag-total-items").textContent = `${totalItems} items in DB`;
-    
-    // Update displayed market items count
-    const activeCount = inventory.filter(p => p.approved && p.purpose !== "To Keep" && p.quantity > 0).length;
-    document.getElementById("diag-market-items").textContent = `${activeCount} listings active`;
-    
-    // Grid element status
-    const grid = document.getElementById("market-grid");
-    document.getElementById("diag-grid-status").textContent = grid ? "💚 Found OK" : "💔 Missing DOM Element";
-    
-    // Storage status
-    try {
-      const testKey = "__test_storage__";
-      localStorage.setItem(testKey, "ok");
-      localStorage.removeItem(testKey);
-      document.getElementById("diag-storage-status").textContent = "💚 Writable & OK";
-    } catch(e) {
-      document.getElementById("diag-storage-status").textContent = "💔 Storage Error";
-    }
-    
-    modal.classList.remove("hidden");
-  };
-  
-  window.closeDiagModal = function() {
-    document.getElementById("diag-modal")?.classList.add("hidden");
-  };
-  
-  window.executeForceSystemRestore = function() {
-    if (!confirm("Are you sure you want to FORCE RESTORE the Global Market? This will clean up the catalog database and re-seed all 98+ products and seed sellers immediately! Your custom additions will be safely preserved.")) return;
-    
-    // Clear the seeded flags to force rebuild
-    localStorage.removeItem("marketSeeded");
-    localStorage.removeItem("marketSeedItems");
-    localStorage.removeItem("inventory");
-    
-    // Keep custom user-created products (NOT from catalog or seed templates)
-    const userCustomItems = inventory.filter((p) => !p.isCatalog && !p.isSeed);
-    
-    let restoredInv = DEFAULT_PRODUCTS.map((p, i) => ({
-      id: 1000 + i,
-      name: p.name,
-      description: p.description,
-      category: p.category,
-      costPrice: p.costPrice,
-      price: p.price,
-      quantity: p.quantity,
-      supplier: p.supplier,
-      owner: randNames[(1000 + i) % randNames.length],
-      isCatalog: true,
-      purpose: "For Sale",
-      approved: true,
-      condition: "New",
-      listedDate: new Date(Date.now() - Math.random() * 15 * 86400000).toISOString(),
-    }));
-
-    const seeds = MARKET_SEEDS_DATA.map((s, i) => ({
-      id: 9000000 + i,
-      name: s.name,
-      description: s.desc,
-      category: s.category,
-      price: s.price,
-      costPrice: parseFloat((s.price * 0.8).toFixed(2)),
-      quantity: s.qty,
-      supplier: s.owner,
-      owner: s.owner,
-      sellerId: s.sid,
-      purpose: "For Sale",
-      approved: true,
-      isSeed: true,
-      condition: s.cond,
-      listedDate: new Date(Date.now() - Math.random() * 25 * 86400000).toISOString(),
-    }));
-
-    localStorage.setItem("marketSeedItems", JSON.stringify(seeds));
-    localStorage.setItem("marketSeeded", "true");
-
-    inventory = [...restoredInv, ...seeds, ...userCustomItems];
-    localStorage.setItem("inventory", JSON.stringify(inventory));
-    
-    alert("⚡ System Restore Complete! Successfully re-seeded all 98+ products and seed sellers while preserving user listings.");
-    window.location.reload();
   };
 
 });
