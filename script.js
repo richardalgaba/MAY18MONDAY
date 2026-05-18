@@ -216,6 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (isAdminSession) {
         document.getElementById("admin-nav-item")?.classList.remove("hidden");
         document.getElementById("admin-users-nav")?.classList.remove("hidden");
+        document.getElementById("admin-store-nav-item")?.classList.remove("hidden");
         document.getElementById("market-nav-item")?.classList.remove("hidden");
         
         // Hide sidebar wallet card for admin session
@@ -228,12 +229,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const dashboardNavItem = document.querySelector('a[data-view="dashboard-view"]');
         if (dashboardNavItem && dashboardNavItem.parentElement) {
             dashboardNavItem.parentElement.style.display = 'none';
-        }
-
-        // Hide PC Parts nav item for admin session
-        const pcPartsNavItem = document.querySelector('a[data-view="inventory-view"]');
-        if (pcPartsNavItem && pcPartsNavItem.parentElement) {
-            pcPartsNavItem.parentElement.style.display = 'none';
         }
 
         // Hide My Inventory nav item for admin session
@@ -267,13 +262,13 @@ document.addEventListener("DOMContentLoaded", () => {
         // Relabel the inventory section header for admin context
         const invH1 = document.querySelector("#inventory-view header h1");
         if (invH1) {
-          invH1.innerHTML = "📋 User Product Requests";
-          invH1.style.fontSize = "1.4rem";
+          invH1.innerHTML = "🏪 Admin Store Management";
+          invH1.style.fontSize = "1.5rem";
         }
         const invSub = document.querySelector("#inventory-view header p");
         if (invSub)
           invSub.textContent =
-            "Review and approve products submitted by users.";
+            "Manage catalog stocks, approve user listings, adjust quantities, and control global store availability.";
       } else {
         // Change background video for regular user session
         const bgVideoSource = document.querySelector('#bg-video source');
@@ -4561,7 +4556,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (view === "dashboard-view") btn.textContent = t.dashboard;
       else if (view === "profile-view") btn.textContent = t.profile;
       else if (view === "settings-view") btn.textContent = t.settings;
-      else if (view === "inventory-view") btn.textContent = t.inventory;
+      else if (view === "inventory-view") {
+        btn.innerHTML = `<div class="cyber-cart-pulse" style="width: 20px; height: 20px; position: relative; display: flex; align-items: center; justify-content: center; margin-right: 6px;"><span style="font-size: 1.15rem;">🏪</span></div> Admin Store`;
+      }
       else if (view === "user-inventory-view") btn.textContent = "My Inventory";
       else if (view === "market-view") btn.textContent = t.market;
     });
