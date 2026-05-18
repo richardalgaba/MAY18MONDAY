@@ -13,7 +13,7 @@
         <!-- Link to CSS -->
         <link rel="stylesheet" href="style.css" />
     </head>
-    <body>
+    <body class="login-body">
         <video autoplay muted loop id="bg-video">
             <source src="ai.mp4" type="video/mp4" />
         </video>
@@ -25,7 +25,7 @@
                 <div style="text-align: center; margin-bottom: 10px;">
                     <i class="ph-fill ph-user-circle" style="font-size: 3.5rem; color: #818cf8; filter: drop-shadow(0 0 15px rgba(129, 140, 248, 0.5));"></i>
                 </div>
-                <h2>Welcome Back</h2>
+                <h2 style="background: linear-gradient(135deg, #fff 0%, #818cf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Welcome Back</h2>
                 <p>Login to your account</p>
                 <div id="login-error" class="error-msg hidden">
                     Invalid email or password!
@@ -72,7 +72,7 @@
                 <div style="text-align: center; margin-bottom: 10px;">
                     <i class="ph-fill ph-user-plus" style="font-size: 3.5rem; color: #a855f7; filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.5));"></i>
                 </div>
-                <h2>Create Account</h2>
+                <h2 style="background: linear-gradient(135deg, #fff 0%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Create Account</h2>
                 <p>Join us today!</p>
                 <div id="reg-success" class="success-msg hidden">
                     Registration Successful! Please login.
@@ -90,6 +90,10 @@
                     <div class="input-group">
                         <input type="password" id="reg-confirm-password" placeholder="Confirm Password" required />
                         <i class="ph ph-lock-key-fill"></i>
+                    </div>
+                    <div class="input-group">
+                        <input type="tel" id="reg-gcash" placeholder="GCash Number (e.g. 09123456789)" required pattern="09[0-9]{9}" title="GCash number must start with 09 and have 11 digits" />
+                        <i class="ph ph-wallet"></i>
                     </div>
                     <div style="display: flex; gap: 15px">
                         <div class="input-group" style="flex: 1">
@@ -118,7 +122,7 @@
                 <div style="text-align: center; margin-bottom: 10px;">
                     <i class="ph-fill ph-key" style="font-size: 3.5rem; color: #4facfe; filter: drop-shadow(0 0 15px rgba(79, 172, 254, 0.5));"></i>
                 </div>
-                <h2>Reset Password</h2>
+                <h2 style="background: linear-gradient(135deg, #fff 0%, #00f2fe 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Reset Password</h2>
                 <p>Enter your email to receive a reset link.</p>
                 <form>
                     <div class="input-group">

@@ -6,7 +6,7 @@
 }
 
 body {
-    background: radial-gradient(circle at 50% 50%, rgba(10, 11, 22, 0.88) 0%, rgba(4, 4, 10, 0.97) 100%);
+    background: #090a0f; /* Comfortable deep dark solid slate background */
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -15,7 +15,8 @@ body {
     position: relative;
 }
 
-/* Sci-fi Holographic Terminal Scanline & Grid Pattern */
+/* Sci-fi Holographic Terminal Scanline & Grid Pattern - DISABLED TEMPORARILY FOR EYE COMFORT */
+/*
 body::before {
     content: "";
     position: fixed;
@@ -31,18 +32,14 @@ body::before {
     z-index: -3;
     pointer-events: none;
 }
+*/
 
 #bg-video {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    min-width: 100%;
-    min-height: 100%;
-    z-index: -2;
-    object-fit: cover;
+    display: none !important; /* Temporarily hide video backgrounds */
 }
 
-/* Glassmorphism Overlay Elements */
+/* Glassmorphism Overlay Elements - DISABLED TEMPORARILY FOR EYE COMFORT */
+/*
 body::before,
 body::after {
     content: "";
@@ -69,6 +66,7 @@ body::after {
     right: -100px;
     animation-delay: -5s;
 }
+*/
 
 @keyframes float {
     0% { transform: translate(0, 0) scale(1); }
@@ -377,6 +375,22 @@ a:hover {
 
 .nav-links a.active::before {
     transform: translateY(-50%) scaleY(1);
+}
+
+/* Premium neon glowing highlight for Global Market nav item */
+.nav-links a.nav-btn-market {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(0, 242, 254, 0.12) 100%) !important;
+    border: 1px solid rgba(0, 242, 254, 0.35) !important;
+    color: #00f2fe !important;
+    font-weight: 700;
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-links a.nav-btn-market:hover {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.25) 0%, rgba(0, 242, 254, 0.25) 100%) !important;
+    border-color: #00f2fe !important;
+    box-shadow: 0 0 25px rgba(0, 242, 254, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+    transform: translateY(-1px);
 }
 
 .logout-btn {
@@ -2798,6 +2812,337 @@ body::after {
 @keyframes rotateVault {
     0% { transform: rotateX(-30deg) rotateY(0deg); }
     100% { transform: rotateX(-30deg) rotateY(360deg); }
+}
+
+/* ==========================================================================
+    futuristic glowing login system extensions
+   ========================================================================== */
+
+/* Drifting background, 3D Cyber Grid Floor, and neon overlays specifically for login portal */
+body.login-body {
+    position: relative;
+    overflow-x: hidden;
+    background: #030407 !important;
+}
+
+/* 3D Perspective Digital Cyber Grid Floor */
+body.login-body::before {
+    content: "";
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: 
+        linear-gradient(rgba(0, 242, 254, 0.04) 1.5px, transparent 1.5px),
+        linear-gradient(90deg, rgba(0, 242, 254, 0.04) 1.5px, transparent 1.5px);
+    background-size: 45px 45px;
+    transform: perspective(500px) rotateX(60deg) translateY(-25%);
+    animation: gridMove 25s infinite linear;
+    z-index: -2;
+    pointer-events: none;
+    opacity: 0.55;
+}
+
+/* Central glowing ambient backdrop */
+body.login-body::after {
+    content: "";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.06) 0%, rgba(99, 102, 241, 0) 70%);
+    filter: blur(80px);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Ambient Corner Radial Neon Glows */
+body.login-body .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.12), transparent 45%),
+                radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12), transparent 45%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+@keyframes gridMove {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 0 900px;
+    }
+}
+
+/* Custom glow styling transitions for each login module card */
+.form-container {
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* 1. Login Form Custom Theme (Indigo/Violet) */
+#login-form .input-group input:focus {
+    border-color: rgba(129, 140, 248, 0.5) !important;
+    box-shadow: 0 0 15px rgba(129, 140, 248, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+}
+#login-form .input-group input:focus ~ i {
+    color: #818cf8 !important;
+}
+
+/* 2. Register Form Custom Theme (Purple/Magenta) */
+#register-form .input-group input:focus {
+    border-color: rgba(168, 85, 247, 0.5) !important;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+}
+#register-form .input-group input:focus ~ i {
+    color: #a855f7 !important;
+}
+#register-form .btn.primary-btn {
+    background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%) !important;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.35) !important;
+}
+#register-form .btn.primary-btn:hover {
+    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5) !important;
+}
+
+/* 3. Forgot Password Form Custom Theme (Cyan/Blue) */
+#forgot-form .input-group input:focus {
+    border-color: rgba(0, 242, 254, 0.5) !important;
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+}
+#forgot-form .input-group input:focus ~ i {
+    color: #00f2fe !important;
+}
+#forgot-form .btn.primary-btn {
+    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%) !important;
+    box-shadow: 0 4px 15px rgba(0, 242, 254, 0.35) !important;
+}
+#forgot-form .btn.primary-btn:hover {
+    box-shadow: 0 6px 20px rgba(0, 242, 254, 0.5) !important;
+}
+
+/* 4. Admin Portal Form Custom Theme (Amber/Orange) */
+#admin-login-form .input-group input:focus {
+    border-color: rgba(255, 159, 67, 0.5) !important;
+    box-shadow: 0 0 15px rgba(255, 159, 67, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+}
+#admin-login-form .input-group input:focus ~ i {
+    color: #ff9f43 !important;
+}
+#admin-login-form .btn.primary-btn {
+    background: linear-gradient(135deg, #ff9f43 0%, #ff6b6b 100%) !important;
+    box-shadow: 0 4px 15px rgba(255, 159, 67, 0.35) !important;
+}
+#admin-login-form .btn.primary-btn:hover {
+    box-shadow: 0 6px 20px rgba(255, 159, 67, 0.5) !important;
+}
+
+/* ==========================================================================
+    Badass Cyber animations & 3D Tilt Transitions
+   ========================================================================== */
+
+/* 1. Cinematic Space-Warp Entrance & Breathing Glow Matrix (Color-Coded per Portal) */
+#login-form:not(.hidden) {
+    animation: cyberWarpIn 0.78s cubic-bezier(0.16, 1, 0.3, 1) forwards, loginFormGlow 4s infinite ease-in-out 0.78s !important;
+}
+
+#register-form:not(.hidden) {
+    animation: cyberWarpIn 0.78s cubic-bezier(0.16, 1, 0.3, 1) forwards, registerFormGlow 4s infinite ease-in-out 0.78s !important;
+}
+
+#forgot-form:not(.hidden) {
+    animation: cyberWarpIn 0.78s cubic-bezier(0.16, 1, 0.3, 1) forwards, forgotFormGlow 4s infinite ease-in-out 0.78s !important;
+}
+
+#admin-login-form:not(.hidden) {
+    animation: cyberWarpIn 0.78s cubic-bezier(0.16, 1, 0.3, 1) forwards, adminFormGlow 4s infinite ease-in-out 0.78s !important;
+}
+
+@keyframes cyberWarpIn {
+    0% {
+        opacity: 0;
+        transform: perspective(1200px) rotateX(12deg) translateY(35px) scale(0.94);
+        filter: blur(8px) brightness(1.7);
+    }
+    100% {
+        opacity: 1;
+        transform: perspective(1200px) rotateX(0deg) translateY(0px) scale(1);
+        filter: blur(0px) brightness(1);
+    }
+}
+
+/* breathing neon glow breathing keyframes */
+@keyframes loginFormGlow {
+    0%, 100% {
+        box-shadow: 0 25px 50px rgba(0,0,0,0.65), 0 0 15px rgba(129, 140, 248, 0.15) !important;
+        border-color: rgba(129, 140, 248, 0.18) !important;
+    }
+    50% {
+        box-shadow: 0 25px 55px rgba(0,0,0,0.65), 0 0 35px rgba(129, 140, 248, 0.42) !important;
+        border-color: rgba(129, 140, 248, 0.5) !important;
+    }
+}
+
+@keyframes registerFormGlow {
+    0%, 100% {
+        box-shadow: 0 25px 50px rgba(0,0,0,0.65), 0 0 15px rgba(168, 85, 247, 0.15) !important;
+        border-color: rgba(168, 85, 247, 0.18) !important;
+    }
+    50% {
+        box-shadow: 0 25px 55px rgba(0,0,0,0.65), 0 0 35px rgba(168, 85, 247, 0.42) !important;
+        border-color: rgba(168, 85, 247, 0.5) !important;
+    }
+}
+
+@keyframes forgotFormGlow {
+    0%, 100% {
+        box-shadow: 0 25px 50px rgba(0,0,0,0.65), 0 0 15px rgba(0, 242, 254, 0.15) !important;
+        border-color: rgba(0, 242, 254, 0.18) !important;
+    }
+    50% {
+        box-shadow: 0 25px 55px rgba(0,0,0,0.65), 0 0 35px rgba(0, 242, 254, 0.42) !important;
+        border-color: rgba(0, 242, 254, 0.5) !important;
+    }
+}
+
+@keyframes adminFormGlow {
+    0%, 100% {
+        box-shadow: 0 25px 50px rgba(0,0,0,0.65), 0 0 15px rgba(255, 159, 67, 0.15) !important;
+        border-color: rgba(255, 159, 67, 0.18) !important;
+    }
+    50% {
+        box-shadow: 0 25px 55px rgba(0,0,0,0.65), 0 0 35px rgba(255, 159, 67, 0.42) !important;
+        border-color: rgba(255, 159, 67, 0.5) !important;
+    }
+}
+
+/* 2. 3D Perspective Hover Tilt & dynamic scale */
+.form-container {
+    transform-style: preserve-3d;
+    perspective: 1200px;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.form-container:hover {
+    transform: translateY(-5px) scale(1.008) rotateX(1.8deg) rotateY(-0.8deg);
+}
+
+/* Custom themed hover glow filters */
+#login-form:hover {
+    box-shadow: 0 45px 80px rgba(0, 0, 0, 0.72), 0 0 45px rgba(129, 140, 248, 0.48) !important;
+    border-color: rgba(129, 140, 248, 0.6) !important;
+}
+
+#register-form:hover {
+    box-shadow: 0 45px 80px rgba(0, 0, 0, 0.72), 0 0 40px rgba(168, 85, 247, 0.2) !important;
+    border-color: rgba(168, 85, 247, 0.38) !important;
+}
+
+#forgot-form:hover {
+    box-shadow: 0 45px 80px rgba(0, 0, 0, 0.72), 0 0 40px rgba(0, 242, 254, 0.2) !important;
+    border-color: rgba(0, 242, 254, 0.38) !important;
+}
+
+#admin-login-form:hover {
+    box-shadow: 0 45px 80px rgba(0, 0, 0, 0.72), 0 0 40px rgba(255, 159, 67, 0.2) !important;
+    border-color: rgba(255, 159, 67, 0.38) !important;
+}
+
+/* 3. Cybernetic Laser Scanline (Color-Coded per Portal) */
+.form-container::after {
+    content: "";
+    position: absolute;
+    top: -100px;
+    left: 0;
+    width: 100%;
+    height: 3.5px;
+    pointer-events: none;
+    opacity: 0.75;
+    z-index: 5;
+    animation: laserScan 4.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#login-form::after {
+    background: linear-gradient(90deg, transparent, rgba(129, 140, 248, 0.85), transparent);
+    box-shadow: 0 0 10px 2.5px rgba(129, 140, 248, 0.65);
+}
+
+#register-form::after {
+    background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.85), transparent);
+    box-shadow: 0 0 10px 2.5px rgba(168, 85, 247, 0.65);
+}
+
+#forgot-form::after {
+    background: linear-gradient(90deg, transparent, rgba(0, 242, 254, 0.85), transparent);
+    box-shadow: 0 0 10px 2.5px rgba(0, 242, 254, 0.65);
+}
+
+#admin-login-form::after {
+    background: linear-gradient(90deg, transparent, rgba(255, 159, 67, 0.85), transparent);
+    box-shadow: 0 0 10px 2.5px rgba(255, 159, 67, 0.65);
+}
+
+@keyframes laserScan {
+    0% {
+        top: -10px;
+    }
+    50% {
+        top: 100%;
+    }
+    100% {
+        top: -10px;
+    }
+}
+
+/* ==========================================================================
+    Ultimate Cyber glitched headers & pulsing vector icons
+   ========================================================================== */
+
+/* Cyberpunk glitched title on hover */
+.form-container h2 {
+    transition: all 0.25s ease-out;
+    cursor: default;
+}
+
+.form-container h2:hover {
+    text-shadow: 2px -1.5px 0 #ff4f4f, -2px 1.5px 0 #00f2fe;
+    letter-spacing: 0.8px;
+    transform: skewX(-3deg) scale(1.02);
+}
+
+/* Pulsing cyber vector icons inside inputs */
+.input-group i {
+    animation: iconBreathingPulse 3.5s infinite ease-in-out;
+    color: currentColor; /* Inherits specific portal colors */
+}
+
+@keyframes iconBreathingPulse {
+    0%, 100% {
+        transform: translateY(-50%) scale(1);
+        filter: drop-shadow(0 0 0px transparent);
+    }
+    50% {
+        transform: translateY(-50%) scale(1.12);
+        filter: drop-shadow(0 0 8px currentColor);
+    }
+}
+
+@keyframes cyberBarPulse {
+    0% {
+        transform: scaleY(1);
+        filter: brightness(1);
+    }
+    100% {
+        transform: scaleY(0.4);
+        filter: brightness(1.3) drop-shadow(0 0 4px currentColor);
+    }
 }
 
 

@@ -108,6 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const ageInput = document.getElementById("reg-age");
       const dobInput = document.getElementById("reg-dob");
+      const gcashInput = document.getElementById("reg-gcash");
       const pId = String(Math.floor(1000 + Math.random() * 9000));
 
       users[email] = {
@@ -115,6 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
         password: password,
         age: ageInput ? ageInput.value : "N/A",
         dob: dobInput ? dobInput.value : "N/A",
+        gcash: gcashInput ? gcashInput.value : "N/A",
         isAdmin: false,
         publicId: pId
       };
@@ -210,10 +212,29 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("admin-nav-item")?.classList.remove("hidden");
         document.getElementById("admin-users-nav")?.classList.remove("hidden");
         document.getElementById("market-nav-item")?.classList.remove("hidden");
+        
+        // Hide sidebar wallet card for admin session
+        const sidebarWalletCard = document.getElementById("sidebar-wallet");
+        if (sidebarWalletCard) {
+            sidebarWalletCard.style.display = "none";
+        }
+
         // Hide dashboard nav item
         const dashboardNavItem = document.querySelector('a[data-view="dashboard-view"]');
         if (dashboardNavItem && dashboardNavItem.parentElement) {
             dashboardNavItem.parentElement.style.display = 'none';
+        }
+
+        // Hide PC Parts nav item for admin session
+        const pcPartsNavItem = document.querySelector('a[data-view="inventory-view"]');
+        if (pcPartsNavItem && pcPartsNavItem.parentElement) {
+            pcPartsNavItem.parentElement.style.display = 'none';
+        }
+
+        // Hide My Inventory nav item for admin session
+        const userInventoryNavItem = document.querySelector('a[data-view="user-inventory-view"]');
+        if (userInventoryNavItem && userInventoryNavItem.parentElement) {
+            userInventoryNavItem.parentElement.style.display = 'none';
         }
 
         // Change background video for admin
@@ -2396,12 +2417,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const toKeep = myItems.filter((p) => p.purpose === "To Keep").length;
 
     const savedProfileImg = localStorage.getItem(`profile_pic_${currentUser}`) || "";
+    // Fetch registered GCash if profileInfo.gcash doesn't exist yet
+    const usersDb = JSON.parse(localStorage.getItem("users") || "{}");
+    let registeredGcash = "N/A";
+    for (const key in usersDb) {
+      if (usersDb[key].name === currentUser) {
+        registeredGcash = usersDb[key].gcash || "N/A";
+        break;
+      }
+    }
+
     const profileInfo = JSON.parse(localStorage.getItem("profile_info_" + currentUser)) || {
       fullName: currentUser,
       gmail: currentUser.toLowerCase().replace(/\s+/g, "") + "@gmail.com",
       phone: "+63 900 000 0000",
-      location: "Manila, Philippines"
+      location: "Manila, Philippines",
+      gcash: registeredGcash
     };
+
+    if (!profileInfo.gcash) {
+      profileInfo.gcash = registeredGcash;
+    }
 
     const lastLogin = localStorage.getItem(`last_login_${currentUser}`) || "";
     const lastLogout = localStorage.getItem(`last_logout_${currentUser}`) || "";
@@ -2496,72 +2532,176 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+    const isAdmin = currentUser === "Admin Richard" || localStorage.getItem("isAdminSession") === "true";
+
+    const roleBadge = isAdmin
+      ? `<span style="background:rgba(255,79,79,0.15);color:#ff4f4f;padding:2px 8px;border-radius:20px;font-size:0.68rem;font-weight:700;border:1px solid rgba(255,79,79,0.25);">SYS ADMIN</span>`
+      : `<span style="background:rgba(79,172,254,0.15);color:#00f2fe;padding:2px 8px;border-radius:20px;font-size:0.68rem;font-weight:700;border:1px solid rgba(79,172,254,0.25);">PRO SELLER</span>`;
+
+    const adminBadgeOrSellerId = isAdmin
+      ? `<div style="text-align:center;padding:16px 24px;background:linear-gradient(135deg, rgba(255,79,79,0.12), rgba(255,79,79,0.03));border:1px solid rgba(255,79,79,0.25);border-radius:18px;box-shadow:0 0 20px rgba(255,79,79,0.08);flex-shrink:0;">
+            <div style="color:#ff4f4f;font-size:1.5rem;font-weight:900;letter-spacing:1px;font-family:'Outfit',sans-serif;text-transform:uppercase;">MASTER</div>
+            <div style="color:rgba(255,255,255,.6);font-size:.72rem;margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">System Role</div>
+          </div>`
+      : `<div style="text-align:center;padding:16px 24px;background:linear-gradient(135deg, rgba(255,159,67,0.12), rgba(255,159,67,0.03));border:1px solid rgba(255,159,67,0.25);border-radius:18px;box-shadow:0 0 20px rgba(255,159,67,0.08);flex-shrink:0;">
+            <div style="color:#ff9f43;font-size:1.75rem;font-weight:900;letter-spacing:1px;font-family:'Outfit',sans-serif;">#${sellerId}</div>
+            <div style="color:rgba(255,255,255,.6);font-size:.72rem;margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Seller ID</div>
+          </div>`;
+
+    let statCardsHtml = "";
+    if (!isAdmin) {
+      statCardsHtml = `
+        <!-- Sales stat cards (new) -->
+        <div class="dashboard-card profile-stat-card" style="text-align:center;background:linear-gradient(135deg, rgba(46,204,113,0.15), rgba(46,204,113,0.02));border-color:rgba(46,204,113,0.3);border-left:4px solid #2ecc71;box-shadow:0 12px 30px -10px rgba(46,204,113,0.2); animation-delay: 0.05s;">
+          <h3 style="color:#2ecc71;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Outfit',sans-serif;font-size:1.05rem;">💰 Total Earnings</h3>
+          <p class="stat-num" style="color:#2ecc71 !important;font-size:2.3rem;font-family:'Outfit',sans-serif;font-weight:800;text-shadow:0 0 10px rgba(46,204,113,0.25);margin-top:8px;">$${myTotalEarnings.toFixed(2)}</p>
+        </div>
+        <div class="dashboard-card profile-stat-card" style="text-align:center;background:linear-gradient(135deg, rgba(0,242,254,0.15), rgba(0,242,254,0.02));border-color:rgba(0,242,254,0.3);border-left:4px solid #00f2fe;box-shadow:0 12px 30px -10px rgba(0,242,254,0.2); animation-delay: 0.1s;">
+          <h3 style="color:#00f2fe;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Outfit',sans-serif;font-size:1.05rem;">🛒 Items Sold</h3>
+          <p class="stat-num" style="color:#00f2fe !important;font-size:2.3rem;font-family:'Outfit',sans-serif;font-weight:800;text-shadow:0 0 10px rgba(0,242,254,0.25);margin-top:8px;">${myItemsSold}</p>
+        </div>
+
+        <!-- Inventory Stat cards (Grid compact layout) -->
+        <div style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 5px;">
+          <div class="dashboard-card profile-stat-card" style="text-align:center;padding:15px;background:linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.06);border-left:3px solid rgba(255,255,255,0.4); animation-delay: 0.12s;box-shadow:0 8px 20px rgba(0,0,0,0.15);">
+            <div style="color:rgba(255,255,255,0.55);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Total Listed</div>
+            <p style="font-size:1.7rem;font-weight:800;color:white;margin:0;font-family:'Outfit',sans-serif;">${myItems.length}</p>
+          </div>
+          <div class="dashboard-card profile-stat-card" style="text-align:center;padding:15px;background:linear-gradient(135deg, rgba(155,89,182,0.1), rgba(155,89,182,0.01));border:1px solid rgba(155,89,182,0.18);border-left:3px solid #9b59b6; animation-delay: 0.22s; box-shadow: 0 8px 20px rgba(155,89,182,0.15);">
+            <div style="color:#ba68c8;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">📦 To Keep</div>
+            <p style="font-size:1.7rem;font-weight:800;color:#ba68c8;margin:0;font-family:'Outfit',sans-serif;">${toKeep}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    let salesHistoryHtml = "";
+    if (!isAdmin) {
+      salesHistoryHtml = `
+      <!-- My Sales History -->
+      <div class="profile-history-card" style="max-width:680px;margin-top:28px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; animation-delay: 0.35s;">
+        <h2 style="font-size:1.2rem;margin-bottom:14px;font-family:'Outfit',sans-serif;font-weight:800;color:white;display:flex;align-items:center;gap:8px;">📊 My Sales History</h2>
+        <div class="table-container" style="max-height: 300px; overflow-y: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Item</th>
+                <th>Buyer</th>
+                <th style="text-align:center;">Qty</th>
+                <th>Total Earned</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${salesRows}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      `;
+    }
+
     container.innerHTML = `
       <style>
+        /* 1. 3D Perspective card configurations & tilting */
         .profile-identity-card {
+          transform-style: preserve-3d;
+          perspective: 1000px;
           animation: profileFloat 8s ease-in-out infinite alternate;
-          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .profile-identity-card:hover {
-          border-color: rgba(0, 242, 254, 0.4) !important;
-          box-shadow: 0 25px 50px rgba(0, 242, 254, 0.25) !important;
-          transform: scale(1.01) translateY(-2px);
+          border-color: rgba(0, 242, 254, 0.45) !important;
+          box-shadow: 0 30px 60px rgba(0, 242, 254, 0.22) !important;
+          transform: translateY(-4px) rotateX(1.5deg) rotateY(-0.8deg);
         }
         .profile-stat-card {
-          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-          animation: cardEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+          transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          animation: profileCardEntrance 0.78s cubic-bezier(0.34, 1.56, 0.64, 1) both;
         }
         .profile-stat-card:hover {
-          transform: translateY(-6px) scale(1.03);
-          box-shadow: 0 15px 30px rgba(0, 242, 254, 0.15) !important;
+          transform: translateY(-8px) scale(1.025);
+          box-shadow: 0 18px 35px rgba(0, 242, 254, 0.18) !important;
         }
         .profile-details-card {
-          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-          animation: cardEntrance 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+          transform-style: preserve-3d;
+          perspective: 1000px;
+          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          animation: profileCardEntrance 0.88s cubic-bezier(0.34, 1.56, 0.64, 1) both;
         }
         .profile-details-card:hover {
-          border-color: rgba(168, 85, 247, 0.4) !important;
-          box-shadow: 0 25px 50px rgba(168, 85, 247, 0.2) !important;
-          transform: translateY(-3px);
+          border-color: rgba(168, 85, 247, 0.45) !important;
+          box-shadow: 0 30px 60px rgba(168, 85, 247, 0.22) !important;
+          transform: translateY(-4px) rotateX(1deg) rotateY(-0.5deg);
         }
         .profile-history-card {
-          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-          animation: cardEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          animation: profileCardEntrance 0.98s cubic-bezier(0.34, 1.56, 0.64, 1) both;
         }
         .profile-history-card:hover {
-          border-color: rgba(0, 242, 254, 0.3) !important;
-          box-shadow: 0 25px 50px rgba(0, 242, 254, 0.15) !important;
-          transform: translateY(-3px);
+          border-color: rgba(0, 242, 254, 0.35) !important;
+          box-shadow: 0 25px 50px rgba(0, 242, 254, 0.18) !important;
+          transform: translateY(-4px);
         }
         .profile-row-anim {
-          animation: rowSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+          animation: rowSlideIn 0.58s cubic-bezier(0.16, 1, 0.3, 1) both;
           opacity: 0;
         }
+
+        /* 2. Glass-Pill Capsule Shimmer Scanline styling */
+        .profile-pill-capsule {
+          position: relative;
+          overflow: hidden;
+        }
+        .profile-pill-capsule::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
+          background-size: 200% 100%;
+          animation: pillShimmerSweep 8s infinite linear;
+          pointer-events: none;
+        }
+
+        @keyframes pillShimmerSweep {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+
+        /* 3. Avatar Cyber lock ring breathing glow keyframes */
+        @keyframes avatarLockBreathing {
+          0%, 100% {
+            transform: rotate(0deg) scale(1);
+            border-color: rgba(79, 172, 254, 0.5);
+            box-shadow: 0 0 12px rgba(79, 172, 254, 0.15);
+          }
+          50% {
+            transform: rotate(180deg) scale(1.03);
+            border-color: rgba(168, 85, 247, 0.8);
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.4);
+          }
+        }
+
         @keyframes rotateDashed {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
         }
         @keyframes profileFloat {
           0% { transform: translateY(0px) rotate(0deg); }
-          100% { transform: translateY(-6px) rotate(0.3deg); }
+          100% { transform: translateY(-7px) rotate(0.4deg); }
         }
-        @keyframes cardEntrance {
-          from { opacity: 0; transform: translateY(20px) scale(0.98); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        @keyframes rowSlideIn {
-          from { opacity: 0; transform: translateX(-15px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-      </style>
-      <input type="file" id="profile-upload-input" accept="image/*" style="display:none;" onchange="window.handleProfileUpload(event)">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:680px;animation: cardEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;">
-
-        <!-- Identity card (full width) -->
+        @keyframes profileCardEntrance {
+          from {
+            opacity: 0;
+            transform: translateY(35px) scale(0.96);
+              <!-- Identity card (full width) -->
         <div class="dashboard-card profile-identity-card" style="grid-column:1/-1;display:flex;align-items:center;gap:24px;padding:26px;background:linear-gradient(135deg, rgba(13,10,31,0.6), rgba(15,23,42,0.45));border:1px solid rgba(255,255,255,0.08);box-shadow:0 20px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);border-radius:20px;backdrop-filter:blur(10px);">
           <div style="position:relative;width:80px;height:80px;display:flex;justify-content:center;align-items:center;flex-shrink:0;">
             <!-- Rotating Dashed Cyber Ring -->
-            <div style="position:absolute;width:80px;height:80px;border:1.5px dashed rgba(79, 172, 254, 0.6);border-radius:50%;animation:rotateDashed 16s linear infinite;box-shadow:0 0 15px rgba(79,172,254,0.15);"></div>
+            <div style="position:absolute;width:80px;height:80px;border:1.5px dashed rgba(79, 172, 254, 0.6);border-radius:50%;animation:avatarLockBreathing 6s ease-in-out infinite;box-shadow:0 0 15px rgba(79,172,254,0.15);"></div>
             <div title="Click to upload profile picture" onclick="document.getElementById('profile-upload-input').click()" style="position:relative;width:66px;height:66px;border-radius:50%;background:linear-gradient(135deg,#4facfe,#a855f7);display:flex;align-items:center;justify-content:center;font-size:2.2rem;font-weight:800;color:white;cursor:pointer;overflow:hidden;border:2px solid rgba(255,255,255,0.1);box-shadow:0 0 15px rgba(79, 172, 254, 0.25);transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
               <img id="profile-img-preview" src="${savedProfileImg}" style="width:100%;height:100%;object-fit:cover;display:${savedProfileImg ? 'block' : 'none'};" alt="">
               <span id="profile-img-initial" style="display:${savedProfileImg ? 'none' : 'block'};font-family:'Outfit',sans-serif;">${currentUser.charAt(0).toUpperCase()}</span>
@@ -2569,44 +2709,13 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
           </div>
           <div style="flex:1;">
-            <div style="font-size:1.45rem;font-weight:800;color:white;font-family:'Outfit',sans-serif;letter-spacing:-0.3px;display:flex;align-items:center;gap:8px;">${currentUser} <span style="background:rgba(79,172,254,0.15);color:#00f2fe;padding:2px 8px;border-radius:20px;font-size:0.68rem;font-weight:700;border:1px solid rgba(79,172,254,0.25);">PRO SELLER</span></div>
+            <div style="font-size:1.45rem;font-weight:800;color:white;font-family:'Outfit',sans-serif;letter-spacing:-0.3px;display:flex;align-items:center;gap:8px;">${currentUser} ${roleBadge}</div>
             <div style="color:rgba(255,255,255,.5);font-size:.82rem;margin-top:4px;display:flex;align-items:center;gap:4px;">💼 Registered Account Partner</div>
           </div>
-          <div style="text-align:center;padding:16px 24px;background:linear-gradient(135deg, rgba(255,159,67,0.12), rgba(255,159,67,0.03));border:1px solid rgba(255,159,67,0.25);border-radius:18px;box-shadow:0 0 20px rgba(255,159,67,0.08);flex-shrink:0;">
-            <div style="color:#ff9f43;font-size:1.75rem;font-weight:900;letter-spacing:1px;font-family:'Outfit',sans-serif;">#${sellerId}</div>
-            <div style="color:rgba(255,255,255,.6);font-size:.72rem;margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Seller ID</div>
-          </div>
+          ${adminBadgeOrSellerId}
         </div>
 
-        <!-- Sales stat cards (new) -->
-        <div class="dashboard-card profile-stat-card" style="text-align:center;background:linear-gradient(135deg, rgba(46,204,113,0.12), rgba(46,204,113,0.02));border-color:rgba(46,204,113,0.25);box-shadow:0 10px 30px -10px rgba(46,204,113,0.15); animation-delay: 0.05s;">
-          <h3 style="color:#2ecc71;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;">💰 Total Earnings</h3>
-          <p class="stat-num" style="color:#2ecc71 !important;font-size:2.2rem;font-family:'Outfit',sans-serif;font-weight:800;">$${myTotalEarnings.toFixed(2)}</p>
-        </div>
-        <div class="dashboard-card profile-stat-card" style="text-align:center;background:linear-gradient(135deg, rgba(79,172,254,0.12), rgba(79,172,254,0.02));border-color:rgba(79,172,254,0.25);box-shadow:0 10px 30px -10px rgba(79,172,254,0.15); animation-delay: 0.1s;">
-          <h3 style="color:#00f2fe;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;">🛒 Items Sold</h3>
-          <p class="stat-num" style="color:#00f2fe !important;font-size:2.2rem;font-family:'Outfit',sans-serif;font-weight:800;">${myItemsSold}</p>
-        </div>
-
-        <!-- Inventory Stat cards (Grid compact layout) -->
-        <div style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 5px;">
-          <div class="dashboard-card profile-stat-card" style="text-align:center;padding:15px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.04); animation-delay: 0.12s;">
-            <div style="color:rgba(255,255,255,0.5);font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Total Listed</div>
-            <p style="font-size:1.6rem;font-weight:800;color:white;margin:0;font-family:'Outfit',sans-serif;">${myItems.length}</p>
-          </div>
-          <div class="dashboard-card profile-stat-card" style="text-align:center;padding:15px;background:rgba(46,204,113,0.02);border:1px solid rgba(46,204,113,0.12); animation-delay: 0.15s; box-shadow: 0 4px 15px rgba(46,204,113,0.05);">
-            <div style="color:#2ecc71;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">✅ Approved</div>
-            <p style="font-size:1.6rem;font-weight:800;color:#2ecc71;margin:0;font-family:'Outfit',sans-serif;">${approved}</p>
-          </div>
-          <div class="dashboard-card profile-stat-card" style="text-align:center;padding:15px;background:rgba(255,159,67,0.02);border:1px solid rgba(255,159,67,0.12); animation-delay: 0.18s; box-shadow: 0 4px 15px rgba(255,159,67,0.05);">
-            <div style="color:#ff9f43;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">⏳ Pending</div>
-            <p style="font-size:1.6rem;font-weight:800;color:#ff9f43;margin:0;font-family:'Outfit',sans-serif;">${pending}</p>
-          </div>
-          <div class="dashboard-card profile-stat-card" style="text-align:center;padding:15px;background:rgba(155,89,182,0.02);border:1px solid rgba(155,89,182,0.12); animation-delay: 0.22s; box-shadow: 0 4px 15px rgba(155,89,182,0.05);">
-            <div style="color:#9b59b6;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">📦 To Keep</div>
-            <p style="font-size:1.6rem;font-weight:800;color:#9b59b6;margin:0;font-family:'Outfit',sans-serif;">${toKeep}</p>
-          </div>
-        </div>
+        ${statCardsHtml}
 
         <!-- Seller Info Card (Full Width) -->
         <div class="dashboard-card profile-details-card" style="grid-column:1/-1; background:linear-gradient(135deg, rgba(168, 85, 247, 0.05), rgba(79, 172, 254, 0.05)); border:1px solid rgba(168, 85, 247, 0.15); border-radius:20px; padding:24px; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.25); animation-delay: 0.25s;">
@@ -2622,55 +2731,61 @@ document.addEventListener("DOMContentLoaded", () => {
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
               <div>
                 <label style="font-size:0.75rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.05em; font-weight:700;">👤 Full Name</label>
-                <div id="info-lbl-fullname" style="font-size:0.92rem; color:white; font-weight:700; margin-top:4px;">
+                <div id="info-lbl-fullname" class="profile-pill-capsule" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-left:3px solid #a855f7; padding:10px 14px; border-radius:10px; margin-top:6px; font-weight:700; color:white; font-size:0.9rem; display:flex; align-items:center; gap:8px;">
                   👤 ${profileInfo.fullName}
                 </div>
               </div>
               <div>
                 <label style="font-size:0.75rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.05em; font-weight:700;">📧 Gmail Address</label>
-                <div id="info-lbl-gmail" style="font-size:0.92rem; color:white; font-weight:700; margin-top:4px;">
+                <div id="info-lbl-gmail" class="profile-pill-capsule" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-left:3px solid #4facfe; padding:10px 14px; border-radius:10px; margin-top:6px; font-weight:700; color:white; font-size:0.9rem; display:flex; align-items:center; gap:8px; word-break:break-all;">
                   📧 ${profileInfo.gmail}
                 </div>
               </div>
               <div>
                 <label style="font-size:0.75rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.05em; font-weight:700;">📞 Phone Number</label>
-                <div id="info-lbl-phone" style="font-size:0.92rem; color:white; font-weight:700; margin-top:4px;">
+                <div id="info-lbl-phone" class="profile-pill-capsule" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-left:3px solid #ec4899; padding:10px 14px; border-radius:10px; margin-top:6px; font-weight:700; color:white; font-size:0.9rem; display:flex; align-items:center; gap:8px;">
                   📞 ${profileInfo.phone}
                 </div>
               </div>
               <div>
                 <label style="font-size:0.75rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.05em; font-weight:700;">📍 Location</label>
-                <div id="info-lbl-location" style="font-size:0.92rem; color:white; font-weight:700; margin-top:4px;">
+                <div id="info-lbl-location" class="profile-pill-capsule" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-left:3px solid #ff9f43; padding:10px 14px; border-radius:10px; margin-top:6px; font-weight:700; color:white; font-size:0.9rem; display:flex; align-items:center; gap:8px;">
                   📍 ${profileInfo.location}
+                </div>
+              </div>
+              <div>
+                <label style="font-size:0.75rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.05em; font-weight:700;">💸 GCash Number</label>
+                <div id="info-lbl-gcash" class="profile-pill-capsule" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-left:3px solid #00f2fe; padding:10px 14px; border-radius:10px; margin-top:6px; font-weight:700; color:white; font-size:0.9rem; display:flex; align-items:center; gap:8px;">
+                  💸 ${profileInfo.gcash || "N/A"}
                 </div>
               </div>
               <!-- Session Tracking Logs -->
               <div>
                 <label style="font-size:0.75rem; color:rgba(46,204,113,0.5); text-transform:uppercase; letter-spacing:0.05em; font-weight:700;">🟢 Last Login Date</label>
-                <div id="info-lbl-login-date" style="font-size:0.92rem; color:#2ecc71; font-weight:700; margin-top:4px;">
+                <div id="info-lbl-login-date" class="profile-pill-capsule" style="background:rgba(46,204,113,0.03); border:1px solid rgba(46,204,113,0.1); border-left:3px solid #2ecc71; padding:10px 14px; border-radius:10px; margin-top:6px; font-weight:700; color:#2ecc71; font-size:0.9rem; display:flex; align-items:center; gap:8px;">
                   📅 ${loginDate}
                 </div>
               </div>
               <div>
                 <label style="font-size:0.75rem; color:rgba(46,204,113,0.5); text-transform:uppercase; letter-spacing:0.05em; font-weight:700;">🟢 Last Login Time</label>
-                <div id="info-lbl-login-time" style="font-size:0.92rem; color:#2ecc71; font-weight:700; margin-top:4px;">
+                <div id="info-lbl-login-time" class="profile-pill-capsule" style="background:rgba(46,204,113,0.03); border:1px solid rgba(46,204,113,0.1); border-left:3px solid #2ecc71; padding:10px 14px; border-radius:10px; margin-top:6px; font-weight:700; color:#2ecc71; font-size:0.9rem; display:flex; align-items:center; gap:8px;">
                   ⏰ ${loginTime}
                 </div>
               </div>
               <div>
                 <label style="font-size:0.75rem; color:rgba(231,76,60,0.5); text-transform:uppercase; letter-spacing:0.05em; font-weight:700;">🔴 Last Logout Date</label>
-                <div id="info-lbl-logout-date" style="font-size:0.92rem; color:#e74c3c; font-weight:700; margin-top:4px;">
+                <div id="info-lbl-logout-date" class="profile-pill-capsule" style="background:rgba(231,76,60,0.03); border:1px solid rgba(231,76,60,0.1); border-left:3px solid #e74c3c; padding:10px 14px; border-radius:10px; margin-top:6px; font-weight:700; color:#e74c3c; font-size:0.9rem; display:flex; align-items:center; gap:8px;">
                   📅 ${logoutDate}
                 </div>
               </div>
               <div>
                 <label style="font-size:0.75rem; color:rgba(231,76,60,0.5); text-transform:uppercase; letter-spacing:0.05em; font-weight:700;">🔴 Last Logout Time</label>
-                <div id="info-lbl-logout-time" style="font-size:0.92rem; color:#e74c3c; font-weight:700; margin-top:4px;">
+                <div id="info-lbl-logout-time" class="profile-pill-capsule" style="background:rgba(231,76,60,0.03); border:1px solid rgba(231,76,60,0.1); border-left:3px solid #e74c3c; padding:10px 14px; border-radius:10px; margin-top:6px; font-weight:700; color:#e74c3c; font-size:0.9rem; display:flex; align-items:center; gap:8px;">
                   ⏰ ${logoutTime}
                 </div>
               </div>
             </div>
-            <button class="action-btn btn-edit" onclick="window.toggleProfileInfoEdit(true)" style="margin-top:20px; width:100%; padding:10px; border-radius:10px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:white; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+            <button class="action-btn btn-edit" onclick="window.toggleProfileInfoEdit(true)" style="margin-top:20px; width:100%; padding:12px; border-radius:12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:white; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-family:'Outfit',sans-serif; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">
               ✏️ Edit Profile Info
             </button>
           </div>
@@ -2698,6 +2813,12 @@ document.addEventListener("DOMContentLoaded", () => {
                   <input type="text" id="info-ipt-location" class="search-input" style="width:100%; padding:10px; border-radius:8px; background:rgba(255,255,255,0.05); color:white; border:1px solid rgba(255,255,255,0.12); box-sizing:border-box;" value="${profileInfo.location}">
                 </div>
               </div>
+              <div style="display:grid; grid-template-columns:1fr; gap:16px;">
+                <div>
+                  <label style="font-size:0.75rem; color:rgba(255,255,255,0.5); font-weight:700; margin-bottom:6px; display:block;">💸 GCash Number</label>
+                  <input type="tel" id="info-ipt-gcash" class="search-input" style="width:100%; padding:10px; border-radius:8px; background:rgba(255,255,255,0.05); color:white; border:1px solid rgba(255,255,255,0.12); box-sizing:border-box;" value="${profileInfo.gcash || ''}" placeholder="09xxxxxxxxx">
+                </div>
+              </div>
             </div>
             <div style="display:flex; gap:10px; margin-top:20px;">
               <button class="action-btn btn-delete" onclick="window.toggleProfileInfoEdit(false)" style="flex:1; padding:10px; border-radius:10px; font-weight:700; cursor:pointer;">
@@ -2722,26 +2843,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       </div>
 
-      <!-- My Sales History -->
-      <div class="profile-history-card" style="max-width:680px;margin-top:28px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; animation-delay: 0.35s;">
-        <h2 style="font-size:1.2rem;margin-bottom:14px;font-family:'Outfit',sans-serif;font-weight:800;color:white;display:flex;align-items:center;gap:8px;">📊 My Sales History</h2>
-        <div class="table-container" style="max-height: 300px; overflow-y: auto;">
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Item</th>
-                <th>Buyer</th>
-                <th style="text-align:center;">Qty</th>
-                <th>Total Earned</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${salesRows}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      ${salesHistoryHtml}
 
       <!-- Login & Logout Connection Session History Table -->
       <div class="profile-history-card" style="max-width:680px;margin-top:28px;margin-bottom:20px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; animation-delay: 0.4s;">
@@ -2780,8 +2882,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const gmail = document.getElementById("info-ipt-gmail")?.value.trim() || (currentUser.toLowerCase().replace(/\s+/g, "") + "@gmail.com");
     const phone = document.getElementById("info-ipt-phone")?.value.trim() || "+63 900 000 0000";
     const location = document.getElementById("info-ipt-location")?.value.trim() || "Manila, Philippines";
+    const gcash = document.getElementById("info-ipt-gcash")?.value.trim() || "N/A";
 
-    const newInfo = { fullName, gmail, phone, location };
+    const newInfo = { fullName, gmail, phone, location, gcash };
     localStorage.setItem("profile_info_" + currentUser, JSON.stringify(newInfo));
 
     // Refresh labels instantly without complete reload!
@@ -2789,17 +2892,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const lblGmail = document.getElementById("info-lbl-gmail");
     const lblPhone = document.getElementById("info-lbl-phone");
     const lblLocation = document.getElementById("info-lbl-location");
+    const lblGcash = document.getElementById("info-lbl-gcash");
 
     if (lblFullName) lblFullName.textContent = "👤 " + fullName;
     if (lblGmail) lblGmail.textContent = "📧 " + gmail;
     if (lblPhone) lblPhone.textContent = "📞 " + phone;
     if (lblLocation) lblLocation.textContent = "📍 " + location;
+    if (lblGcash) lblGcash.textContent = "💸 " + gcash;
+
+    // Sync back to users database
+    const users = JSON.parse(localStorage.getItem("users") || "{}");
+    for (const key in users) {
+      if (users[key].name === currentUser) {
+        users[key].gcash = gcash;
+        localStorage.setItem("users", JSON.stringify(users));
+        break;
+      }
+    }
 
     // Log activity
     logActivity("Updated Profile Bio Info", {
       name: currentUser,
       supplier: fullName,
-      amountQty: "Contact details updated",
+      amountQty: "Contact details & GCash updated",
     });
 
     window.toggleProfileInfoEdit(false);
@@ -3603,7 +3718,7 @@ document.addEventListener("DOMContentLoaded", () => {
       renderInventory(); // refresh the table so badge is visible right away
       document.getElementById("user-product-modal").classList.add("hidden");
       alert(
-        `✅ "${newProduct.name}" added! [${condition}]\nSelling at $${price.toFixed(2)} (System: $${catalogSysPrice.toFixed(2)}) — Margin: ${signedProfit}/item\nAwaiting admin approval to list on market.`,
+        `✅ "${newProduct.name}" successfully purchased and added directly to your inventory! [${condition}]\nSelling at $${price.toFixed(2)} (System: $${catalogSysPrice.toFixed(2)}) — Margin: ${signedProfit}/item.`,
       );
     });
 
@@ -4490,10 +4605,39 @@ document.addEventListener("DOMContentLoaded", () => {
             let html = "";
             userLogs.forEach(log => {
                 const date = new Date(log.date).toLocaleDateString() + " " + new Date(log.date).toLocaleTimeString();
+                
+                // Color mapping depending on log action type
+                let accentColor = "#4facfe"; // cyan/blue default
+                let logIcon = "📋";
+                const actionLower = log.action.toLowerCase();
+                
+                if (actionLower.includes("purchased") || actionLower.includes("bought") || actionLower.includes("sourced")) {
+                    accentColor = "#2ecc71"; // green for buy
+                    logIcon = "📥";
+                } else if (actionLower.includes("listed") || actionLower.includes("selling") || actionLower.includes("sold")) {
+                    accentColor = "#a855f7"; // purple for sell
+                    logIcon = "📤";
+                } else if (actionLower.includes("profile") || actionLower.includes("updated")) {
+                    accentColor = "#ff9f43"; // orange for profile edits
+                    logIcon = "⚙️";
+                } else if (actionLower.includes("clear") || actionLower.includes("deleted")) {
+                    accentColor = "#e74c3c"; // red for deletions
+                    logIcon = "⚠️";
+                }
+
                 html += `
-                <div style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <div style="font-size: 0.85rem; color: rgba(255,255,255,0.5);">${date}</div>
-                    <div style="margin-top: 4px; color: rgba(255,255,255,0.9);">${log.action} - <span style="color: #4facfe">${log.itemName}</span></div>
+                <div class="profile-pill-capsule" style="padding: 12px 16px; margin-bottom: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-left: 3px solid ${accentColor}; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);" onmouseover="this.style.background='rgba(255,255,255,0.05)'; this.style.transform='translateX(4px)'" onmouseout="this.style.background='rgba(255,255,255,0.02)'; this.style.transform='translateX(0)'">
+                    <div>
+                        <div style="font-size: 0.85rem; color: white; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                            <span>${logIcon}</span> ${log.action}
+                        </div>
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 4px;">
+                            Item: <span style="color: ${accentColor}; font-weight: 600;">${log.itemName}</span>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.72rem; color: rgba(255,255,255,0.4); text-align: right; font-family: monospace;">
+                        ${date}
+                    </div>
                 </div>`;
             });
             recentActivityContainer.innerHTML = html;
@@ -4523,13 +4667,14 @@ document.addEventListener("DOMContentLoaded", () => {
               <td>${email}</td>
               <td>${data.age || "N/A"}</td>
               <td>${data.dob || "N/A"}</td>
+              <td style="color:#00f2fe;font-weight:700;">${data.gcash || "N/A"}</td>
               <td style="font-family: monospace;">${data.password || "N/A"}</td>
           `;
           tbody.appendChild(tr);
       }
 
       if (!hasUsers) {
-          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px; color: rgba(255,255,255,0.6)">No users registered yet.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 20px; color: rgba(255,255,255,0.6)">No users registered yet.</td></tr>`;
       }
   };
 
