@@ -2635,6 +2635,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     container.innerHTML = `
       <style>
+        /* 0. Centered Grid Layout for Profile Panel */
+        #profile-content {
+          display: grid !important;
+          grid-template-columns: repeat(2, 1fr) !important;
+          gap: 20px !important;
+          max-width: 800px !important;
+          margin: 24px auto 0 auto !important;
+        }
+        @media (max-width: 768px) {
+          #profile-content {
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
+          }
+        }
+
         /* 1. 3D Perspective card configurations & tilting */
         .profile-identity-card {
           transform-style: preserve-3d;
