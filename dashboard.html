@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Dashboard</title>
+        <meta name="description" content="Manage your PC components, track market telemetry, and review high-tech system logs through our dynamic glassmorphism dashboard." />
         <!-- Google Fonts -->
         <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
@@ -63,15 +64,7 @@
                             Profile
                         </a>
                     </li>
-                    <li>
-                        <a href="#" class="nav-btn" data-view="inventory-view" style="display: flex; align-items: center; gap: 4px;">
-                            <div class="cyber-pc-pulse">
-                                <div class="pc-screen"></div>
-                                <div class="pc-pulse"></div>
-                            </div>
-                            PC Parts
-                        </a>
-                    </li>
+
                     <li>
                         <a href="#" class="nav-btn" data-view="user-inventory-view" style="display: flex; align-items: center; gap: 4px;">
                             <div class="cyber-vault-pulse">
@@ -207,13 +200,7 @@
                             >
                                 Clear All
                             </button>
-                            <button
-                                class="btn primary-btn"
-                                id="add-product-btn"
-                                style="padding: 10px 20px"
-                            >
-                                + Add Product
-                            </button>
+
                         </div>
                     </header>
 
@@ -284,6 +271,16 @@
                             <h3>Total Stock Value</h3>
                             <p id="inv-total-value" class="stat-num">$0.00</p>
                         </div>
+                    </div>
+
+                    <!-- Admin Sourcing Catalog / Requests Toggle -->
+                    <div id="admin-toggle-container" class="hidden" style="display: flex; gap: 12px; margin-bottom: 20px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 8px 12px; border-radius: 12px; backdrop-filter: blur(10px);">
+                        <button id="admin-btn-requests" onclick="window.setAdminInventoryTab('requests')" class="btn" style="flex: 1; padding: 10px; font-weight: 700; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; border: 1px solid rgba(168, 85, 247, 0.3); background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2)); color: white; box-shadow: 0 0 10px rgba(168, 85, 247, 0.25);">
+                            📋 User Sourcing Requests
+                        </button>
+                        <button id="admin-btn-catalog" onclick="window.setAdminInventoryTab('catalog')" class="btn" style="flex: 1; padding: 10px; font-weight: 700; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.6);">
+                            ⚙️ Catalog Sourcing Editor
+                        </button>
                     </div>
 
                     <div class="table-toolbar">
@@ -1016,6 +1013,7 @@
                                     <div class="globe-ring ring-lon-2"></div>
                                 </div>
                                 Global Market
+                                <button class="btn primary-btn" id="add-market-product-btn" style="margin-left:12px; padding: 8px 16px; font-size: 0.85rem; -webkit-text-fill-color: white !important; color: white !important; border-radius: 8px; font-family: 'Outfit', sans-serif; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">✏️ EDIT PRODUCT</button>
                             </h2>
                             <p class="market-subtitle">
                                 Discover and buy items listed by other users
@@ -1552,6 +1550,15 @@
                                     margin-top: 5px;
                                 "
                             ></div>
+                            <div
+                                id="upv-stock-container"
+                                style="
+                                    color: #4facfe;
+                                    font-size: 0.75rem;
+                                    margin-top: 5px;
+                                    font-weight: bold;
+                                "
+                            ></div>
                             <!-- Profit Breakdown -->
                             <div
                                 id="upv-profit-row"
@@ -2007,158 +2014,120 @@
         <!-- Add/Edit Product Modal -->
         <div id="product-modal" class="modal hidden">
             <div class="modal-content">
-                <h2 id="modal-title">Add Product</h2>
+                <h2 id="modal-title">Edit Product</h2>
+                <p id="admin-modal-note" style="color: rgba(255, 255, 255, 0.65); font-size: 0.82rem; margin-top: -10px; margin-bottom: 20px; line-height: 1.45; background: rgba(0, 242, 254, 0.08); border: 1px solid rgba(0, 242, 254, 0.2); border-radius: 8px; padding: 10px 12px; display: flex; align-items: center; gap: 8px;">
+                    🌐 <span><strong>Note:</strong> This product will display in the Global Market.</span>
+                </p>
                 <form id="product-form" onsubmit="return false;">
                     <input type="hidden" id="prod-id" />
-                    <div class="input-group" style="margin-bottom: 20px">
-                        <input type="text" id="prod-name" required />
-                        <label for="prod-name">Product Name</label>
-                    </div>
-                    <div class="input-group" style="margin-bottom: 20px">
-                        <textarea
-                            id="prod-description"
-                            rows="2"
-                            style="
-                                width: 100%;
-                                padding: 15px;
-                                border-radius: 10px;
-                                background: rgba(255, 255, 255, 0.08);
-                                color: white;
-                                border: 1px solid rgba(255, 255, 255, 0.15);
-                                font-family: inherit;
-                                font-size: 0.9rem;
-                                resize: vertical;
-                                box-sizing: border-box;
-                            "
-                            placeholder="Product description (optional)"
-                        ></textarea>
-                    </div>
-                    <div class="input-group" style="margin-bottom: 20px">
+                    <!-- Predefined Template Dropdown (Admin Quick Fill) -->
+                    <div class="input-group" style="margin-bottom: 20px" id="quick-template-container">
                         <select
-                            id="prod-main-category"
-                            class="filter-select"
+                            id="admin-prod-template"
+                            required
                             style="
                                 width: 100%;
                                 padding: 15px;
                                 border-radius: 10px;
-                                background: rgba(255, 255, 255, 0.1);
+                                background: rgba(30, 40, 60, 0.95);
                                 color: white;
-                                border: 1px solid rgba(255, 255, 255, 0.1);
+                                border: 1px solid rgba(79, 172, 254, 0.25);
                                 appearance: none;
+                                cursor: pointer;
+                                box-shadow: 0 4px 15px rgba(79, 172, 254, 0.1);
+                                outline: none;
                             "
-                            required
                         >
-                            <option value="" disabled selected>
-                                Select Main Category
-                            </option>
-                            <option
-                                value="Core Components"
-                                style="background: #2c3e50"
-                            >
-                                ⚙️ Core Components
-                            </option>
-                            <option
-                                value="Storage Devices"
-                                style="background: #2c3e50"
-                            >
-                                💾 Storage Devices
-                            </option>
-                            <option
-                                value="Peripherals"
-                                style="background: #2c3e50"
-                            >
-                                🖥️ Peripherals
-                            </option>
-                            <option
-                                value="Accessories"
-                                style="background: #2c3e50"
-                            >
-                                🔧 Accessories
+                            <option value="" selected>
+                                📋 Select Predefined Item (Quick Click Fill)
                             </option>
                         </select>
                     </div>
-                    <div class="input-group" style="margin-bottom: 20px">
-                        <select
-                            id="prod-category"
-                            class="filter-select"
-                            style="
-                                width: 100%;
-                                padding: 15px;
-                                border-radius: 10px;
-                                background: rgba(255, 255, 255, 0.1);
-                                color: white;
-                                border: 1px solid rgba(255, 255, 255, 0.1);
-                                appearance: none;
-                            "
-                            required
-                            disabled
-                        >
-                            <option value="" disabled selected>
-                                Select Specific Part
-                            </option>
-                        </select>
-                    </div>
-                    <div style="display: flex; gap: 15px">
-                        <div class="input-group" style="flex: 1">
-                            <input
-                                type="number"
-                                id="prod-cost-price"
-                                step="0.01"
-                                min="0"
-                            />
-                            <label for="prod-cost-price">Cost Price ($)</label>
-                        </div>
-                        <div class="input-group" style="flex: 1">
-                            <input
-                                type="number"
-                                id="prod-price"
-                                step="0.01"
-                                required
-                                min="0"
-                            />
-                            <label for="prod-price">Selling Price ($)</label>
-                        </div>
-                        <div class="input-group" style="flex: 1">
-                            <input
-                                type="number"
-                                id="prod-quantity"
-                                required
-                                min="0"
-                            />
-                            <label for="prod-quantity">Stock Qty</label>
+                    <!-- Quick Quantity Selection Buttons (Admin Add Flow) -->
+                    <div id="admin-quick-qty-container" style="margin-bottom: 20px; display: block;">
+                        <label style="color: rgba(255, 255, 255, 0.7); font-size: 0.85rem; margin-bottom: 8px; display: block;">
+                            📦 Select Stock Quantity to Add:
+                        </label>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button type="button" class="btn qty-btn" style="flex: 1; min-width: 60px; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; cursor: pointer; transition: all 0.3s;" onclick="setAdminQuickQty(this, 1)">1</button>
+                            <button type="button" class="btn qty-btn" style="flex: 1; min-width: 60px; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; cursor: pointer; transition: all 0.3s;" onclick="setAdminQuickQty(this, 5)">5</button>
+                            <button type="button" class="btn qty-btn active-qty" style="flex: 1; min-width: 60px; padding: 10px; border-radius: 8px; background: linear-gradient(135deg, #00f2fe, #4facfe); border: 1px solid #4facfe; color: white; cursor: pointer; transition: all 0.3s; box-shadow: 0 0 10px rgba(0,242,254,0.4);" onclick="setAdminQuickQty(this, 10)">10</button>
+                            <button type="button" class="btn qty-btn" style="flex: 1; min-width: 60px; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; cursor: pointer; transition: all 0.3s;" onclick="setAdminQuickQty(this, 20)">20</button>
+                            <button type="button" class="btn qty-btn" style="flex: 1; min-width: 60px; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; cursor: pointer; transition: all 0.3s;" onclick="setAdminQuickQty(this, 50)">50</button>
+                            <button type="button" class="btn qty-btn" style="flex: 1; min-width: 60px; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; cursor: pointer; transition: all 0.3s;" onclick="setAdminQuickQty(this, 100)">100</button>
                         </div>
                     </div>
-                    <div class="input-group">
-                        <input type="text" id="prod-supplier" required />
-                        <label for="prod-supplier">Supplier</label>
+                    <!-- Price and Stock Container (Shown only when editing) -->
+                    <div id="admin-price-stock-container" style="display: none; margin-top: 15px; margin-bottom: 15px;">
+                        <div style="display: flex; gap: 15px">
+                            <!-- Cost Price Group -->
+                            <div style="flex: 1; display: flex; flex-direction: column;">
+                                <div class="input-group" style="margin-bottom: 5px;">
+                                    <input
+                                        type="number"
+                                        id="prod-cost-price"
+                                        step="0.01"
+                                        min="0"
+                                    />
+                                    <label for="prod-cost-price">Cost Price ($)</label>
+                                </div>
+                                <div style="display: flex; gap: 4px; margin-bottom: 12px; justify-content: center;">
+                                    <button type="button" class="btn secondary-btn" style="padding: 4px 6px; font-size: 0.72rem; border-radius: 6px; flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;" onclick="adjustAdminField('prod-cost-price', -10)">-$10</button>
+                                    <button type="button" class="btn secondary-btn" style="padding: 4px 6px; font-size: 0.72rem; border-radius: 6px; flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;" onclick="adjustAdminField('prod-cost-price', -1)">-$1</button>
+                                    <button type="button" class="btn secondary-btn" style="padding: 4px 6px; font-size: 0.72rem; border-radius: 6px; flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;" onclick="adjustAdminField('prod-cost-price', 1)">+$1</button>
+                                    <button type="button" class="btn secondary-btn" style="padding: 4px 6px; font-size: 0.72rem; border-radius: 6px; flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;" onclick="adjustAdminField('prod-cost-price', 10)">+$10</button>
+                                </div>
+                            </div>
+
+                            <!-- Selling Price Group -->
+                            <div style="flex: 1; display: flex; flex-direction: column;">
+                                <div class="input-group" style="margin-bottom: 5px;">
+                                    <input
+                                        type="number"
+                                        id="prod-price"
+                                        step="0.01"
+                                        required
+                                        min="0"
+                                    />
+                                    <label for="prod-price">Selling Price ($)</label>
+                                </div>
+                                <div style="display: flex; gap: 4px; margin-bottom: 12px; justify-content: center;">
+                                    <button type="button" class="btn secondary-btn" style="padding: 4px 6px; font-size: 0.72rem; border-radius: 6px; flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;" onclick="adjustAdminField('prod-price', -10)">-$10</button>
+                                    <button type="button" class="btn secondary-btn" style="padding: 4px 6px; font-size: 0.72rem; border-radius: 6px; flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;" onclick="adjustAdminField('prod-price', -1)">-$1</button>
+                                    <button type="button" class="btn secondary-btn" style="padding: 4px 6px; font-size: 0.72rem; border-radius: 6px; flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;" onclick="adjustAdminField('prod-price', 1)">+$1</button>
+                                    <button type="button" class="btn secondary-btn" style="padding: 4px 6px; font-size: 0.72rem; border-radius: 6px; flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;" onclick="adjustAdminField('prod-price', 10)">+$10</button>
+                                </div>
+                            </div>
+
+                            <!-- Stock Qty Group -->
+                            <div style="flex: 1; display: flex; flex-direction: column;">
+                                <div class="input-group" style="margin-bottom: 5px;">
+                                    <input
+                                        type="number"
+                                        id="prod-quantity"
+                                        required
+                                        min="0"
+                                    />
+                                    <label for="prod-quantity">Stock Qty</label>
+                                </div>
+                                <div style="display: flex; gap: 4px; margin-bottom: 12px; justify-content: center;">
+                                    <button type="button" class="btn secondary-btn" style="padding: 4px 6px; font-size: 0.72rem; border-radius: 6px; flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;" onclick="adjustAdminField('prod-quantity', -10)">-10</button>
+                                    <button type="button" class="btn secondary-btn" style="padding: 4px 6px; font-size: 0.72rem; border-radius: 6px; flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;" onclick="adjustAdminField('prod-quantity', -1)">-1</button>
+                                    <button type="button" class="btn secondary-btn" style="padding: 4px 6px; font-size: 0.72rem; border-radius: 6px; flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;" onclick="adjustAdminField('prod-quantity', 1)">+1</button>
+                                    <button type="button" class="btn secondary-btn" style="padding: 4px 6px; font-size: 0.72rem; border-radius: 6px; flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;" onclick="adjustAdminField('prod-quantity', 10)">+10</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div
-                        class="options"
-                        style="
-                            margin-bottom: 20px;
-                            display: flex;
-                            justify-content: flex-start;
-                            gap: 20px;
-                            color: white;
-                        "
-                    >
-                        <label
-                            ><input
-                                type="radio"
-                                name="prod-purpose"
-                                value="For Sale"
-                            />
-                            For Sale</label
-                        >
-                        <label
-                            ><input
-                                type="radio"
-                                name="prod-purpose"
-                                value="To Keep"
-                                checked
-                            />
-                            To Keep</label
-                        >
+                    <!-- Hidden manual input fields to maintain DOM compatibility and safety -->
+                    <div style="display: none;">
+                        <input type="text" id="prod-name" value="" />
+                        <textarea id="prod-description"></textarea>
+                        <select id="prod-main-category"><option value="" selected></option></select>
+                        <select id="prod-category"><option value="" selected></option></select>
+                        <input type="text" id="prod-supplier" value="" />
+                        <input type="radio" name="prod-purpose" value="For Sale" checked />
+                        <input type="radio" name="prod-purpose" value="To Keep" />
                     </div>
                     <div class="modal-actions">
                         <button
@@ -2735,6 +2704,54 @@
                     </button>
                     <button type="button" onclick="closeCatalogPaymentModal()" class="btn cancel-btn" style="flex: 1; padding: 12px; font-weight: 700; border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; background: transparent; color: white; cursor: pointer;">
                         Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Diagnostics Button -->
+        <button id="floating-diag-btn" onclick="openDiagModal()" style="position: fixed; bottom: 20px; right: 20px; z-index: 99999; display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 50px; background: rgba(168, 85, 247, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(168, 85, 247, 0.4); color: white; font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 20px rgba(168, 85, 247, 0.25); transition: all 0.3s ease;">
+            <span>🔧</span> Diagnostics & Restore Tool
+        </button>
+
+        <!-- Diagnostics Modal -->
+        <div class="modal hidden" id="diag-modal" style="z-index: 999999; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center;">
+            <div class="modal-content" style="max-width: 460px; background: linear-gradient(135deg, rgba(20, 16, 45, 0.98), rgba(15, 23, 42, 0.98)); border: 1px solid rgba(0, 242, 254, 0.3); box-shadow: 0 0 35px rgba(0, 242, 254, 0.25); padding: 25px; border-radius: 16px;">
+                <div style="text-align: center; border-bottom: 1px dashed rgba(255, 255, 255, 0.15); padding-bottom: 15px; margin-bottom: 20px;">
+                    <div style="font-size: 2.2rem; filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.5));">🛡️</div>
+                    <h2 style="font-size: 1.45rem; margin: 4px 0; color: #00f2fe; font-family: 'Outfit', sans-serif; font-weight: 800;">
+                        SYSTEM DIAGNOSTICS
+                    </h2>
+                    <p style="font-size: 0.78rem; opacity: 0.6; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">
+                        Database & Interface Recovery
+                    </p>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 10px; color: white; margin-bottom: 25px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+                        <span style="opacity: 0.65;">Total Database Items:</span>
+                        <span id="diag-total-items" style="font-weight: 700; color: #a855f7;">-</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+                        <span style="opacity: 0.65;">Market Listings Displayed:</span>
+                        <span id="diag-market-items" style="font-weight: 700; color: #00f2fe;">-</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+                        <span style="opacity: 0.65;">Market Grid DOM:</span>
+                        <span id="diag-grid-status" style="font-weight: 700; color: #96c93d;">-</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+                        <span style="opacity: 0.65;">Browser LocalStorage:</span>
+                        <span id="diag-storage-status" style="font-weight: 700; color: #ff9f43;">-</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                    <button onclick="executeForceSystemRestore()" class="btn primary-btn" style="padding: 14px; font-weight: 700; background: linear-gradient(135deg, #00f2fe, #4facfe) !important; border: none; border-radius: 10px; color: white; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 242, 254, 0.35); font-family: 'Outfit', sans-serif;">
+                        ⚡ FORCE RESTORE GLOBAL MARKET (RE-SEED ALL)
+                    </button>
+                    <button type="button" onclick="closeDiagModal()" class="btn cancel-btn" style="padding: 12px; font-weight: 700; border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; background: transparent; color: white; cursor: pointer; font-family: 'Outfit', sans-serif; margin-top: 5px;">
+                        Close / Cancel
                     </button>
                 </div>
             </div>
