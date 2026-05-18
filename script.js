@@ -388,10 +388,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const randNames = ["Alex", "JohnDoe", "TechLover99", "GamingPC_God", "PCBuilder101", "Mike", "Sarah", "David", "Chris", "Jessica"];
 
-  // Migration: Change 'Admin Richard' to random names
+  // Migration: Change 'Admin Richard' to random names & Force approve/activate all default catalog/seed items
   let migratedAdmin = false;
   inventory.forEach(p => {
     if (p.id < 2000) p.isCatalog = true;
+    if (p.id >= 9000000 && p.id < 9900000) p.isSeed = true;
+    
+    // Force set all catalog/seed items to be active, approved, and listed for sale!
+    if (p.isCatalog || p.isSeed) {
+      if (p.approved !== true) {
+        p.approved = true;
+        migratedAdmin = true;
+      }
+      if (p.purpose !== "For Sale") {
+        p.purpose = "For Sale";
+        migratedAdmin = true;
+      }
+      if (typeof p.quantity !== "number" || p.quantity <= 0) {
+        p.quantity = p.isSeed ? 5 : 20; // Default positive stock
+        migratedAdmin = true;
+      }
+    }
+    
     if (p.owner === "Admin Richard" && p.id < 2000) {
       p.owner = randNames[p.id % randNames.length];
       migratedAdmin = true;
