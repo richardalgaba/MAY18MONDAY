@@ -1972,6 +1972,34 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ── Render User Owned Inventory (Separate View) ──────────────────
+  // ── User Owned Assets Filtering & Grid Renderer ──────────────────
+  window.userInventoryFilter = "owned"; // default filter is items inside user vault
+
+  window.toggleUserInventoryFilter = function(filter) {
+    window.userInventoryFilter = filter;
+    renderUserInventory();
+  };
+
+  window.cancelListingOwnedAsset = function(id) {
+    inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+    const product = inventory.find((p) => p.id == id);
+    if (!product) return;
+
+    if (confirm(`Cancel listing for ${product.name} and return it to your vault?`)) {
+      product.purpose = "To Keep";
+      product.approved = false; // Put back to default state
+      saveInventory();
+      renderUserInventory();
+      
+      logActivity("❌ Cancelled Asset Listing", {
+        name: product.name,
+        supplier: product.supplier,
+        amountQty: `Returned to Vault | Qty: ${product.quantity}`,
+      });
+      alert(`Success! ${product.name} is now safely back in your owned vault assets!`);
+    }
+  };
+
   window.renderUserInventory = function() {
     const grid = document.getElementById("user-inventory-grid");
     if (!grid) return;
@@ -1983,20 +2011,55 @@ document.addEventListener("DOMContentLoaded", () => {
     grid.innerHTML = "";
     let totalQty = 0;
     let totalValue = 0;
+    let forSaleQty = 0;
 
+    const activeFilter = window.userInventoryFilter || "owned";
+
+    // 1. First Pass: Compute statistics regardless of active filter
     inventory.forEach((product) => {
-      // Show only current user's owned items that are NOT currently listed for sale
       if (product.owner !== currentUser) return;
-      if (product.purpose === "For Sale") return;
+      
+      const isForSale = product.purpose === "For Sale";
+      if (isForSale) {
+        forSaleQty += product.quantity;
+      } else {
+        totalQty += product.quantity;
+        totalValue += product.price * product.quantity;
+      }
+    });
 
-      totalQty += product.quantity;
-      totalValue += product.price * product.quantity;
+    // 2. Second Pass: Render filtered items to the grid
+    inventory.forEach((product) => {
+      if (product.owner !== currentUser) return;
+
+      const isForSale = product.purpose === "For Sale";
+
+      // Filter check
+      if (activeFilter === "for_sale" && !isForSale) return;
+      if (activeFilter === "owned" && isForSale) return;
 
       const enriched = enrichProduct(product);
       const catClass = getCategoryClass(enriched.category);
 
       const card = document.createElement("div");
       card.className = `mkt-card ${catClass}`;
+      
+      // Action button based on listing status
+      let actionBtnHtml = "";
+      if (isForSale) {
+        actionBtnHtml = `
+          <button class="mkt-card-btn btn-buy-now" style="background: linear-gradient(135deg, #e74c3c, #ff6b6b); box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2);" onclick="cancelListingOwnedAsset(${enriched.id})">
+            ❌ CANCEL LISTING
+          </button>
+        `;
+      } else {
+        actionBtnHtml = `
+          <button class="mkt-card-btn btn-buy-now" style="background: linear-gradient(135deg, #00f2fe, #4facfe); box-shadow: 0 4px 15px rgba(0, 242, 254, 0.2);" onclick="listOwnedAssetForSale(${enriched.id})">
+            🏷️ SELL THIS ASSET
+          </button>
+        `;
+      }
+
       card.innerHTML = `
         <div class="mkt-card-header">
           <span class="mkt-card-cat-badge font-bold">${enriched.category}</span>
@@ -2033,24 +2096,68 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="mkt-card-row-1">
             <button class="mkt-card-btn btn-view" onclick="openMarketDetail(${enriched.id})">🔍 VIEW DETAILS</button>
           </div>
-          <button class="mkt-card-btn btn-buy-now" style="background: linear-gradient(135deg, #00f2fe, #4facfe); box-shadow: 0 4px 15px rgba(0, 242, 254, 0.2);" onclick="listOwnedAssetForSale(${enriched.id})">
-            🏷️ SELL THIS ASSET
-          </button>
+          ${actionBtnHtml}
         </div>
       `;
       grid.appendChild(card);
     });
 
     if (grid.innerHTML === "") {
+      const emptyMsg = activeFilter === "for_sale" 
+        ? "Wala ka pang mga listed items na ibinebenta sa Global Market." 
+        : "Walang laman ang iyong inventory vault.";
       grid.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; padding:60px 40px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; color:rgba(255,255,255,0.45); font-size:1rem; font-family:'Outfit',sans-serif;">
-        Walang laman ang iyong inventory.<br><small style="font-size: 0.8rem; margin-top: 8px; display: block; opacity: 0.65;">Pumunta sa 🌐 Global Market upang bumili ng PC parts, at dito sila mapupunta!</small>
+        ${emptyMsg}<br><small style="font-size: 0.8rem; margin-top: 8px; display: block; opacity: 0.65;">Pumunta sa 🌐 Global Market upang bumili ng PC parts o i-click ang ibang card tabs sa itaas!</small>
       </div>`;
     }
 
+    // 3. Update dynamic labels
     const elUserQty = document.getElementById("user-inv-total-qty");
     const elUserVal = document.getElementById("user-inv-total-value");
+    const elUserForSale = document.getElementById("user-inv-for-sale-qty");
+
     if (elUserQty) elUserQty.textContent = totalQty;
     if (elUserVal) elUserVal.textContent = `$${totalValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
+    if (elUserForSale) elUserForSale.textContent = forSaleQty;
+
+    // 4. Update card active designs dynamically
+    const cardOwned = document.getElementById("card-filter-owned");
+    const cardValue = document.getElementById("card-filter-value");
+    const cardForSale = document.getElementById("card-filter-for-sale");
+
+    if (cardOwned) {
+      if (activeFilter === "owned") {
+        cardOwned.style.borderColor = "#a855f7";
+        cardOwned.style.boxShadow = "0 8px 25px rgba(168, 85, 247, 0.25)";
+        cardOwned.style.background = "linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.15))";
+      } else {
+        cardOwned.style.borderColor = "rgba(255,255,255,0.05)";
+        cardOwned.style.boxShadow = "none";
+        cardOwned.style.background = "linear-gradient(135deg, rgba(168, 85, 247, 0.05), rgba(236, 72, 153, 0.05))";
+      }
+    }
+    if (cardValue) {
+      if (activeFilter === "owned") {
+        cardValue.style.borderColor = "#00f2fe";
+        cardValue.style.boxShadow = "0 8px 25px rgba(0, 242, 254, 0.25)";
+        cardValue.style.background = "linear-gradient(135deg, rgba(0, 242, 254, 0.15), rgba(79, 172, 254, 0.15))";
+      } else {
+        cardValue.style.borderColor = "rgba(255,255,255,0.05)";
+        cardValue.style.boxShadow = "none";
+        cardValue.style.background = "linear-gradient(135deg, rgba(0, 242, 254, 0.05), rgba(79, 172, 254, 0.05))";
+      }
+    }
+    if (cardForSale) {
+      if (activeFilter === "for_sale") {
+        cardForSale.style.borderColor = "#2ecc71";
+        cardForSale.style.boxShadow = "0 8px 25px rgba(46, 204, 113, 0.25)";
+        cardForSale.style.background = "linear-gradient(135deg, rgba(46, 204, 113, 0.15), rgba(46, 204, 113, 0.05))";
+      } else {
+        cardForSale.style.borderColor = "rgba(255,255,255,0.05)";
+        cardForSale.style.boxShadow = "none";
+        cardForSale.style.background = "linear-gradient(135deg, rgba(46, 204, 113, 0.05), rgba(46, 204, 113, 0.01))";
+      }
+    }
   };
 
   window.listOwnedAssetForSale = function(id) {

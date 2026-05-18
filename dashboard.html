@@ -348,16 +348,24 @@
                         <p>Your purchased computer hardware components and equipment kept for personal use.</p>
                     </header>
 
-                    <div class="cards-grid-compact" style="margin-bottom: 30px; margin-top: 20px;">
-                        <div class="dashboard-card" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1)); border-left: 4px solid #a855f7;">
+                    <div class="cards-grid-compact" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 30px; margin-top: 20px;">
+                        <div id="card-filter-owned" class="dashboard-card" onclick="toggleUserInventoryFilter('owned')" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1)); border-left: 4px solid #a855f7; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 25px rgba(168, 85, 247, 0.25)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <div style="position: absolute; right: 15px; top: 15px; font-size: 1.5rem; opacity: 0.35;">📦</div>
                             <h3 style="color: #a855f7;">Owned Parts</h3>
                             <p id="user-inv-total-qty" class="stat-num" style="color: #a855f7;">0</p>
-                            <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 5px;">Total count of components</div>
+                            <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 5px;">Click to view items kept in vault</div>
                         </div>
-                        <div class="dashboard-card" style="background: linear-gradient(135deg, rgba(0, 242, 254, 0.1), rgba(79, 172, 254, 0.1)); border-left: 4px solid #00f2fe;">
+                        <div id="card-filter-value" class="dashboard-card" onclick="toggleUserInventoryFilter('owned')" style="background: linear-gradient(135deg, rgba(0, 242, 254, 0.1), rgba(79, 172, 254, 0.1)); border-left: 4px solid #00f2fe; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 25px rgba(0, 242, 254, 0.25)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <div style="position: absolute; right: 15px; top: 15px; font-size: 1.5rem; opacity: 0.35;">💰</div>
                             <h3 style="color: #00f2fe;">Estimated Value</h3>
                             <p id="user-inv-total-value" class="stat-num" style="color: #00f2fe;">$0.00</p>
                             <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 5px;">Based on average market price</div>
+                        </div>
+                        <div id="card-filter-for-sale" class="dashboard-card" onclick="toggleUserInventoryFilter('for_sale')" style="background: linear-gradient(135deg, rgba(46, 204, 113, 0.1), rgba(46, 204, 113, 0.02)); border-left: 4px solid #2ecc71; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 25px rgba(46, 204, 113, 0.25)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <div style="position: absolute; right: 15px; top: 15px; font-size: 1.5rem; opacity: 0.35;">🏷️</div>
+                            <h3 style="color: #2ecc71;">Listed For Sale</h3>
+                            <p id="user-inv-for-sale-qty" class="stat-num" style="color: #2ecc71;">0</p>
+                            <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 5px;">Click to view items listed on market</div>
                         </div>
                     </div>
 
