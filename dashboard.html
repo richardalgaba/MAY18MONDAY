@@ -1006,184 +1006,159 @@
                 </div>
                 <!-- Market View -->
                 <div id="market-view" class="view-section hidden">
-                    <!-- Header -->
-                    <div class="market-header">
+                    <!-- Top Row: Title & Sell Action -->
+                    <div class="flex-header" style="margin-bottom: 24px;">
                         <div>
-                            <h2 class="market-title" style="display: flex; align-items: center;">
-                                <div class="cyber-globe">
+                            <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.2rem; font-weight: 900; background: linear-gradient(135deg, #ffffff 30%, #4facfe 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 30px rgba(79, 172, 254, 0.2); display: flex; align-items: center; gap: 14px; margin: 0;">
+                                <div class="cyber-globe" style="width: 32px; height: 32px; position: relative; border-radius: 50%; border: 2px solid rgba(0, 242, 254, 0.6); display: inline-block; box-shadow: 0 0 15px rgba(0, 242, 254, 0.4); animation: pulseGlobe 2s infinite alternate ease-in-out;">
                                     <div class="globe-ring ring-lat"></div>
                                     <div class="globe-ring ring-lon-1"></div>
                                     <div class="globe-ring ring-lon-2"></div>
                                 </div>
                                 Global Market
-                            </h2>
-                            <p class="market-subtitle">
-                                Discover and buy items listed by other users
-                            </p>
+                            </h1>
+                            <p style="color: rgba(255, 255, 255, 0.5); font-size: 0.95rem; margin-top: 6px; letter-spacing: 0.02em;">Discover, trade, and buy components from other users around the world.</p>
                         </div>
-                        <div class="market-stats-bar">
-                            <div class="mstat-chip">
-                                <span class="mstat-icon">📦</span>
-                                <div>
-                                    <div class="mstat-num" id="mstat-total">
-                                        0
-                                    </div>
-                                    <div class="mstat-label">Total Items</div>
-                                </div>
+                        <button
+                            class="btn primary-btn"
+                            id="add-market-product-btn"
+                            style="padding: 12px 24px; font-weight: 700; border-radius: 12px; background: linear-gradient(135deg, #00f2fe, #4facfe); border: none; color: white; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 20px rgba(0, 242, 254, 0.35); cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-family: 'Outfit', sans-serif; font-size: 0.9rem;"
+                            onmouseover="this.style.transform='translateY(-2px) scale(1.02)'; this.style.boxShadow='0 8px 25px rgba(0, 242, 254, 0.5)';"
+                            onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 4px 20px rgba(0, 242, 254, 0.35)';"
+                        >
+                            ➕ Sell Product
+                        </button>
+                    </div>
+
+                    <!-- Market Stats Row -->
+                    <div class="cards-grid-compact" style="margin-bottom: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                        <!-- Card 1: Total Items -->
+                        <div class="dashboard-card" style="position: relative; overflow: hidden; background: linear-gradient(135deg, rgba(79, 172, 254, 0.06), rgba(0, 242, 254, 0.04)); border: 1px solid rgba(79, 172, 254, 0.15); border-left: 4px solid #00f2fe; border-radius: 18px; padding: 18px 22px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); transition: all 0.3s ease;">
+                            <i class="ph-fill ph-package" style="position: absolute; right: 15px; top: 15px; font-size: 3rem; color: rgba(0, 242, 254, 0.06); pointer-events: none;"></i>
+                            <h3 style="color: rgba(255, 255, 255, 0.6); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 4px 0;">Total Listed Items</h3>
+                            <p id="mstat-total" style="color: #00f2fe; font-size: 1.6rem; font-weight: 900; font-family: 'Outfit', sans-serif; margin: 0; text-shadow: 0 0 10px rgba(0, 242, 254, 0.3);">0</p>
+                        </div>
+
+                        <!-- Card 2: Active Sellers -->
+                        <div class="dashboard-card" style="position: relative; overflow: hidden; background: linear-gradient(135deg, rgba(168, 85, 247, 0.06), rgba(168, 85, 247, 0.04)); border: 1px solid rgba(168, 85, 247, 0.15); border-left: 4px solid #a855f7; border-radius: 18px; padding: 18px 22px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); transition: all 0.3s ease;">
+                            <i class="ph-fill ph-users" style="position: absolute; right: 15px; top: 15px; font-size: 3rem; color: rgba(168, 85, 247, 0.06); pointer-events: none;"></i>
+                            <h3 style="color: rgba(255, 255, 255, 0.6); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 4px 0;">Active Sellers</h3>
+                            <p id="mstat-sellers" style="color: #a855f7; font-size: 1.6rem; font-weight: 900; font-family: 'Outfit', sans-serif; margin: 0; text-shadow: 0 0 10px rgba(168, 85, 247, 0.3);">0</p>
+                        </div>
+
+                        <!-- Card 3: Total Sales -->
+                        <div class="dashboard-card" onclick="openSalesHistoryModal()" style="position: relative; overflow: hidden; background: linear-gradient(135deg, rgba(46, 204, 113, 0.06), rgba(46, 204, 113, 0.04)); border: 1px solid rgba(46, 204, 113, 0.15); border-left: 4px solid #2ecc71; border-radius: 18px; padding: 18px 22px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+                            <i class="ph-fill ph-shopping-cart" style="position: absolute; right: 15px; top: 15px; font-size: 3rem; color: rgba(46, 204, 113, 0.06); pointer-events: none;"></i>
+                            <h3 style="color: rgba(255, 255, 255, 0.6); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 4px 0;">All Sales ↗</h3>
+                            <p id="mstat-sales" style="color: #2ecc71; font-size: 1.6rem; font-weight: 900; font-family: 'Outfit', sans-serif; margin: 0; text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);">$0.00</p>
+                        </div>
+                    </div>
+
+                    <!-- Featured Section -->
+                    <div style="background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 20px; padding: 20px; margin-bottom: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);">
+                        <div style="font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 800; color: #f39c12; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.05em;">
+                            ⭐ Top Rated Featured Items
+                        </div>
+                        <div class="market-featured-list" id="market-featured" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;"></div>
+                    </div>
+
+                    <!-- Modern Glassmorphic Search & Filter Console -->
+                    <div class="market-filter-console" style="background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; padding: 20px; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); display: flex; flex-direction: column; gap: 16px;">
+                        <!-- Row 1: Dual Input Fields -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; min-width: 0;">
+                            <!-- Regular search -->
+                            <div class="market-search-wrap" style="position: relative; display: flex; align-items: center; background: rgba(79, 172, 254, 0.05); border: 1px solid rgba(79, 172, 254, 0.2); border-radius: 12px; transition: all 0.3s ease;" onmouseover="this.style.borderColor='rgba(79, 172, 254, 0.45)'" onmouseout="this.style.borderColor='rgba(79, 172, 254, 0.2)'">
+                                <span style="position: absolute; left: 14px; font-size: 1rem; pointer-events: none;">🔍</span>
+                                <input
+                                    type="text"
+                                    id="market-search"
+                                    placeholder="Search product name, category, or seller..."
+                                    class="market-search-input"
+                                    style="width: 100%; padding: 12px 14px 12px 42px; border: none; background: transparent; color: white; font-size: 0.9rem; outline: none; font-family: 'Inter', sans-serif;"
+                                />
                             </div>
-                            <div class="mstat-chip">
-                                <span class="mstat-icon">🧑‍💼</span>
-                                <div>
-                                    <div class="mstat-num" id="mstat-sellers">
-                                        0
-                                    </div>
-                                    <div class="mstat-label">Sellers</div>
-                                </div>
+                            <!-- Seller search -->
+                            <div class="market-search-wrap" style="position: relative; display: flex; align-items: center; background: rgba(255, 159, 67, 0.05); border: 1px solid rgba(255, 159, 67, 0.2); border-radius: 12px; transition: all 0.3s ease;" onmouseover="this.style.borderColor='rgba(255, 159, 67, 0.45)'" onmouseout="this.style.borderColor='rgba(255, 159, 67, 0.2)'">
+                                <span style="position: absolute; left: 14px; font-size: 1rem; pointer-events: none;">🧑‍💼</span>
+                                <input
+                                    type="text"
+                                    id="market-seller-search"
+                                    placeholder="Search by Seller Name or #ID (e.g. john #1234)..."
+                                    class="market-search-input"
+                                    style="width: 100%; padding: 12px 14px 12px 42px; border: none; background: transparent; color: #ff9f43; font-size: 0.9rem; outline: none; font-family: 'Inter', sans-serif;"
+                                />
                             </div>
-                            <div
-                                class="mstat-chip"
-                                onclick="openSalesHistoryModal()"
-                                style="cursor: pointer"
-                                title="View full sales history"
+                        </div>
+
+                        <!-- Row 2: Select Filters -->
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                            <select
+                                id="market-filter-cat"
+                                class="market-filter-select"
+                                style="width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(30, 41, 59, 0.6); color: white; font-size: 0.88rem; outline: none; cursor: pointer; transition: all 0.2s;"
                             >
-                                <span class="mstat-icon">📊</span>
-                                <div>
-                                    <div class="mstat-num" id="mstat-sales">
-                                        $0.00
-                                    </div>
-                                    <div class="mstat-label">All Sales ↗</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="market-header-actions" style="display: flex; align-items: center; gap: 10px; margin-left: 15px;">
-                            <button
-                                class="btn primary-btn"
-                                id="add-market-product-btn"
-                                style="padding: 10px 20px; font-weight: 700; border-radius: 10px; background: linear-gradient(135deg, #00f2fe, #4facfe); border: none; color: white; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3); cursor: pointer; transition: all 0.3s ease; font-family: 'Outfit', sans-serif;"
-                                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(0, 242, 254, 0.45)';"
-                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0, 242, 254, 0.3)';"
+                                <option value="all">📂 All Categories</option>
+                                <optgroup label="⚙️ Core Components">
+                                    <option value="CPU">CPU</option>
+                                    <option value="Motherboard">Motherboard</option>
+                                    <option value="RAM">RAM</option>
+                                    <option value="GPU">GPU</option>
+                                    <option value="PSU">PSU</option>
+                                    <option value="Computer Case">Computer Case</option>
+                                </optgroup>
+                                <optgroup label="💾 Storage Devices">
+                                    <option value="SATA SSD">SATA SSD</option>
+                                    <option value="M.2 NVMe SSD">M.2 NVMe SSD</option>
+                                    <option value="HDD">HDD</option>
+                                    <option value="External Storage">External Storage</option>
+                                </optgroup>
+                                <optgroup label="🖥️ Peripherals">
+                                    <option value="Monitor">Monitor</option>
+                                    <option value="Keyboard">Keyboard</option>
+                                    <option value="Mouse">Mouse</option>
+                                    <option value="Headset">Headset</option>
+                                    <option value="Speakers">Speakers</option>
+                                </optgroup>
+                                <optgroup label="🔧 Accessories">
+                                    <option value="CPU Cooler">CPU Cooler</option>
+                                    <option value="Case Fan">Case Fan</option>
+                                    <option value="Cable &amp; Adapter">Cable &amp; Adapter</option>
+                                    <option value="Thermal Paste">Thermal Paste</option>
+                                    <option value="Network Device">Network Device</option>
+                                </optgroup>
+                            </select>
+
+                            <select
+                                id="market-filter-sort"
+                                class="market-filter-select"
+                                style="width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(30, 41, 59, 0.6); color: white; font-size: 0.88rem; outline: none; cursor: pointer; transition: all 0.2s;"
                             >
-                                ➕ Sell Product
-                            </button>
+                                <option value="default">↕️ Sort: Default</option>
+                                <option value="price-asc">💲 Price: Low → High</option>
+                                <option value="price-desc">💲 Price: High → Low</option>
+                                <option value="stock-asc">📉 Stock: Low → High</option>
+                                <option value="stock-desc">📈 Stock: High → Low</option>
+                                <option value="newest">🕐 Newest First</option>
+                            </select>
+
+                            <select
+                                id="market-filter-cond"
+                                class="market-filter-select"
+                                style="width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(30, 41, 59, 0.6); color: white; font-size: 0.88rem; outline: none; cursor: pointer; transition: all 0.2s;"
+                            >
+                                <option value="all">🔧 All Conditions</option>
+                                <option value="New">✨ New</option>
+                                <option value="Like New">👌 Like New</option>
+                                <option value="Good">👍 Good</option>
+                                <option value="Fair">🔄 Fair</option>
+                            </select>
                         </div>
-                    </div>
-
-                                        <!-- Featured Items -->
-                    <div class="market-featured-wrap">
-                        <div class="market-featured-title">⭐ Featured Items</div>
-                        <div class="market-featured-list" id="market-featured"></div>
-                    </div>
-
-
-                    <!-- Search + Filters -->
-                    <div class="market-filters">
-                        <div class="market-search-wrap">
-                            <span class="market-search-icon">🔍</span>
-                            <input
-                                type="text"
-                                id="market-search"
-                                placeholder="Search items, categories, sellers..."
-                                class="market-search-input"
-                            />
-                        </div>
-                        <select
-                            id="market-filter-cat"
-                            class="market-filter-select"
-                        >
-                            <option value="all">📂 All Categories</option>
-                            <optgroup label="⚙️ Core Components">
-                                <option value="CPU">CPU</option>
-                                <option value="Motherboard">Motherboard</option>
-                                <option value="RAM">RAM</option>
-                                <option value="GPU">GPU</option>
-                                <option value="PSU">PSU</option>
-                                <option value="Computer Case">
-                                    Computer Case
-                                </option>
-                            </optgroup>
-                            <optgroup label="💾 Storage Devices">
-                                <option value="SATA SSD">SATA SSD</option>
-                                <option value="M.2 NVMe SSD">
-                                    M.2 NVMe SSD
-                                </option>
-                                <option value="HDD">HDD</option>
-                                <option value="External Storage">
-                                    External Storage
-                                </option>
-                            </optgroup>
-                            <optgroup label="🖥️ Peripherals">
-                                <option value="Monitor">Monitor</option>
-                                <option value="Keyboard">Keyboard</option>
-                                <option value="Mouse">Mouse</option>
-                                <option value="Headset">Headset</option>
-                                <option value="Speakers">Speakers</option>
-                            </optgroup>
-                            <optgroup label="🔧 Accessories">
-                                <option value="CPU Cooler">CPU Cooler</option>
-                                <option value="Case Fan">Case Fan</option>
-                                <option value="Cable &amp; Adapter">
-                                    Cable &amp; Adapter
-                                </option>
-                                <option value="Thermal Paste">
-                                    Thermal Paste
-                                </option>
-                                <option value="Network Device">
-                                    Network Device
-                                </option>
-                            </optgroup>
-                        </select>
-                        <select
-                            id="market-filter-sort"
-                            class="market-filter-select"
-                        >
-                            <option value="default">↕️ Sort: Default</option>
-                            <option value="price-asc">
-                                💲 Price: Low → High
-                            </option>
-                            <option value="price-desc">
-                                💲 Price: High → Low
-                            </option>
-                            <option value="stock-asc">
-                                📉 Stock: Low → High
-                            </option>
-                            <option value="stock-desc">
-                                📈 Stock: High → Low
-                            </option>
-                            <option value="newest">🕐 Newest First</option>
-                        </select>
-                        <select
-                            id="market-filter-cond"
-                            class="market-filter-select"
-                        >
-                            <option value="all">🔧 All Conditions</option>
-                            <option value="New">✨ New</option>
-                            <option value="Like New">👌 Like New</option>
-                            <option value="Good">👍 Good</option>
-                            <option value="Fair">🔄 Fair</option>
-                        </select>
-                    </div>
-
-                    <!-- Seller Search -->
-                    <div
-                        class="market-search-wrap"
-                        style="
-                            background: rgba(255, 159, 67, 0.07);
-                            border: 1px solid rgba(255, 159, 67, 0.22);
-                            margin-bottom: 16px;
-                        "
-                    >
-                        <span class="market-search-icon">🧑‍💼</span>
-                        <input
-                            type="text"
-                            id="market-seller-search"
-                            placeholder="Search seller by name or #ID (e.g. john or john #1234)..."
-                            class="market-search-input"
-                            style="color: #ff9f43"
-                        />
                     </div>
 
                     <!-- Market Card Grid -->
                     <div id="market-grid" class="market-card-grid"></div>
+
+                </div>
 
 
                 </div>

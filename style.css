@@ -1037,86 +1037,77 @@ body.theme-light h3 {
    GLOBAL MARKET STYLES
    ===================== */
 
-/* Header */
+/* Header styling */
 .market-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 0;
+    align-items: center;
+    margin-bottom: 24px;
     flex-wrap: wrap;
     gap: 12px;
-    position: sticky;
-    top: 0;
-    background: rgba(0, 0, 0, 0.2);
-    padding: 12px;
-    z-index: 30;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .market-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 4px;
+    font-size: 2.2rem;
+    font-weight: 900;
     text-align: left;
+    font-family: 'Outfit', sans-serif;
 }
 
 .market-subtitle {
-    color: rgba(255, 255, 255, 0.55);
-    font-size: 0.85rem;
-    margin-bottom: 0;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.95rem;
+    margin-top: 6px;
     text-align: left;
 }
 
 /* Stats Bar */
 .market-stats-bar {
     display: flex;
-    gap: 12px;
+    gap: 16px;
     flex-wrap: wrap;
-    position: sticky;
-    top: 110px; /* header + filters */
-    background: rgba(0, 0, 0, 0.2);
-    padding: 8px 12px;
-    z-index: 28;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 24px;
 }
 
 .mstat-chip {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    background: rgba(79, 172, 254, 0.05);
+    border: 1px solid rgba(79, 172, 254, 0.15);
+    border-radius: 14px;
+    padding: 12px 20px;
+    min-width: 130px;
+    transition: all 0.3s ease;
+}
+
+.mstat-chip:hover {
+    transform: translateY(-2px);
     background: rgba(79, 172, 254, 0.08);
-    border: 1px solid rgba(79, 172, 254, 0.2);
-    border-radius: 12px;
-    padding: 10px 16px;
-    min-width: 110px;
+    border-color: rgba(79, 172, 254, 0.3);
 }
 
 .mstat-icon {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
 }
 
 .mstat-num {
-    font-size: 1.2rem;
-    font-weight: 700;
+    font-size: 1.4rem;
+    font-weight: 800;
     color: #4facfe;
     line-height: 1;
 }
 
 .mstat-label {
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.45);
-    margin-top: 2px;
+    margin-top: 4px;
 }
 
 /* Featured Strip */
 .market-featured-wrap {
     margin-top: 16px;
-    margin-bottom: 12px;
-    /* Removed sticky positioning to place at page bottom */
-    background: rgba(0, 0, 0, 0.2);
-    padding: 8px 12px;
-    z-index: 27;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 24px;
 }
 
 .market-featured-title {
