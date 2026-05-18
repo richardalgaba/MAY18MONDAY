@@ -282,6 +282,8 @@ document.addEventListener("DOMContentLoaded", () => {
             bgVideoSource.src = 'ai.mp4';
             bgVideo.load();
         }
+        const addMktBtn = document.getElementById("add-market-product-btn");
+        if (addMktBtn) addMktBtn.style.display = "none";
       }
     }
   }
