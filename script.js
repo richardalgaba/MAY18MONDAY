@@ -4691,6 +4691,9 @@ document.addEventListener("DOMContentLoaded", () => {
       else if (view === "inventory-view") {
         btn.innerHTML = `<div class="cyber-cart-pulse" style="width: 20px; height: 20px; position: relative; display: flex; align-items: center; justify-content: center; margin-right: 6px;"><span style="font-size: 1.15rem;">🏪</span></div> Admin Store`;
       }
+      else if (view === "admin-store-view") {
+        btn.innerHTML = `<div class="cyber-cart-pulse" style="width: 20px; height: 20px; position: relative; display: flex; align-items: center; justify-content: center; margin-right: 6px;"><span style="font-size: 1.15rem;">📦</span></div> Item Stock`;
+      }
       else if (view === "user-inventory-view") btn.textContent = "My Inventory";
       else if (view === "market-view") btn.textContent = t.market;
     });
