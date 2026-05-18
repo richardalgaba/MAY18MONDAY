@@ -3527,48 +3527,53 @@ document.addEventListener("DOMContentLoaded", () => {
     const product = inventory.find((p) => p.id == id);
     if (!product) return;
 
-    document.getElementById("prod-id").value = product.id;
+    const form = document.getElementById("user-product-form");
+    if (form) form.reset();
 
-    // Find main category based on product.category
-    let mainCat = "";
-    for (const [key, values] of Object.entries(subCategories)) {
-      if (values.includes(product.category)) mainCat = key;
+    document.getElementById("user-prod-id").value = product.id;
+
+    const titleEl = document.getElementById("user-product-modal-title");
+    if (titleEl) titleEl.textContent = "✏️ Edit Product";
+
+    populateUserProductSelect(); // Populate it first!
+    
+    // Find matching catalog item index in DEFAULT_PRODUCTS
+    const catalogIndex = DEFAULT_PRODUCTS.findIndex((dp) => dp.name === product.name);
+    const selectEl = document.getElementById("user-prod-select");
+    if (selectEl && catalogIndex !== -1) {
+      selectEl.value = 1000 + catalogIndex;
+      // Trigger the select's change event so the preview card updates!
+      selectEl.dispatchEvent(new Event("change"));
     }
 
-    const mainCatSelect = document.getElementById("prod-main-category");
-    const subCatSelect = document.getElementById("prod-category");
-
-    mainCatSelect.value = mainCat || "";
-
-    if (mainCat) {
-      subCatSelect.innerHTML =
-        '<option value="" disabled selected>Select Specific Part</option>';
-      subCatSelect.disabled = false;
-      subCategories[mainCat].forEach((item) => {
-        subCatSelect.innerHTML += `<option value="${item}" style="background:#2c3e50;">${item}</option>`;
+    // Pre-fill Item Condition
+    const condRadio = document.querySelector(`input[name="user-prod-condition"][value="${product.condition || "New"}"]`);
+    if (condRadio) {
+      condRadio.checked = true;
+      const condCards = document.querySelectorAll(".user-cond-card");
+      condCards.forEach((c) => {
+        if (c.getAttribute("data-cond") === (product.condition || "New")) {
+          c.style.borderColor = COND_COLOR[product.condition || "New"] || "#96c93d";
+          c.style.background = "rgba(255,255,255,0.02)";
+        } else {
+          c.style.borderColor = "rgba(255,255,255,0.12)";
+          c.style.background = "#0d1117";
+        }
       });
-      subCatSelect.value = product.category;
     }
 
-    document.getElementById("prod-name").value = product.name || "";
-    document.getElementById("prod-description").value =
-      product.description || "";
-    document.getElementById("prod-cost-price").value = product.costPrice || "";
-    document.getElementById("prod-price").value = product.price;
-    document.getElementById("prod-quantity").value = product.quantity;
-    document.getElementById("prod-supplier").value = product.supplier;
+    // Pre-fill price and quantity
+    const priceEl = document.getElementById("user-prod-price");
+    if (priceEl) priceEl.value = product.price;
+    const qtyEl = document.getElementById("user-prod-qty");
+    if (qtyEl) qtyEl.value = product.quantity;
 
-    const purposeRadios = document.querySelectorAll(
-      'input[name="prod-purpose"]',
-    );
-    purposeRadios.forEach((radio) => {
-      if (radio.value === (product.purpose || "For Sale")) {
-        radio.checked = true;
-      }
-    });
+    // Pre-fill purpose
+    const purposeRadio = document.querySelector(`input[name="user-prod-purpose"][value="${product.purpose || "For Sale"}"]`);
+    if (purposeRadio) purposeRadio.checked = true;
 
-    document.getElementById("modal-title").textContent = "Edit Product";
-    productModal.classList.remove("hidden");
+    // Open modal
+    document.getElementById("user-product-modal").classList.remove("hidden");
   };
 
   window.deleteProduct = function (id) {
@@ -3676,37 +3681,22 @@ document.addEventListener("DOMContentLoaded", () => {
     addProductBtn.addEventListener("click", () => {
       const isAdmin = localStorage.getItem("isAdminSession") === "true";
 
-      if (isAdmin) {
-        // Admin: open full product form
-        document.getElementById("product-form").reset();
-        document.getElementById("prod-id").value = "";
-        const defaultPurpose = document.querySelector(
-          'input[name="prod-purpose"][value="For Sale"]',
-        );
-        if (defaultPurpose) defaultPurpose.checked = true;
-        const subCatSelect = document.getElementById("prod-category");
-        if (subCatSelect) {
-          subCatSelect.innerHTML =
-            '<option value="" disabled selected>Select Specific Part</option>';
-          subCatSelect.disabled = true;
-        }
-        document.getElementById("modal-title").textContent = "Add Product";
-        productModal.classList.remove("hidden");
-      } else {
-        // Regular user: open catalog-picker modal
-        const form = document.getElementById("user-product-form");
-        if (form) form.reset();
-        const preview = document.getElementById("user-prod-preview");
-        const profitRow = document.getElementById("upv-profit-row");
-        if (preview) preview.style.display = "none";
-        if (profitRow) profitRow.style.display = "none";
-        const qtyEl = document.getElementById("user-prod-qty");
-        if (qtyEl) qtyEl.value = 1;
-        populateUserProductSelect();
-        document
-          .getElementById("user-product-modal")
-          .classList.remove("hidden");
+      const form = document.getElementById("user-product-form");
+      if (form) form.reset();
+      document.getElementById("user-prod-id").value = ""; // Clear the ID!
+      const titleEl = document.getElementById("user-product-modal-title");
+      if (titleEl) {
+        titleEl.textContent = isAdmin ? "✏️ Add Product (Admin)" : "📦 Add to My Inventory";
       }
+      
+      const preview = document.getElementById("user-prod-preview");
+      const profitRow = document.getElementById("upv-profit-row");
+      if (preview) preview.style.display = "none";
+      if (profitRow) profitRow.style.display = "none";
+      const qtyEl = document.getElementById("user-prod-qty");
+      if (qtyEl) qtyEl.value = 1;
+      populateUserProductSelect();
+      document.getElementById("user-product-modal").classList.remove("hidden");
     });
   }
 
@@ -3904,43 +3894,70 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const newProduct = {
-        id: Date.now(),
-        name: catalogItem.name,
-        description: catalogItem.description || "",
-        category: catalogItem.category,
-        costPrice: catalogSysPrice,
-        price: price,
-        quantity: qty,
-        supplier: catalogItem.supplier || "N/A",
-        owner: currentUser,
-        purpose: purpose,
-        approved: true, // Automatically approved instantly!
-        condition: condition,
-        listedDate: new Date().toISOString(),
-      };
-
-      // Save directly to localStorage so admin sees it immediately
-      const savedInv = JSON.parse(localStorage.getItem("inventory")) || [];
-      savedInv.push(newProduct);
-      inventory = savedInv; // keep module-level in sync
-      localStorage.setItem("inventory", JSON.stringify(inventory));
-
+      const editId = document.getElementById("user-prod-id").value;
       const signedProfit =
         profitPer >= 0
           ? `+$${profitPer.toFixed(2)}`
           : `-$${Math.abs(profitPer).toFixed(2)}`;
-      logActivity("Added New Product", {
-        name: newProduct.name,
-        supplier: newProduct.supplier,
-        amountQty: `Condition: ${condition} | Sell: $${price.toFixed(2)} | Cost: $${catalogSysPrice.toFixed(2)} | Margin: ${signedProfit}/item | Qty: ${qty} | ${purpose}`,
-      });
 
-      renderInventory(); // refresh the table so badge is visible right away
-      document.getElementById("user-product-modal").classList.add("hidden");
-      alert(
-        `✅ "${newProduct.name}" successfully purchased and added directly to your inventory! [${condition}]\nSelling at $${price.toFixed(2)} (System: $${catalogSysPrice.toFixed(2)}) — Margin: ${signedProfit}/item.`,
-      );
+      if (editId) {
+        // We are EDITING an existing product!
+        const existingProduct = inventory.find((p) => p.id == editId);
+        if (existingProduct) {
+          existingProduct.name = catalogItem.name;
+          existingProduct.description = catalogItem.description || "";
+          existingProduct.category = catalogItem.category;
+          existingProduct.costPrice = catalogSysPrice;
+          existingProduct.price = price;
+          existingProduct.quantity = qty;
+          existingProduct.supplier = catalogItem.supplier || "N/A";
+          existingProduct.purpose = purpose;
+          existingProduct.condition = condition;
+
+          logActivity("Edited Product", {
+            name: existingProduct.name,
+            supplier: existingProduct.supplier,
+            amountQty: `Condition: ${condition} | Price: $${price.toFixed(2)} | Qty: ${qty} | ${purpose}`,
+          });
+
+          saveInventory();
+          if (typeof renderMarket === "function") renderMarket();
+          document.getElementById("user-product-modal").classList.add("hidden");
+          alert(`✅ Product "${existingProduct.name}" successfully updated!`);
+        }
+      } else {
+        // We are ADDING a new product!
+        const newProduct = {
+          id: Date.now(),
+          name: catalogItem.name,
+          description: catalogItem.description || "",
+          category: catalogItem.category,
+          costPrice: catalogSysPrice,
+          price: price,
+          quantity: qty,
+          supplier: catalogItem.supplier || "N/A",
+          owner: currentUser,
+          purpose: purpose,
+          approved: true, // Automatically approved instantly!
+          condition: condition,
+          listedDate: new Date().toISOString(),
+        };
+
+        inventory.push(newProduct);
+        saveInventory();
+        if (typeof renderMarket === "function") renderMarket();
+        
+        logActivity("Added New Product", {
+          name: newProduct.name,
+          supplier: newProduct.supplier,
+          amountQty: `Condition: ${condition} | Sell: $${price.toFixed(2)} | Cost: $${catalogSysPrice.toFixed(2)} | Margin: ${signedProfit}/item | Qty: ${qty} | ${purpose}`,
+        });
+
+        document.getElementById("user-product-modal").classList.add("hidden");
+        alert(
+          `✅ "${newProduct.name}" successfully purchased and added directly to your inventory! [${condition}]\nSelling at $${price.toFixed(2)} (System: $${catalogSysPrice.toFixed(2)}) — Margin: ${signedProfit}/item.`,
+        );
+      }
     });
 
   if (clearInventoryBtn) {
