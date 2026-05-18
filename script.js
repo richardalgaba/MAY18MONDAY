@@ -2591,6 +2591,11 @@ document.addEventListener("DOMContentLoaded", () => {
       return true;
     });
 
+    const totalCountEl = document.getElementById("admin-store-total-count");
+    if (totalCountEl) {
+      totalCountEl.textContent = items.length;
+    }
+
     if (items.length === 0) {
       adminStoreGrid.innerHTML = `
         <div class="no-items-placeholder" style="grid-column: 1/-1; text-align: center; padding: 40px; color: rgba(255,255,255,0.4);">
