@@ -404,6 +404,8 @@ a:hover {
     overflow-y: auto;
     overflow-x: hidden;
     height: 100%;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
 }
 
 .main-content header {
@@ -568,6 +570,8 @@ a:hover {
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
 }
 
 table {
@@ -1239,6 +1243,8 @@ body.theme-light h3 {
     overflow-y: auto;
     overflow-x: hidden;
     width: 100%;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Market Card Grid */
@@ -1252,6 +1258,8 @@ body.theme-light h3 {
     padding: 10px 4px;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
 }
 
 .market-card-grid::-webkit-scrollbar {
