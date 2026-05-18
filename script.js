@@ -2441,7 +2441,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   : `<div style="font-size:.7rem;color:rgba(255,255,255,.35);margin-top:3px;">No sales yet</div>`;
               const catClass = getCategoryClass(p.category);
               return `
-              <div class="featured-card ${catClass}" onclick="openMarketDetail(${p.id})">
+              <div class="featured-card ${catClass} feat-rank-${i + 1}" onclick="openMarketDetail(${p.id})">
                 <span class="featured-badge">${rank} Top Seller</span>
                 <div class="featured-name">${p.name}</div>
                 <div class="featured-price">$${parseFloat(p.price).toFixed(2)}</div>

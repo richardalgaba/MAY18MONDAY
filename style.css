@@ -3583,3 +3583,45 @@ body.login-body .overlay {
     0%, 100% { transform: scale(1); opacity: 0.8; }
     50% { transform: scale(1.05); opacity: 1; }
 }
+
+/* Rank-Specific Gorgeous Hover Styles for Featured Cards */
+div.featured-card.feat-rank-1:hover {
+    transform: translateY(-8px) scale(1.04) !important;
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.18), rgba(241, 196, 15, 0.28)) !important;
+    border-color: #f1c40f !important;
+    box-shadow: 0 15px 35px rgba(241, 196, 15, 0.45), 0 0 15px rgba(243, 156, 18, 0.3) !important;
+    animation: none !important; /* overrides individual category spin/pulse animations */
+}
+
+div.featured-card.feat-rank-2:hover {
+    transform: translateY(-8px) scale(1.04) !important;
+    background: linear-gradient(135deg, rgba(0, 242, 254, 0.18), rgba(79, 172, 254, 0.28)) !important;
+    border-color: #00f2fe !important;
+    box-shadow: 0 15px 35px rgba(0, 242, 254, 0.45), 0 0 15px rgba(79, 172, 254, 0.3) !important;
+    animation: none !important;
+}
+
+div.featured-card.feat-rank-3:hover {
+    transform: translateY(-8px) scale(1.04) !important;
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.18), rgba(225, 112, 85, 0.28)) !important;
+    border-color: #ff7675 !important;
+    box-shadow: 0 15px 35px rgba(225, 112, 85, 0.45), 0 0 15px rgba(231, 76, 60, 0.3) !important;
+    animation: none !important;
+}
+
+div.featured-card.feat-rank-4:hover {
+    transform: translateY(-8px) scale(1.04) !important;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.18), rgba(236, 72, 153, 0.28)) !important;
+    border-color: #ec4899 !important;
+    box-shadow: 0 15px 35px rgba(236, 72, 153, 0.45), 0 0 15px rgba(168, 85, 247, 0.3) !important;
+    animation: none !important;
+}
+
+div.featured-card.feat-rank-5:hover {
+    transform: translateY(-8px) scale(1.04) !important;
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.18), rgba(26, 188, 156, 0.28)) !important;
+    border-color: #2ecc71 !important;
+    box-shadow: 0 15px 35px rgba(26, 188, 156, 0.45), 0 0 15px rgba(46, 204, 113, 0.3) !important;
+    animation: none !important;
+}
+
