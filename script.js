@@ -3671,6 +3671,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  const addMarketProductBtn = document.getElementById("add-market-product-btn");
+  if (addMarketProductBtn) {
+    addMarketProductBtn.addEventListener("click", () => {
+      if (addProductBtn) {
+        addProductBtn.click();
+        // Default the purpose to 'For Sale' since they want to sell on the market!
+        const forSaleRadio = document.querySelector('input[name="user-prod-purpose"][value="For Sale"]');
+        if (forSaleRadio) {
+          forSaleRadio.checked = true;
+        }
+      }
+    });
+  }
+
   // ── User product modal — catalog select change ──────────────────
   // ── Condition price multipliers & colors ───────────────────────
   const COND_MULT = { New: 1.2, "Like New": 1.1, Good: 0.9, Fair: 0.75 };
