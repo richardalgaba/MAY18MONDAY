@@ -93,11 +93,19 @@
                         </a>
                     </li>
                     <li id="admin-store-nav-item" class="hidden">
-                        <a href="#" class="nav-btn" data-view="inventory-view" style="display: flex; align-items: center; gap: 4px;">
+                        <a href="#" class="nav-btn" data-view="admin-store-view" style="display: flex; align-items: center; gap: 4px;">
                             <div class="cyber-cart-pulse" style="width: 20px; height: 20px; position: relative; display: flex; align-items: center; justify-content: center; margin-right: 6px;">
                                 <span style="font-size: 1.15rem;">🏪</span>
                             </div>
                             Admin Store
+                        </a>
+                    </li>
+                    <li id="admin-requests-nav-item" class="hidden">
+                        <a href="#" class="nav-btn" data-view="inventory-view" style="display: flex; align-items: center; gap: 4px;">
+                            <div class="cyber-cart-pulse" style="width: 20px; height: 20px; position: relative; display: flex; align-items: center; justify-content: center; margin-right: 6px;">
+                                <span style="font-size: 1.15rem;">📥</span>
+                            </div>
+                            User Requests
                         </a>
                     </li>
                     <li id="admin-nav-item" class="hidden">
@@ -378,12 +386,17 @@
 
                 <!-- User Admin Store View (Storefront of Admin's products) -->
                 <div id="admin-store-view" class="view-section hidden">
-                    <header style="margin-bottom: 24px;">
-                        <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.2rem; font-weight: 900; background: linear-gradient(135deg, #ffffff 30%, #ff9f43 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 30px rgba(255, 159, 67, 0.2); display: flex; align-items: center; gap: 14px; margin: 0;">
-                            <div style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.8rem;">📦</div>
-                            Item Stock
-                        </h1>
-                        <p style="color: rgba(255, 255, 255, 0.5); font-size: 0.95rem; margin-top: 6px; letter-spacing: 0.02em;">Purchase certified high-performance computer parts directly from the official stock inventory.</p>
+                    <header style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                        <div>
+                            <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.2rem; font-weight: 900; background: linear-gradient(135deg, #ffffff 30%, #ff9f43 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 30px rgba(255, 159, 67, 0.2); display: flex; align-items: center; gap: 14px; margin: 0;">
+                                <div id="admin-store-title-icon" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.8rem;">📦</div>
+                                <span id="admin-store-title-label">Item Stock</span>
+                            </h1>
+                            <p id="admin-store-subtitle" style="color: rgba(255, 255, 255, 0.5); font-size: 0.95rem; margin-top: 6px; letter-spacing: 0.02em;">Purchase certified high-performance computer parts directly from the official stock inventory.</p>
+                        </div>
+                        <button id="admin-store-add-btn" class="btn primary-btn hidden" style="padding: 10px 20px;">
+                            ➕ Add to Admin Store
+                        </button>
                     </header>
 
                     <!-- Search & Filter Controls -->

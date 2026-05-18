@@ -217,6 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("admin-nav-item")?.classList.remove("hidden");
         document.getElementById("admin-users-nav")?.classList.remove("hidden");
         document.getElementById("admin-store-nav-item")?.classList.remove("hidden");
+        document.getElementById("admin-requests-nav-item")?.classList.remove("hidden");
         document.getElementById("user-admin-store-nav-item")?.classList.add("hidden");
         document.getElementById("market-nav-item")?.classList.remove("hidden");
         
@@ -285,6 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (addMktBtn) addMktBtn.style.display = "none";
         
         document.getElementById("admin-store-nav-item")?.classList.add("hidden");
+        document.getElementById("admin-requests-nav-item")?.classList.add("hidden");
         document.getElementById("user-admin-store-nav-item")?.classList.remove("hidden");
       }
     }
@@ -2543,7 +2545,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById(id)?.addEventListener("change", renderMarket);
   });
 
-  // ── Admin Storefront Renderer for Users ────────────────────────────
+  // ── Admin Storefront Renderer for Users & Admin ────────────────────
   window.renderAdminStore = function () {
     const adminStoreGrid = document.getElementById("admin-store-grid");
     if (!adminStoreGrid) return;
@@ -2552,6 +2554,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchTerm = document.getElementById("admin-store-search")?.value.trim().toLowerCase() || "";
     const filterCat = document.getElementById("admin-store-filter-cat")?.value || "all";
     const isAdminSession = localStorage.getItem("isAdminSession") === "true";
+
+    const titleLabel = document.getElementById("admin-store-title-label");
+    const titleIcon = document.getElementById("admin-store-title-icon");
+    const subtitle = document.getElementById("admin-store-subtitle");
+    const addStoreBtn = document.getElementById("admin-store-add-btn");
+
+    if (isAdminSession) {
+      if (titleLabel) titleLabel.textContent = "Admin Store";
+      if (titleIcon) titleIcon.textContent = "🏪";
+      if (subtitle) subtitle.textContent = "Manage, adjust stock, and list computer hardware in the official store.";
+      if (addStoreBtn) addStoreBtn.classList.remove("hidden");
+    } else {
+      if (titleLabel) titleLabel.textContent = "Item Stock";
+      if (titleIcon) titleIcon.textContent = "📦";
+      if (subtitle) subtitle.textContent = "Purchase certified high-performance computer parts directly from the official stock inventory.";
+      if (addStoreBtn) addStoreBtn.classList.add("hidden");
+    }
 
     let items = inventory.map(enrichProduct).filter((p) => {
       // Must be owned by System / Admin or isSeed/isCatalog
@@ -2646,7 +2665,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           ${
             isAdminSession
-              ? `<div class="mkt-card-own-badge" style="background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.08);">Admin View Only</div>`
+              ? `<button class="mkt-card-btn btn-edit-product" onclick="editProduct(${p.id})" style="background: linear-gradient(135deg, #a855f7 0%, #4facfe 100%); color: white; border: none; border-radius: 8px; font-weight: bold; width: 100%; margin-top: 8px; padding: 10px; cursor: pointer; text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);">✏️ EDIT PRODUCT</button>`
               : p.quantity <= 0
                 ? `<div class="mkt-card-own-badge" style="background: rgba(231, 76, 60, 0.12); color: #ff7675; border: 1px solid rgba(231, 76, 60, 0.25);">Out of Stock</div>`
                 : `<button class="mkt-card-btn btn-buy-now" onclick="openBuyModal(${p.id})">⚡ BUY NOW</button>`
@@ -2660,6 +2679,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // Admin Store filters listeners
   document.getElementById("admin-store-search")?.addEventListener("input", window.renderAdminStore);
   document.getElementById("admin-store-filter-cat")?.addEventListener("change", window.renderAdminStore);
+  document.getElementById("admin-store-add-btn")?.addEventListener("click", () => {
+    const addProductBtn = document.getElementById("add-product-btn");
+    if (addProductBtn) addProductBtn.click();
+  });
 
   // ── Profile Renderer ──────────────────────────────────────────────
   function renderProfile() {
