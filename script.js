@@ -2321,7 +2321,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const badge = document.getElementById("cart-float-badge");
     const btn = document.getElementById("cart-float-btn");
     if (!btn) return;
-    btn.style.display = total > 0 ? "flex" : "none";
+    const isAdmin = localStorage.getItem("isAdminSession") === "true";
+    btn.style.display = (total > 0 && !isAdmin) ? "flex" : "none";
     if (badge) badge.textContent = total;
   }
 
@@ -2503,17 +2504,19 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="mkt-card-row-1">
             <button class="mkt-card-btn btn-view" onclick="openMarketDetail(${p.id})">🔍 VIEW</button>
             ${
-              isOwn || p.isSeed
+              isAdminSession || isOwn || p.isSeed
                 ? ""
                 : `<button class="mkt-card-btn btn-cart" onclick="addToCart(${p.id})">＋ CART</button>`
             }
           </div>
           ${
-            isOwn
-              ? `<div class="mkt-card-own-badge">Your Listing</div>`
-              : p.isSeed
-                ? `<div class="mkt-card-own-badge" style="background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.08);">System Stock</div>`
-                : `<button class="mkt-card-btn btn-buy-now" onclick="openBuyModal(${p.id})">⚡ BUY NOW</button>`
+            isAdminSession
+              ? `<div class="mkt-card-own-badge" style="background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.08);">Admin View Only</div>`
+              : isOwn
+                ? `<div class="mkt-card-own-badge">Your Listing</div>`
+                : p.isSeed
+                  ? `<div class="mkt-card-own-badge" style="background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.08);">System Stock</div>`
+                  : `<button class="mkt-card-btn btn-buy-now" onclick="openBuyModal(${p.id})">⚡ BUY NOW</button>`
           }
         </div>
       `;
@@ -3232,10 +3235,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const buyBtn = document.getElementById("detail-buy-btn");
     if (buyBtn) {
-      buyBtn.onclick = () => {
-        document.getElementById("market-detail-modal").classList.add("hidden");
-        openBuyModal(id);
-      };
+      if (isAdmin) {
+        buyBtn.style.display = "none";
+      } else {
+        buyBtn.style.display = "flex";
+        buyBtn.onclick = () => {
+          document.getElementById("market-detail-modal").classList.add("hidden");
+          openBuyModal(id);
+        };
+      }
     }
 
     document.getElementById("market-detail-modal").classList.remove("hidden");
@@ -3333,6 +3341,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Cart
   window.addToCart = function (id) {
+    if (localStorage.getItem("isAdminSession") === "true") {
+      alert("Administrators cannot purchase items or add them to the cart!");
+      return;
+    }
     const p = inventory.find((p) => p.id == id);
     if (!p) return;
     const existing = cart.find((c) => c.id == id);
@@ -3494,6 +3506,10 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   window.openBuyModal = function (id) {
+    if (localStorage.getItem("isAdminSession") === "true") {
+      alert("Administrators cannot purchase items!");
+      return;
+    }
     const product = inventory.find((p) => p.id == id);
     if (!product) return;
     document.getElementById("buy-prod-id").value = id;
