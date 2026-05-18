@@ -2513,7 +2513,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           ${
             isAdminSession
-              ? `<button class="mkt-card-btn btn-buy-now" onclick="editProduct(${p.id})" style="background: linear-gradient(135deg, #f39c12, #e67e22) !important; border: 1px solid rgba(243, 156, 18, 0.4) !important; color: white !important;">✏️ EDIT PRODUCT</button>`
+              ? `<div class="mkt-card-own-badge" style="background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.08);">Admin View Only</div>`
               : isOwn
                 ? `<div class="mkt-card-own-badge">Your Listing</div>`
                 : p.isSeed
@@ -3238,17 +3238,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const buyBtn = document.getElementById("detail-buy-btn");
     if (buyBtn) {
       if (isAdmin) {
-        buyBtn.style.display = "flex";
-        buyBtn.style.background = "linear-gradient(135deg, #f39c12, #e67e22)";
-        buyBtn.innerHTML = "✏️ Edit Product";
-        buyBtn.onclick = () => {
-          document.getElementById("market-detail-modal").classList.add("hidden");
-          editProduct(id);
-        };
+        buyBtn.style.display = "none";
       } else {
         buyBtn.style.display = "flex";
-        buyBtn.style.background = ""; // Restore default style
-        buyBtn.innerHTML = "🛒 Buy Now";
         buyBtn.onclick = () => {
           document.getElementById("market-detail-modal").classList.add("hidden");
           openBuyModal(id);
