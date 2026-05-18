@@ -2549,7 +2549,39 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>`;
 
     let statCardsHtml = "";
-    if (!isAdmin) {
+    if (isAdmin) {
+      const usersDbForStats = JSON.parse(localStorage.getItem("users") || "{}");
+      const adminTotalUsers = Object.keys(usersDbForStats).length;
+      const invForStats = JSON.parse(localStorage.getItem("inventory") || "[]");
+      const adminTotalProducts = invForStats.length;
+      const allPurchasesForStats = JSON.parse(localStorage.getItem("purchases") || "[]");
+      const adminTotalSalesCount = allPurchasesForStats.length;
+      const adminTotalSystemEarnings = allPurchasesForStats.reduce((acc, p) => acc + (p.price || 0) * (p.qty || 1), 0);
+
+      statCardsHtml = `
+        <!-- Sales stat cards (Admin) -->
+        <div class="dashboard-card profile-stat-card" style="text-align:center;background:linear-gradient(135deg, rgba(231,76,60,0.15), rgba(231,76,60,0.02));border-color:rgba(231,76,60,0.3);border-left:4px solid #e74c3c;box-shadow:0 12px 30px -10px rgba(231,76,60,0.2); animation-delay: 0.05s; display: flex; flex-direction: column; justify-content: center; padding: 20px; border-radius: 18px;">
+          <h3 style="color:#e74c3c;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Outfit',sans-serif;font-size:1.05rem;margin:0;">🌐 Total System Users</h3>
+          <p class="stat-num" style="color:#e74c3c !important;font-size:2.3rem;font-family:'Outfit',sans-serif;font-weight:800;text-shadow:0 0 10px rgba(231,76,60,0.25);margin:8px 0 0 0;">${adminTotalUsers}</p>
+        </div>
+        <div class="dashboard-card profile-stat-card" style="text-align:center;background:linear-gradient(135deg, rgba(0,242,254,0.15), rgba(0,242,254,0.02));border-color:rgba(0,242,254,0.3);border-left:4px solid #00f2fe;box-shadow:0 12px 30px -10px rgba(0,242,254,0.2); animation-delay: 0.1s; display: flex; flex-direction: column; justify-content: center; padding: 20px; border-radius: 18px;">
+          <h3 style="color:#00f2fe;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Outfit',sans-serif;font-size:1.05rem;margin:0;">📦 Total System Products</h3>
+          <p class="stat-num" style="color:#00f2fe !important;font-size:2.3rem;font-family:'Outfit',sans-serif;font-weight:800;text-shadow:0 0 10px rgba(0,242,254,0.25);margin:8px 0 0 0;">${adminTotalProducts}</p>
+        </div>
+
+        <!-- Inventory Stat cards (Grid compact layout) -->
+        <div style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 5px;">
+          <div class="dashboard-card profile-stat-card" style="text-align:center;padding:15px;background:linear-gradient(135deg, rgba(46,204,113,0.1), rgba(46,204,113,0.01));border:1px solid rgba(46,204,113,0.18);border-left:3px solid #2ecc71; animation-delay: 0.12s;box-shadow:0 8px 20px rgba(46,204,113,0.15); border-radius: 12px;">
+            <div style="color:#2ecc71;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">📈 Total System Sales</div>
+            <p style="font-size:1.7rem;font-weight:800;color:white;margin:0;font-family:'Outfit',sans-serif;">$${adminTotalSystemEarnings.toFixed(2)}</p>
+          </div>
+          <div class="dashboard-card profile-stat-card" style="text-align:center;padding:15px;background:linear-gradient(135deg, rgba(155,89,182,0.1), rgba(155,89,182,0.01));border:1px solid rgba(155,89,182,0.18);border-left:3px solid #9b59b6; animation-delay: 0.22s; box-shadow: 0 8px 20px rgba(155,89,182,0.15); border-radius: 12px;">
+            <div style="color:#ba68c8;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">🛍️ Total Sales Count</div>
+            <p style="font-size:1.7rem;font-weight:800;color:#ba68c8;margin:0;font-family:'Outfit',sans-serif;">${adminTotalSalesCount}</p>
+          </div>
+        </div>
+      `;
+    } else {
       statCardsHtml = `
         <!-- Sales stat cards (new) -->
         <div class="dashboard-card profile-stat-card" style="text-align:center;background:linear-gradient(135deg, rgba(46,204,113,0.15), rgba(46,204,113,0.02));border-color:rgba(46,204,113,0.3);border-left:4px solid #2ecc71;box-shadow:0 12px 30px -10px rgba(46,204,113,0.2); animation-delay: 0.05s;">
