@@ -217,6 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("admin-nav-item")?.classList.remove("hidden");
         document.getElementById("admin-users-nav")?.classList.remove("hidden");
         document.getElementById("admin-store-nav-item")?.classList.remove("hidden");
+        document.getElementById("user-admin-store-nav-item")?.classList.add("hidden");
         document.getElementById("market-nav-item")?.classList.remove("hidden");
         
         // Hide sidebar wallet card for admin session
@@ -279,6 +280,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         const addMktBtn = document.getElementById("add-market-product-btn");
         if (addMktBtn) addMktBtn.style.display = "none";
+        
+        document.getElementById("admin-store-nav-item")?.classList.add("hidden");
+        document.getElementById("user-admin-store-nav-item")?.classList.remove("hidden");
       }
     }
   }
@@ -337,6 +341,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       if (targetId === "admin-users-view") {
         if (typeof window.renderAdminUsers === "function") window.renderAdminUsers();
+      }
+      if (targetId === "admin-store-view") {
+        if (typeof window.renderAdminStore === "function") window.renderAdminStore();
       }
     });
   });
@@ -2537,6 +2544,124 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById(id)?.addEventListener("input", renderMarket);
     document.getElementById(id)?.addEventListener("change", renderMarket);
   });
+
+  // ── Admin Storefront Renderer for Users ────────────────────────────
+  window.renderAdminStore = function () {
+    const adminStoreGrid = document.getElementById("admin-store-grid");
+    if (!adminStoreGrid) return;
+    adminStoreGrid.innerHTML = "";
+
+    const searchTerm = document.getElementById("admin-store-search")?.value.trim().toLowerCase() || "";
+    const filterCat = document.getElementById("admin-store-filter-cat")?.value || "all";
+    const isAdminSession = localStorage.getItem("isAdminSession") === "true";
+
+    let items = inventory.map(enrichProduct).filter((p) => {
+      // Must be owned by System / Admin or isSeed/isCatalog
+      const isOfficial = p.owner === "System" || p.isSeed || p.isCatalog;
+      if (!isOfficial) return false;
+      if (!p.approved) return false;
+      if (p.purpose === "To Keep") return false;
+
+      // Filter by search & category
+      if (filterCat !== "all" && p.category !== filterCat) return false;
+      if (
+        searchTerm &&
+        !p.name.toLowerCase().includes(searchTerm) &&
+        !p.category.toLowerCase().includes(searchTerm)
+      )
+        return false;
+
+      return true;
+    });
+
+    if (items.length === 0) {
+      adminStoreGrid.innerHTML = `
+        <div class="no-items-placeholder" style="grid-column: 1/-1; text-align: center; padding: 40px; color: rgba(255,255,255,0.4);">
+          <div style="font-size: 2.5rem; margin-bottom: 10px;">🏪</div>
+          <h3>No official items found</h3>
+          <p>Official stock catalog parts will show here once Admin enables them.</p>
+        </div>
+      `;
+      return;
+    }
+
+    items.forEach((p) => {
+      const card = document.createElement("div");
+      card.className = "market-card select-none";
+      card.setAttribute("data-id", p.id);
+      
+      const isLow = p.quantity < 10 && p.quantity > 0;
+      const isOut = p.quantity <= 0;
+      const cardClass = isOut ? "card-out" : isLow ? "card-low" : "";
+      if (cardClass) card.classList.add(cardClass);
+
+      // Star ratings helper
+      const full = Math.floor(p.rating || 5);
+      const half = (p.rating || 5) % 1 >= 0.5 ? 1 : 0;
+      const empty = 5 - full - half;
+      const starsHtml = `<span class="star-rating">${"★".repeat(full)}${half ? "½" : ""}${"☆".repeat(empty)}</span> <small style="opacity:.6;">${p.rating || 5.0}</small>`;
+
+      // Status badge helper
+      let statusBadge = `<span class="status-badge status-high">🟢 In Stock</span>`;
+      if (p.quantity === 0) {
+        statusBadge = `<span class="status-badge status-out">🔴 Out of Stock</span>`;
+      } else if (p.quantity < 10) {
+        statusBadge = `<span class="status-badge status-low">Low Stock</span>`;
+      }
+
+      card.innerHTML = `
+        <div class="mkt-card-header">
+          <span class="mkt-card-cat font-bold">${p.category}</span>
+          <span class="mkt-card-cond-badge cond-new font-bold">
+            ✨ Official
+          </span>
+        </div>
+        
+        <h3 class="mkt-card-title font-bold" title="${p.name}">${p.name}</h3>
+        
+        <div class="mkt-card-meta">
+          <span class="mkt-card-seller">👤 Administrator</span>
+          <span class="mkt-card-time">🛡️ Certified</span>
+        </div>
+        
+        <p class="mkt-card-desc" title="${p.description || ""}">${p.description || "Official high-performance desktop hardware certified and supplied directly by System."}</p>
+        
+        <div class="mkt-card-pricing-row">
+          <div class="mkt-card-price-block">
+            <span class="mkt-card-price-lbl">PRICE</span>
+            <span class="mkt-card-price-val">$${parseFloat(p.price).toFixed(2)}</span>
+          </div>
+          <div class="mkt-card-stock-block">
+            <div class="mkt-card-stock-status">${statusBadge}</div>
+            <div class="mkt-card-rating">${starsHtml}</div>
+          </div>
+        </div>
+        
+        <div class="mkt-card-actions">
+          <div class="mkt-card-row-1">
+            <button class="mkt-card-btn btn-view" onclick="openMarketDetail(${p.id})">🔍 VIEW</button>
+            ${
+              isAdminSession || p.quantity <= 0
+                ? ""
+                : `<button class="mkt-card-btn btn-cart" onclick="addToCart(${p.id})">＋ CART</button>`
+            }
+          </div>
+          ${
+            isAdminSession
+              ? `<div class="mkt-card-own-badge" style="background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.08);">Admin View Only</div>`
+              : p.quantity <= 0
+                ? `<div class="mkt-card-own-badge" style="background: rgba(231, 76, 60, 0.12); color: #ff7675; border: 1px solid rgba(231, 76, 60, 0.25);">Out of Stock</div>`
+                : `<button class="mkt-card-btn btn-buy-now" onclick="openBuyModal(${p.id})">⚡ BUY NOW</button>`
+          }
+        </div>
+      `;
+      adminStoreGrid.appendChild(card);
+    });
+  };
+
+  // Admin Store filters listeners
+  document.getElementById("admin-store-search")?.addEventListener("input", window.renderAdminStore);
+  document.getElementById("admin-store-filter-cat")?.addEventListener("change", window.renderAdminStore);
 
   // ── Profile Renderer ──────────────────────────────────────────────
   function renderProfile() {
