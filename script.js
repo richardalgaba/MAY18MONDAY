@@ -193,6 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Dashboard & Inventory Logic ---
   const welcomeMessage = document.getElementById("welcome-message");
+  const welcomeText = document.getElementById("welcome-text");
   const isAdminSession = localStorage.getItem("isAdminSession") === "true";
 
   if (welcomeMessage) {
@@ -200,7 +201,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!currentUser) {
       window.location.href = "login.html"; // Protect dashboard
     } else {
-      welcomeMessage.textContent = `Welcome, ${currentUser}!`;
+      if (welcomeText) {
+        welcomeText.textContent = `Welcome, ${currentUser}!`;
+      } else {
+        welcomeMessage.textContent = `Welcome, ${currentUser}!`;
+      }
       // Assign a public Seller ID if the user doesn't have one yet
       if (!isAdminSession && !localStorage.getItem("userPublicId")) {
         localStorage.setItem(
