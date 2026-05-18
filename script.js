@@ -2232,17 +2232,38 @@ document.addEventListener("DOMContentLoaded", () => {
   function getCategoryClass(cat) {
     if (!cat) return "cat-peripheral";
     const c = cat.toLowerCase();
+    
+    // Core Components
     if (c.includes("cpu") || c.includes("processor")) return "cat-cpu";
     if (c.includes("gpu") || c.includes("graphic")) return "cat-gpu";
     if (c.includes("ram") || c.includes("memory")) return "cat-ram";
-    if (c.includes("ssd") || c.includes("hdd") || c.includes("storage")) return "cat-storage";
     if (c.includes("motherboard")) return "cat-motherboard";
     if (c.includes("psu") || c.includes("power supply")) return "cat-psu";
     if (c.includes("case")) return "cat-case";
-    if (c.includes("cooler") || c.includes("fan") || c.includes("cooling")) return "cat-cooling";
+    
+    // Cooling Devices
+    if (c.includes("cpu cooler")) return "cat-cpu-cooler";
+    if (c.includes("fan") || c.includes("cooling") || c.includes("cooler")) return "cat-cooling";
+    
+    // Storage Devices
+    if (c.includes("m.2 nvme ssd") || (c.includes("nvme") && c.includes("m.2"))) return "cat-nvme-ssd";
+    if (c.includes("sata ssd")) return "cat-sata-ssd";
+    if (c.includes("hdd") || c.includes("hard drive")) return "cat-hdd";
+    if (c.includes("ssd")) return "cat-ssd";
+    if (c.includes("storage")) return "cat-storage";
+    
+    // Peripherals
     if (c.includes("monitor")) return "cat-monitor";
     if (c.includes("keyboard")) return "cat-keyboard";
     if (c.includes("mouse") || c.includes("mice")) return "cat-mouse";
+    if (c.includes("headset") || c.includes("headphone")) return "cat-headset";
+    if (c.includes("speaker")) return "cat-speaker";
+    
+    // Accessories / Others
+    if (c.includes("network")) return "cat-network";
+    if (c.includes("thermal paste")) return "cat-thermal-paste";
+    if (c.includes("cable") || c.includes("adapter")) return "cat-cable-adapter";
+    
     return "cat-peripheral";
   }
 
@@ -4876,18 +4897,290 @@ document.addEventListener("DOMContentLoaded", () => {
   function getAnimatedIconHtml(cat) {
     if (!cat) return getPeripheralIconSvg();
     const c = cat.toLowerCase();
+    
     if (c.includes("cpu") || c.includes("processor")) return getCpuIconSvg();
     if (c.includes("gpu") || c.includes("graphic")) return getGpuIconSvg();
     if (c.includes("ram") || c.includes("memory")) return getRamIconSvg();
-    if (c.includes("ssd") || c.includes("hdd") || c.includes("storage")) return getStorageIconSvg();
+    
+    // Storage subdivisions
+    if (c.includes("m.2 nvme ssd") || (c.includes("nvme") && c.includes("m.2"))) return getM2NvmeSsdIconSvg();
+    if (c.includes("sata ssd")) return getSataSsdIconSvg();
+    if (c.includes("hdd") || c.includes("hard drive")) return getHddIconSvg();
+    if (c.includes("ssd")) return getGeneralSsdIconSvg();
+    if (c.includes("storage")) return getStorageIconSvg(); // fallback general storage
+    
     if (c.includes("motherboard")) return getMotherboardIconSvg();
     if (c.includes("psu") || c.includes("power supply")) return getPsuIconSvg();
     if (c.includes("case")) return getCaseIconSvg();
-    if (c.includes("cooler") || c.includes("fan") || c.includes("cooling")) return getCoolingIconSvg();
+    
+    // Cooling subdivisions
+    if (c.includes("cpu cooler")) return getCpuCoolerIconSvg();
+    if (c.includes("fan") || c.includes("cooling") || c.includes("cooler")) return getCoolingIconSvg();
+    
     if (c.includes("monitor")) return getMonitorIconSvg();
     if (c.includes("keyboard")) return getKeyboardIconSvg();
     if (c.includes("mouse") || c.includes("mice")) return getMouseIconSvg();
+    
+    // Peripherals
+    if (c.includes("headset") || c.includes("headphone")) return getHeadsetIconSvg();
+    if (c.includes("speaker")) return getSpeakerIconSvg();
+    
+    // Accessories / Others
+    if (c.includes("network")) return getNetworkDeviceIconSvg();
+    if (c.includes("thermal paste")) return getThermalPasteIconSvg();
+    if (c.includes("cable") || c.includes("adapter")) return getCableAdapterIconSvg();
+    
     return getPeripheralIconSvg();
+  }
+
+  function getM2NvmeSsdIconSvg() {
+    return `<svg width="120" height="90" viewBox="0 0 120 90" style="filter: drop-shadow(0 0 15px rgba(165, 94, 234, 0.65));">
+      <defs>
+        <linearGradient id="nvmeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#a55eea" />
+          <stop offset="100%" stop-color="#4b7bec" />
+        </linearGradient>
+        <linearGradient id="goldPins" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#fed330" />
+          <stop offset="100%" stop-color="#f7b731" />
+        </linearGradient>
+      </defs>
+      <rect x="15" y="32" width="90" height="26" rx="3" fill="#0f172a" stroke="url(#nvmeGrad)" stroke-width="2" />
+      <rect x="15" y="38" width="4" height="14" fill="url(#goldPins)" />
+      <rect x="26" y="36" width="16" height="18" rx="1.5" fill="#1e272e" stroke="#a55eea" stroke-width="1" />
+      <rect x="47" y="36" width="16" height="18" rx="1.5" fill="#1e272e" stroke="#a55eea" stroke-width="1" />
+      <rect x="68" y="36" width="14" height="18" rx="1.5" fill="#2d3436" stroke="#4b7bec" stroke-width="1.5" />
+      <rect x="87" y="42" width="6" height="6" rx="3" fill="#20bf6b">
+        <animate attributeName="opacity" values="0.2;1;0.2" dur="0.3s" repeatCount="indefinite" />
+      </rect>
+      <path d="M 22 45 L 98 45" stroke="#a55eea" stroke-width="1.5" stroke-dasharray="10 15" opacity="0.8">
+        <animate attributeName="stroke-dashoffset" values="50;0" dur="1s" repeatCount="indefinite" />
+      </path>
+      <path d="M 22 40 L 98 40" stroke="#00f2fe" stroke-width="1" stroke-dasharray="5 20" opacity="0.6">
+        <animate attributeName="stroke-dashoffset" values="-50;0" dur="0.8s" repeatCount="indefinite" />
+      </path>
+    </svg>`;
+  }
+
+  function getSataSsdIconSvg() {
+    return `<svg width="100" height="100" viewBox="0 0 100 100" style="filter: drop-shadow(0 0 15px rgba(255, 42, 42, 0.6));">
+      <defs>
+        <linearGradient id="ssdGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#ff2a2a" />
+          <stop offset="100%" stop-color="#b33939" />
+        </linearGradient>
+      </defs>
+      <rect x="18" y="15" width="64" height="70" rx="6" fill="#111827" stroke="url(#ssdGrad)" stroke-width="2" />
+      <rect x="24" y="21" width="52" height="58" rx="3" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+      <path d="M 26 30 L 74 30 M 26 34 L 74 34 M 26 38 L 74 38" stroke="rgba(255, 42, 42, 0.15)" stroke-width="2" />
+      <rect x="35" y="44" width="30" height="12" rx="2" fill="#ff2a2a" opacity="0.15" />
+      <text x="50" y="52" font-family="'Outfit', sans-serif" font-size="6.5" font-weight="900" fill="#ff2a2a" text-anchor="middle" letter-spacing="1">SATA III</text>
+      <line x1="28" y1="68" x2="72" y2="68" stroke="#ff2a2a" stroke-width="2" stroke-linecap="round" opacity="0.3" />
+      <line x1="28" y1="68" x2="72" y2="68" stroke="#ff2a2a" stroke-width="2" stroke-linecap="round" stroke-dasharray="10 30">
+        <animate attributeName="stroke-dashoffset" values="40;0" dur="1.2s" repeatCount="indefinite" />
+      </line>
+    </svg>`;
+  }
+
+  function getHddIconSvg() {
+    return `<svg width="100" height="100" viewBox="0 0 100 100" style="filter: drop-shadow(0 0 15px rgba(210, 137, 28, 0.6));">
+      <defs>
+        <radialGradient id="platterBronze" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#d2891c" stop-opacity="0.1" />
+          <stop offset="70%" stop-color="#d2891c" stop-opacity="0.6" />
+          <stop offset="100%" stop-color="#111827" />
+        </radialGradient>
+      </defs>
+      <rect x="18" y="10" width="64" height="80" rx="6" fill="#111827" stroke="#d2891c" stroke-width="2" />
+      <circle cx="50" cy="55" r="28" fill="url(#platterBronze)" stroke="#d2891c" stroke-width="1.5" />
+      <circle cx="50" cy="55" r="8" fill="#1e272e" stroke="#fff" stroke-width="1.5" />
+      <circle cx="50" cy="55" r="20" fill="none" stroke="#d2891c" stroke-width="0.75" stroke-dasharray="30 20" opacity="0.6">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="1.5s" repeatCount="indefinite" transform-origin="50 55" />
+      </circle>
+      <g transform-origin="28 25">
+        <path d="M 28 25 L 48 48 L 44 49" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" />
+        <circle cx="48" cy="48" r="1.5" fill="#d2891c" />
+        <animateTransform attributeName="transform" type="rotate" values="-8;15;-8" dur="2.5s" repeatCount="indefinite" />
+      </g>
+      <circle cx="28" cy="25" r="4" fill="#111827" stroke="#d2891c" stroke-width="2" />
+      <circle cx="74" cy="18" r="2" fill="#2ecc71">
+        <animate attributeName="opacity" values="0.1;1;0.1" dur="0.5s" repeatCount="indefinite" />
+      </circle>
+    </svg>`;
+  }
+
+  function getGeneralSsdIconSvg() {
+    return `<svg width="100" height="100" viewBox="0 0 100 100" style="filter: drop-shadow(0 0 15px rgba(255, 107, 129, 0.6));">
+      <rect x="18" y="15" width="64" height="70" rx="6" fill="#111827" stroke="#ff6b81" stroke-width="2" />
+      <rect x="28" y="25" width="44" height="50" rx="3" fill="none" stroke="rgba(255, 107, 129, 0.25)" stroke-width="1.5" stroke-dasharray="6 4" />
+      <rect x="36" y="36" width="28" height="28" rx="2" fill="#ff6b81" opacity="0.2">
+        <animate attributeName="opacity" values="0.15;0.6;0.15" dur="2s" repeatCount="indefinite" />
+      </rect>
+      <text x="50" y="53" font-family="'Outfit', sans-serif" font-size="7" font-weight="900" fill="#ff6b81" text-anchor="middle" letter-spacing="1">SSD</text>
+      <line x1="30" y1="72" x2="70" y2="72" stroke="#ff6b81" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="5 15">
+        <animate attributeName="stroke-dashoffset" values="20;0" dur="1s" repeatCount="indefinite" />
+      </line>
+    </svg>`;
+  }
+
+  function getCpuCoolerIconSvg() {
+    return `<svg width="120" height="120" viewBox="0 0 100 100" style="filter: drop-shadow(0 0 15px rgba(37, 99, 235, 0.7));">
+      <defs>
+        <linearGradient id="waterGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#2563eb" />
+          <stop offset="100%" stop-color="#00d2ff" />
+        </linearGradient>
+      </defs>
+      <rect x="15" y="15" width="70" height="70" rx="8" fill="#111827" stroke="#2563eb" stroke-width="2" />
+      <circle cx="50" cy="50" r="24" fill="none" stroke="url(#waterGrad)" stroke-width="2" />
+      <circle cx="50" cy="50" r="20" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="12 6">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="4s" repeatCount="indefinite" transform-origin="50 50" />
+      </circle>
+      <g transform-origin="50 50">
+        <circle cx="50" cy="50" r="6" fill="#00d2ff" />
+        <path d="M 50 50 L 38 32 A 8 8 0 0 1 50 20 Z M 50 50 L 62 68 A 8 8 0 0 1 50 80 Z M 50 50 L 32 62 A 8 8 0 0 1 20 50 Z M 50 50 L 68 38 A 8 8 0 0 1 80 50 Z" fill="url(#waterGrad)" opacity="0.8" />
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="0.8s" repeatCount="indefinite" />
+      </g>
+      <circle cx="50" cy="50" r="31" fill="none" stroke="#00d2ff" stroke-width="0.75" stroke-dasharray="4 20" opacity="0.7">
+        <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="3s" repeatCount="indefinite" transform-origin="50 50" />
+      </circle>
+    </svg>`;
+  }
+
+  function getSpeakerIconSvg() {
+    return `<svg width="110" height="110" viewBox="0 0 100 100" style="filter: drop-shadow(0 0 15px rgba(163, 230, 53, 0.75));">
+      <rect x="22" y="10" width="56" height="80" rx="8" fill="#111827" stroke="#a3e635" stroke-width="2.5" />
+      <circle cx="50" cy="30" r="10" fill="#1e293b" stroke="#a3e635" stroke-width="1.5" />
+      <circle cx="50" cy="30" r="4" fill="#a3e635" />
+      <g transform-origin="50 64">
+        <circle cx="50" cy="64" r="20" fill="#1e293b" stroke="#a3e635" stroke-width="2" />
+        <circle cx="50" cy="64" r="14" fill="none" stroke="#a3e635" stroke-width="1.5" stroke-dasharray="6 4" />
+        <circle cx="50" cy="64" r="6" fill="#a3e635" />
+        <animateTransform attributeName="transform" type="scale" values="0.96;1.05;0.96" dur="0.6s" repeatCount="indefinite" />
+      </g>
+      <path d="M 12 35 Q 6 50 12 65 M 6 25 Q -4 50 6 75" fill="none" stroke="#a3e635" stroke-width="1.5" stroke-linecap="round" opacity="0">
+        <animate attributeName="opacity" values="0;1;0" dur="1.2s" begin="0.0s" repeatCount="indefinite" />
+        <animate attributeName="transform" values="translate(0,0); translate(-5,0); translate(0,0)" dur="1.2s" begin="0.0s" repeatCount="indefinite" />
+      </path>
+      <path d="M 88 35 Q 94 50 88 65 M 94 25 Q 104 50 94 75" fill="none" stroke="#a3e635" stroke-width="1.5" stroke-linecap="round" opacity="0">
+        <animate attributeName="opacity" values="0;1;0" dur="1.2s" begin="0.2s" repeatCount="indefinite" />
+        <animate attributeName="transform" values="translate(0,0); translate(5,0); translate(0,0)" dur="1.2s" begin="0.2s" repeatCount="indefinite" />
+      </path>
+    </svg>`;
+  }
+
+  function getHeadsetIconSvg() {
+    return `<svg width="110" height="110" viewBox="0 0 100 100" style="filter: drop-shadow(0 0 15px rgba(244, 63, 94, 0.7));">
+      <defs>
+        <linearGradient id="headsetRGB" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#f43f5e" />
+          <stop offset="100%" stop-color="#a855f7" />
+        </linearGradient>
+      </defs>
+      <path d="M 22 55 A 30 30 0 0 1 78 55" fill="none" stroke="url(#headsetRGB)" stroke-width="4.5" stroke-linecap="round" />
+      <path d="M 22 55 A 30 30 0 0 1 78 55" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="5 15" stroke-linecap="round">
+        <animate attributeName="stroke-dashoffset" values="40;0" dur="2.5s" repeatCount="indefinite" />
+      </path>
+      <g transform="translate(14, 45)">
+        <rect x="0" y="0" width="12" height="24" rx="6" fill="#111827" stroke="#f43f5e" stroke-width="2" />
+        <circle cx="6" cy="12" r="3" fill="#f43f5e">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="1s" repeatCount="indefinite" />
+        </circle>
+      </g>
+      <g transform="translate(74, 45)">
+        <rect x="0" y="0" width="12" height="24" rx="6" fill="#111827" stroke="#f43f5e" stroke-width="2" />
+        <circle cx="6" cy="12" r="3" fill="#f43f5e">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="1s" repeatCount="indefinite" />
+        </circle>
+      </g>
+      <path d="M 22 62 Q 22 78 38 78" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" />
+      <circle cx="38" cy="78" r="2.5" fill="#00f2fe">
+        <animate attributeName="opacity" values="0.2;1;0.2" dur="0.5s" repeatCount="indefinite" />
+      </circle>
+    </svg>`;
+  }
+
+  function getNetworkDeviceIconSvg() {
+    return `<svg width="120" height="110" viewBox="0 0 100 100" style="filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.7));">
+      <rect x="20" y="60" width="60" height="18" rx="4" fill="#111827" stroke="#00e5ff" stroke-width="2.5" />
+      <circle cx="30" cy="69" r="1.8" fill="#2ecc71"><animate attributeName="opacity" values="0.2;1;0.2" dur="0.4s" repeatCount="indefinite" /></circle>
+      <circle cx="38" cy="69" r="1.8" fill="#2ecc71"><animate attributeName="opacity" values="1;0.2;1" dur="0.6s" repeatCount="indefinite" /></circle>
+      <circle cx="46" cy="69" r="1.8" fill="#00e5ff"><animate attributeName="opacity" values="0.1;1;0.1" dur="0.3s" repeatCount="indefinite" /></circle>
+      <circle cx="54" cy="69" r="1.8" fill="#00e5ff"><animate attributeName="opacity" values="1;0.1;1" dur="0.5s" repeatCount="indefinite" /></circle>
+      <line x1="28" y1="60" x2="20" y2="30" stroke="#00e5ff" stroke-width="2.5" stroke-linecap="round" />
+      <line x1="72" y1="60" x2="80" y2="30" stroke="#00e5ff" stroke-width="2.5" stroke-linecap="round" />
+      <line x1="50" y1="60" x2="50" y2="24" stroke="#00e5ff" stroke-width="2.5" stroke-linecap="round" />
+      <g stroke="#00e5ff" fill="none" stroke-linecap="round" opacity="0.8">
+        <path d="M 44 16 A 8 8 0 0 1 56 16" stroke-width="1.5">
+          <animate attributeName="opacity" values="0;1;0" dur="1.5s" begin="0s" repeatCount="indefinite" />
+        </path>
+        <path d="M 39 12 A 15 15 0 0 1 61 12" stroke-width="1.5">
+          <animate attributeName="opacity" values="0;1;0" dur="1.5s" begin="0.3s" repeatCount="indefinite" />
+        </path>
+        <path d="M 34 8 A 22 22 0 0 1 66 8" stroke-width="1.5">
+          <animate attributeName="opacity" values="0;1;0" dur="1.5s" begin="0.6s" repeatCount="indefinite" />
+        </path>
+      </g>
+    </svg>`;
+  }
+
+  function getThermalPasteIconSvg() {
+    return `<svg width="110" height="110" viewBox="0 0 100 100" style="filter: drop-shadow(0 0 15px rgba(165, 243, 252, 0.7));">
+      <defs>
+        <linearGradient id="syringeBody" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#e2e8f0" />
+          <stop offset="100%" stop-color="#94a3b8" />
+        </linearGradient>
+      </defs>
+      <rect x="30" y="70" width="40" height="12" rx="2" fill="#1e293b" stroke="#a5f3fc" stroke-width="1.5" />
+      <rect x="38" y="74" width="24" height="4" fill="#a5f3fc" opacity="0.3" />
+      <g transform="rotate(-35, 45, 40)">
+        <rect x="42" y="10" width="16" height="42" rx="2" fill="url(#syringeBody)" stroke="#a5f3fc" stroke-width="1.5" />
+        <rect x="47" y="-2" width="6" height="12" fill="#64748b" />
+        <rect x="43" y="-6" width="14" height="4" rx="1" fill="#475569" />
+        <line x1="42" y1="20" x2="48" y2="20" stroke="#475569" stroke-width="1" />
+        <line x1="42" y1="28" x2="48" y2="28" stroke="#475569" stroke-width="1" />
+        <line x1="42" y1="36" x2="48" y2="36" stroke="#475569" stroke-width="1" />
+        <line x1="42" y1="44" x2="48" y2="44" stroke="#475569" stroke-width="1" />
+        <rect x="44" y="24" width="12" height="26" fill="#cbd5e1" opacity="0.8">
+          <animate attributeName="height" values="26;18;26" dur="3s" repeatCount="indefinite" />
+          <animate attributeName="y" values="24;32;24" dur="3s" repeatCount="indefinite" />
+        </rect>
+        <path d="M 47 52 L 53 52 L 50 62 Z" fill="#94a3b8" stroke="#a5f3fc" stroke-width="1" />
+      </g>
+      <circle cx="50" cy="63" r="3.5" fill="#a5f3fc" style="filter: drop-shadow(0 0 4px #a5f3fc);">
+        <animate attributeName="cy" values="60;67;60" dur="2s" repeatCount="indefinite" />
+        <animate attributeName="r" values="3.5;4.5;3.5" dur="2s" repeatCount="indefinite" />
+      </circle>
+    </svg>`;
+  }
+
+  function getCableAdapterIconSvg() {
+    return `<svg width="110" height="100" viewBox="0 0 100 100" style="filter: drop-shadow(0 0 15px rgba(255, 170, 68, 0.7));">
+      <defs>
+        <linearGradient id="plugGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ffaa44" />
+          <stop offset="100%" stop-color="#ff7a00" />
+        </linearGradient>
+      </defs>
+      <g transform="translate(10, 36)">
+        <rect x="0" y="6" width="22" height="16" rx="3" fill="#111827" stroke="url(#plugGrad)" stroke-width="2" />
+        <rect x="22" y="9" width="6" height="3" fill="#e2e8f0" />
+        <rect x="22" y="16" width="6" height="3" fill="#e2e8f0" />
+        <path d="M 0 14 Q -10 14 -12 28" fill="none" stroke="#ffaa44" stroke-width="3" />
+      </g>
+      <g transform="translate(68, 36)">
+        <rect x="0" y="6" width="22" height="16" rx="3" fill="#111827" stroke="url(#plugGrad)" stroke-width="2" />
+        <path d="M 22 14 Q 32 14 34 -2" fill="none" stroke="#ffaa44" stroke-width="3" />
+      </g>
+      <path d="M 38 44 Q 50 32 50 44 T 62 44" fill="none" stroke="#ffaa44" stroke-width="2.5" stroke-linecap="round">
+        <animate attributeName="stroke-dasharray" values="5,15;15,5;5,15" dur="0.8s" repeatCount="indefinite" />
+      </path>
+      <circle cx="50" cy="44" r="2.5" fill="#fff" style="filter: drop-shadow(0 0 6px #ffaa44);">
+        <animate attributeName="opacity" values="0.2;1;0.2" dur="0.4s" repeatCount="indefinite" />
+        <animateTransform attributeName="transform" type="scale" values="0.8;1.3;0.8" dur="0.4s" repeatCount="indefinite" transform-origin="50 44" />
+      </circle>
+    </svg>`;
   }
 
   function getCpuIconSvg() {

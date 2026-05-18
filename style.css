@@ -1372,6 +1372,46 @@ body.theme-light h3 {
     --card-glow-color: rgba(168, 85, 247, 0.45);
     --card-glow-shadow: rgba(168, 85, 247, 0.15);
 }
+.mkt-card.cat-network {
+    --card-glow-color: rgba(0, 229, 255, 0.45);
+    --card-glow-shadow: rgba(0, 229, 255, 0.15);
+}
+.mkt-card.cat-thermal-paste {
+    --card-glow-color: rgba(165, 243, 252, 0.45);
+    --card-glow-shadow: rgba(165, 243, 252, 0.15);
+}
+.mkt-card.cat-cable-adapter {
+    --card-glow-color: rgba(255, 170, 68, 0.45);
+    --card-glow-shadow: rgba(255, 170, 68, 0.15);
+}
+.mkt-card.cat-cpu-cooler {
+    --card-glow-color: rgba(37, 99, 235, 0.45);
+    --card-glow-shadow: rgba(37, 99, 235, 0.15);
+}
+.mkt-card.cat-speaker {
+    --card-glow-color: rgba(163, 230, 53, 0.45);
+    --card-glow-shadow: rgba(163, 230, 53, 0.15);
+}
+.mkt-card.cat-headset {
+    --card-glow-color: rgba(244, 63, 94, 0.45);
+    --card-glow-shadow: rgba(244, 63, 94, 0.15);
+}
+.mkt-card.cat-hdd {
+    --card-glow-color: rgba(210, 137, 28, 0.45);
+    --card-glow-shadow: rgba(210, 137, 28, 0.15);
+}
+.mkt-card.cat-sata-ssd {
+    --card-glow-color: rgba(255, 42, 42, 0.45);
+    --card-glow-shadow: rgba(255, 42, 42, 0.15);
+}
+.mkt-card.cat-nvme-ssd {
+    --card-glow-color: rgba(165, 94, 234, 0.45);
+    --card-glow-shadow: rgba(165, 94, 234, 0.15);
+}
+.mkt-card.cat-ssd {
+    --card-glow-color: rgba(255, 107, 129, 0.45);
+    --card-glow-shadow: rgba(255, 107, 129, 0.15);
+}
 
 /* Card Header Components */
 .mkt-card-header {
@@ -1403,6 +1443,16 @@ body.theme-light h3 {
 .mkt-card.cat-keyboard .mkt-card-cat-badge { background: rgba(231, 76, 60, 0.12); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.25); }
 .mkt-card.cat-mouse .mkt-card-cat-badge { background: rgba(241, 196, 15, 0.12); color: #f1c40f; border: 1px solid rgba(241, 196, 15, 0.25); }
 .mkt-card.cat-peripheral .mkt-card-cat-badge { background: rgba(168, 85, 247, 0.12); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.25); }
+.mkt-card.cat-network .mkt-card-cat-badge { background: rgba(0, 229, 255, 0.12); color: #00e5ff; border: 1px solid rgba(0, 229, 255, 0.25); }
+.mkt-card.cat-thermal-paste .mkt-card-cat-badge { background: rgba(165, 243, 252, 0.12); color: #a5f3fc; border: 1px solid rgba(165, 243, 252, 0.25); }
+.mkt-card.cat-cable-adapter .mkt-card-cat-badge { background: rgba(255, 170, 68, 0.12); color: #ffaa44; border: 1px solid rgba(255, 170, 68, 0.25); }
+.mkt-card.cat-cpu-cooler .mkt-card-cat-badge { background: rgba(37, 99, 235, 0.12); color: #2563eb; border: 1px solid rgba(37, 99, 235, 0.25); }
+.mkt-card.cat-speaker .mkt-card-cat-badge { background: rgba(163, 230, 53, 0.12); color: #a3e635; border: 1px solid rgba(163, 230, 53, 0.25); }
+.mkt-card.cat-headset .mkt-card-cat-badge { background: rgba(244, 63, 94, 0.12); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.25); }
+.mkt-card.cat-hdd .mkt-card-cat-badge { background: rgba(210, 137, 28, 0.12); color: #d2891c; border: 1px solid rgba(210, 137, 28, 0.25); }
+.mkt-card.cat-sata-ssd .mkt-card-cat-badge { background: rgba(255, 42, 42, 0.12); color: #ff2a2a; border: 1px solid rgba(255, 42, 42, 0.25); }
+.mkt-card.cat-nvme-ssd .mkt-card-cat-badge { background: rgba(165, 94, 234, 0.12); color: #a55eea; border: 1px solid rgba(165, 94, 234, 0.25); }
+.mkt-card.cat-ssd .mkt-card-cat-badge { background: rgba(255, 107, 129, 0.12); color: #ff6b81; border: 1px solid rgba(255, 107, 129, 0.25); }
 
 .mkt-card-cond-badge {
     padding: 3px 10px;
@@ -2047,6 +2097,167 @@ div.featured-card.cat-peripheral:hover {
   background: rgba(155, 89, 182, 0.05) !important;
 }
 
+/* Network Device Category: Pulse signal & teal flow */
+@keyframes pulseSignalAnim {
+  0% { box-shadow: 0 0 5px rgba(0, 229, 255, 0.4); border-color: rgba(0, 229, 255, 0.4); }
+  50% { box-shadow: 0 0 20px rgba(0, 229, 255, 0.8); border-color: rgba(0, 229, 255, 1); }
+  100% { box-shadow: 0 0 5px rgba(0, 229, 255, 0.4); border-color: rgba(0, 229, 255, 0.4); }
+}
+.cat-network {
+  animation: fadeInBlur 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.market-row.cat-network:hover,
+div.featured-card.cat-network:hover {
+  animation: pulseSignalAnim 1.5s infinite alternate;
+  transform: translateY(-4px) scale(1.02);
+  background: rgba(0, 229, 255, 0.06) !important;
+}
+
+/* Thermal Paste Category: Slow viscous breath */
+@keyframes pasteBreatheAnim {
+  0% { box-shadow: 0 0 6px rgba(165, 243, 252, 0.35); border-color: rgba(165, 243, 252, 0.35); }
+  50% { box-shadow: 0 0 15px rgba(165, 243, 252, 0.65); border-color: rgba(165, 243, 252, 0.85); }
+  100% { box-shadow: 0 0 6px rgba(165, 243, 252, 0.35); border-color: rgba(165, 243, 252, 0.35); }
+}
+.cat-thermal-paste {
+  animation: slowZoomIn 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.market-row.cat-thermal-paste:hover,
+div.featured-card.cat-thermal-paste:hover {
+  animation: pasteBreatheAnim 2s infinite ease-in-out;
+  transform: scale(1.015);
+  background: rgba(165, 243, 252, 0.05) !important;
+}
+
+/* Cable & Adapter Category: Electrical current sweep */
+@keyframes electricCurrentSweep {
+  0% { background-position: 0% 50%; border-color: rgba(255, 170, 68, 0.3); }
+  50% { background-position: 100% 50%; border-color: rgba(255, 170, 68, 0.8); }
+  100% { background-position: 0% 50%; border-color: rgba(255, 170, 68, 0.3); }
+}
+.cat-cable-adapter {
+  animation: fadeInBottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.market-row.cat-cable-adapter:hover,
+div.featured-card.cat-cable-adapter:hover {
+  background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255, 170, 68, 0.12) 50%, rgba(255,255,255,0.02) 100%) !important;
+  background-size: 200% 200% !important;
+  animation: electricCurrentSweep 1.8s infinite linear;
+  transform: scale(1.02);
+}
+
+/* CPU Cooler Category: Frosty vortex spin */
+@keyframes vortexSpinAnim {
+  0% { transform: scale(1) translateY(0); box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
+  50% { transform: scale(1.02) translateY(-4px); box-shadow: 0 10px 25px rgba(37, 99, 235, 0.5); }
+  100% { transform: scale(1) translateY(0); box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
+}
+.cat-cpu-cooler {
+  animation: slideDown 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.market-row.cat-cpu-cooler:hover,
+div.featured-card.cat-cpu-cooler:hover {
+  animation: vortexSpinAnim 2s infinite ease-in-out;
+  background: rgba(37, 99, 235, 0.08) !important;
+}
+
+/* Speakers Category: Sonic bass thump vibration */
+@keyframes sonicBassThump {
+  0% { transform: scale(1); box-shadow: 0 0 5px rgba(163, 230, 53, 0.3); }
+  20% { transform: scale(1.03); box-shadow: 0 0 20px rgba(163, 230, 53, 0.7); }
+  40% { transform: scale(0.98); }
+  60% { transform: scale(1.01); }
+  80% { transform: scale(0.99); }
+  100% { transform: scale(1); box-shadow: 0 0 5px rgba(163, 230, 53, 0.3); }
+}
+.cat-speaker {
+  animation: popUpScale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.market-row.cat-speaker:hover,
+div.featured-card.cat-speaker:hover {
+  animation: sonicBassThump 0.8s infinite ease-out;
+  background: rgba(163, 230, 53, 0.06) !important;
+}
+
+/* Headset Category: Soundwave floating float */
+@keyframes headsetFloatSound {
+  0% { transform: translateY(0); box-shadow: 0 5px 15px rgba(244, 63, 94, 0.3); }
+  50% { transform: translateY(-6px); box-shadow: 0 15px 30px rgba(244, 63, 94, 0.6); }
+  100% { transform: translateY(0); box-shadow: 0 5px 15px rgba(244, 63, 94, 0.3); }
+}
+.cat-headset {
+  animation: swingEffectAnim 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.market-row.cat-headset:hover,
+div.featured-card.cat-headset:hover {
+  animation: headsetFloatSound 2.5s infinite ease-in-out;
+  background: rgba(244, 63, 94, 0.06) !important;
+}
+
+/* HDD Category: Mechanical bronze spin shift */
+@keyframes platterSpinMechanical {
+  0% { border-color: rgba(210, 137, 28, 0.3); box-shadow: 0 0 5px rgba(210, 137, 28, 0.2); }
+  50% { border-color: rgba(210, 137, 28, 0.85); box-shadow: 0 0 18px rgba(210, 137, 28, 0.45); }
+  100% { border-color: rgba(210, 137, 28, 0.3); box-shadow: 0 0 5px rgba(210, 137, 28, 0.2); }
+}
+.cat-hdd {
+  animation: slideInRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.market-row.cat-hdd:hover,
+div.featured-card.cat-hdd:hover {
+  animation: platterSpinMechanical 1.6s infinite ease-in-out;
+  transform: translateY(-2px) scale(1.01);
+  background: rgba(210, 137, 28, 0.05) !important;
+}
+
+/* SATA SSD Category: Laser-sharp crimson sweep */
+@keyframes crimsonLaserSweep {
+  0% { box-shadow: 0 0 4px rgba(255, 42, 42, 0.3); border-color: rgba(255, 42, 42, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(255, 42, 42, 0.75); border-color: rgba(255, 42, 42, 1); }
+  100% { box-shadow: 0 0 4px rgba(255, 42, 42, 0.3); border-color: rgba(255, 42, 42, 0.3); }
+}
+.cat-sata-ssd {
+  animation: slideInLeft 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.market-row.cat-sata-ssd:hover,
+div.featured-card.cat-sata-ssd:hover {
+  animation: crimsonLaserSweep 1.4s infinite alternate;
+  transform: translateY(-3px) scale(1.02);
+  background: rgba(255, 42, 42, 0.06) !important;
+}
+
+/* M.2 NVMe SSD Category: Speed blur & hyper drive purple glow */
+@keyframes hyperSpeedBlur {
+  0% { box-shadow: 0 0 5px rgba(165, 94, 234, 0.4); border-color: rgba(165, 94, 234, 0.4); }
+  50% { box-shadow: 0 0 24px rgba(165, 94, 234, 0.9), 0 0 10px rgba(75, 123, 236, 0.4); border-color: rgba(165, 94, 234, 1); }
+  100% { box-shadow: 0 0 5px rgba(165, 94, 234, 0.4); border-color: rgba(165, 94, 234, 0.4); }
+}
+.cat-nvme-ssd {
+  animation: popUpScale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.market-row.cat-nvme-ssd:hover,
+div.featured-card.cat-nvme-ssd:hover {
+  animation: hyperSpeedBlur 1.2s infinite;
+  transform: translateY(-4px) scale(1.025);
+  background: rgba(165, 94, 234, 0.06) !important;
+}
+
+/* SSD Category: Coral rose-gold breathing flow */
+@keyframes roseGoldFlow {
+  0% { box-shadow: 0 0 5px rgba(255, 107, 129, 0.3); border-color: rgba(255, 107, 129, 0.3); }
+  50% { box-shadow: 0 0 18px rgba(255, 107, 129, 0.7); border-color: rgba(255, 107, 129, 0.9); }
+  100% { box-shadow: 0 0 5px rgba(255, 107, 129, 0.3); border-color: rgba(255, 107, 129, 0.3); }
+}
+.cat-ssd {
+  animation: fadeInTop 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.market-row.cat-ssd:hover,
+div.featured-card.cat-ssd:hover {
+  animation: roseGoldFlow 1.8s infinite ease-in-out;
+  transform: translateY(-3px) scale(1.02);
+  background: rgba(255, 107, 129, 0.06) !important;
+}
+
 /* ========================================================
    MODAL POPUP ENTRIES & CATEGORY-SPECIFIC GLOWS
    ======================================================== */
@@ -2255,6 +2466,160 @@ div.featured-card.cat-peripheral:hover {
 .modal-content.cat-peripheral .primary-btn:hover {
   background: linear-gradient(135deg, #9b59b6, #3498db) !important;
   box-shadow: 0 0 18px rgba(155, 89, 182, 0.75) !important;
+  transform: scale(1.04) !important;
+}
+
+/* Network Device Detail Glow */
+@keyframes modalNetworkGlow {
+  0% { box-shadow: 0 0 15px rgba(0, 229, 255, 0.25); border-color: rgba(0, 229, 255, 0.35); }
+  50% { box-shadow: 0 0 35px rgba(0, 229, 255, 0.75), 0 0 70px rgba(0, 229, 255, 0.35); border-color: rgba(0, 229, 255, 0.85); }
+  100% { box-shadow: 0 0 15px rgba(0, 229, 255, 0.25); border-color: rgba(0, 229, 255, 0.35); }
+}
+.modal-content.cat-network {
+  animation: modalNetworkGlow 2.5s infinite ease-in-out !important;
+}
+.modal-content.cat-network .primary-btn:hover {
+  background: #00e5ff !important;
+  color: #000000 !important;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.8) !important;
+  transform: scale(1.04) !important;
+}
+
+/* Thermal Paste Detail Glow */
+@keyframes modalThermalPasteGlow {
+  0% { box-shadow: 0 0 15px rgba(165, 243, 252, 0.25); border-color: rgba(165, 243, 252, 0.35); }
+  50% { box-shadow: 0 0 30px rgba(165, 243, 252, 0.7), 0 0 60px rgba(165, 243, 252, 0.3); border-color: rgba(165, 243, 252, 0.75); }
+  100% { box-shadow: 0 0 15px rgba(165, 243, 252, 0.25); border-color: rgba(165, 243, 252, 0.35); }
+}
+.modal-content.cat-thermal-paste {
+  animation: modalThermalPasteGlow 3s infinite ease-in-out !important;
+}
+.modal-content.cat-thermal-paste .primary-btn:hover {
+  background: #a5f3fc !important;
+  color: #000000 !important;
+  box-shadow: 0 0 18px rgba(165, 243, 252, 0.75) !important;
+  transform: scale(1.04) !important;
+}
+
+/* Cable & Adapter Detail Glow */
+@keyframes modalCableAdapterGlow {
+  0% { box-shadow: 0 0 15px rgba(255, 170, 68, 0.25); border-color: rgba(255, 170, 68, 0.35); }
+  50% { box-shadow: 0 0 32px rgba(255, 170, 68, 0.75), 0 0 60px rgba(255, 170, 68, 0.3); border-color: rgba(255, 170, 68, 0.8); }
+  100% { box-shadow: 0 0 15px rgba(255, 170, 68, 0.25); border-color: rgba(255, 170, 68, 0.35); }
+}
+.modal-content.cat-cable-adapter {
+  animation: modalCableAdapterGlow 2.8s infinite ease-in-out !important;
+}
+.modal-content.cat-cable-adapter .primary-btn:hover {
+  background: #ffaa44 !important;
+  color: #000000 !important;
+  box-shadow: 0 0 20px rgba(255, 170, 68, 0.8) !important;
+  transform: scale(1.04) !important;
+}
+
+/* CPU Cooler Detail Glow */
+@keyframes modalCpuCoolerGlow {
+  0% { box-shadow: 0 0 15px rgba(37, 99, 235, 0.25); border-color: rgba(37, 99, 235, 0.35); }
+  50% { box-shadow: 0 0 35px rgba(37, 99, 235, 0.75), 0 0 65px rgba(37, 99, 235, 0.35); border-color: rgba(37, 99, 235, 0.8); }
+  100% { box-shadow: 0 0 15px rgba(37, 99, 235, 0.25); border-color: rgba(37, 99, 235, 0.35); }
+}
+.modal-content.cat-cpu-cooler {
+  animation: modalCpuCoolerGlow 2.4s infinite ease-in-out !important;
+}
+.modal-content.cat-cpu-cooler .primary-btn:hover {
+  background: #2563eb !important;
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.8) !important;
+  transform: scale(1.04) !important;
+}
+
+/* Speakers Detail Glow */
+@keyframes modalSpeakerGlow {
+  0% { box-shadow: 0 0 15px rgba(163, 230, 53, 0.25); border-color: rgba(163, 230, 53, 0.35); }
+  50% { box-shadow: 0 0 35px rgba(163, 230, 53, 0.8), 0 0 60px rgba(163, 230, 53, 0.35); border-color: rgba(163, 230, 53, 0.85); }
+  100% { box-shadow: 0 0 15px rgba(163, 230, 53, 0.25); border-color: rgba(163, 230, 53, 0.35); }
+}
+.modal-content.cat-speaker {
+  animation: modalSpeakerGlow 2s infinite ease-in-out !important;
+}
+.modal-content.cat-speaker .primary-btn:hover {
+  background: #a3e635 !important;
+  color: #000000 !important;
+  box-shadow: 0 0 20px rgba(163, 230, 53, 0.8) !important;
+  transform: scale(1.04) !important;
+}
+
+/* Headset Detail Glow */
+@keyframes modalHeadsetGlow {
+  0% { box-shadow: 0 0 15px rgba(244, 63, 94, 0.25); border-color: rgba(244, 63, 94, 0.35); }
+  50% { box-shadow: 0 0 35px rgba(244, 63, 94, 0.75), 0 0 70px rgba(244, 63, 94, 0.35); border-color: rgba(244, 63, 94, 0.85); }
+  100% { box-shadow: 0 0 15px rgba(244, 63, 94, 0.25); border-color: rgba(244, 63, 94, 0.35); }
+}
+.modal-content.cat-headset {
+  animation: modalHeadsetGlow 2.2s infinite ease-in-out !important;
+}
+.modal-content.cat-headset .primary-btn:hover {
+  background: #f43f5e !important;
+  box-shadow: 0 0 20px rgba(244, 63, 94, 0.8) !important;
+  transform: scale(1.04) !important;
+}
+
+/* HDD Detail Glow */
+@keyframes modalHddGlow {
+  0% { box-shadow: 0 0 15px rgba(210, 137, 28, 0.25); border-color: rgba(210, 137, 28, 0.35); }
+  50% { box-shadow: 0 0 30px rgba(210, 137, 28, 0.75), 0 0 60px rgba(210, 137, 28, 0.3); border-color: rgba(210, 137, 28, 0.8); }
+  100% { box-shadow: 0 0 15px rgba(210, 137, 28, 0.25); border-color: rgba(210, 137, 28, 0.35); }
+}
+.modal-content.cat-hdd {
+  animation: modalHddGlow 3s infinite ease-in-out !important;
+}
+.modal-content.cat-hdd .primary-btn:hover {
+  background: #d2891c !important;
+  box-shadow: 0 0 18px rgba(210, 137, 28, 0.75) !important;
+  transform: scale(1.04) !important;
+}
+
+/* SATA SSD Detail Glow */
+@keyframes modalSataSsdGlow {
+  0% { box-shadow: 0 0 15px rgba(255, 42, 42, 0.25); border-color: rgba(255, 42, 42, 0.35); }
+  50% { box-shadow: 0 0 35px rgba(255, 42, 42, 0.8), 0 0 70px rgba(255, 42, 42, 0.35); border-color: rgba(255, 42, 42, 0.85); }
+  100% { box-shadow: 0 0 15px rgba(255, 42, 42, 0.25); border-color: rgba(255, 42, 42, 0.35); }
+}
+.modal-content.cat-sata-ssd {
+  animation: modalSataSsdGlow 2.4s infinite ease-in-out !important;
+}
+.modal-content.cat-sata-ssd .primary-btn:hover {
+  background: #ff2a2a !important;
+  box-shadow: 0 0 20px rgba(255, 42, 42, 0.8) !important;
+  transform: scale(1.04) !important;
+}
+
+/* M.2 NVMe SSD Detail Glow */
+@keyframes modalNvmeSsdGlow {
+  0% { box-shadow: 0 0 15px rgba(165, 94, 234, 0.25); border-color: rgba(165, 94, 234, 0.35); }
+  50% { box-shadow: 0 0 35px rgba(165, 94, 234, 0.8), 0 0 70px rgba(165, 94, 234, 0.35); border-color: rgba(165, 94, 234, 0.85); }
+  100% { box-shadow: 0 0 15px rgba(165, 94, 234, 0.25); border-color: rgba(165, 94, 234, 0.35); }
+}
+.modal-content.cat-nvme-ssd {
+  animation: modalNvmeSsdGlow 2s infinite ease-in-out !important;
+}
+.modal-content.cat-nvme-ssd .primary-btn:hover {
+  background: #a55eea !important;
+  box-shadow: 0 0 20px rgba(165, 94, 234, 0.8) !important;
+  transform: scale(1.04) !important;
+}
+
+/* SSD Detail Glow */
+@keyframes modalSsdGlow {
+  0% { box-shadow: 0 0 15px rgba(255, 107, 129, 0.25); border-color: rgba(255, 107, 129, 0.35); }
+  50% { box-shadow: 0 0 32px rgba(255, 107, 129, 0.75), 0 0 60px rgba(255, 107, 129, 0.3); border-color: rgba(255, 107, 129, 0.8); }
+  100% { box-shadow: 0 0 15px rgba(255, 107, 129, 0.25); border-color: rgba(255, 107, 129, 0.35); }
+}
+.modal-content.cat-ssd {
+  animation: modalSsdGlow 2.8s infinite ease-in-out !important;
+}
+.modal-content.cat-ssd .primary-btn:hover {
+  background: #ff6b81 !important;
+  box-shadow: 0 0 20px rgba(255, 107, 129, 0.8) !important;
   transform: scale(1.04) !important;
 }
 
@@ -3211,3 +3576,10 @@ body.login-body .overlay {
 
 
 
+.pulse-text {
+    animation: pulseText 2s infinite ease-in-out;
+}
+@keyframes pulseText {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.05); opacity: 1; }
+}
